@@ -17,7 +17,10 @@ pub fn create(app: &AppHandle) -> tauri::Result<MenuItem<Wry>> {
     )?;
 
     TrayIconBuilder::with_id("main")
-        // A template image: macOS tints it for light and dark menu bars.
+        // A template image: macOS tints it for light and dark menu bars. The
+        // pixel "QR" of the app icon, drawn on Silkscreen's own grid at 5 px
+        // per font pixel, 36 px tall: tray-icon shows it 18 pt tall, so
+        // every pixel lands exactly on a Retina pixel.
         .icon(Image::from_bytes(include_bytes!("../icons/tray.png"))?)
         .icon_as_template(true)
         .tooltip("QR Scanner")
