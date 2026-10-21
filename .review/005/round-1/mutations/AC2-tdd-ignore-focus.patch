@@ -1,0 +1,13 @@
+diff --git a/src/components/useCardKeys.ts b/src/components/useCardKeys.ts
+index ce62fec..b7765d2 100644
+--- a/src/components/useCardKeys.ts
++++ b/src/components/useCardKeys.ts
+@@ -7,7 +7,7 @@ const CARD = "[data-card-keys]";
+ 
+ /** The card a key acts on: the one holding focus, else the first one shown. */
+ function cardFor(target: EventTarget | null): Element | null {
+-  return (target instanceof Element && target.closest(CARD)) || document.querySelector(CARD);
++  return document.querySelector(CARD);
+ }
+ 
+ /** A control Enter presses by itself. */

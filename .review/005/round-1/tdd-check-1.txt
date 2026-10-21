@@ -1,0 +1,4 @@
+RED AC1-tdd-join-while-disabled
+RED AC2-tdd-ignore-focus
+RED AC3-tdd-no-button-exemption
+RED AC4-tdd-no-repeat-check

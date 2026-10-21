@@ -1,0 +1,13 @@
+diff --git a/src/components/useCardKeys.ts b/src/components/useCardKeys.ts
+index ce62fec..81579b1 100644
+--- a/src/components/useCardKeys.ts
++++ b/src/components/useCardKeys.ts
+@@ -26,8 +26,6 @@ export function useCardKeys(keys: CardKeys) {
+   const onKey = useEffectEvent((e: KeyboardEvent) => {
+     const key = cardKey(e);
+     if (!key || cardFor(e.target) !== ref.current) return;
+-    // Enter on a focused button presses that button, and nothing else.
+-    if (key === "copy" && isControl(e.target)) return;
+     const run = keys[key];
+     if (!run) return;
+     e.preventDefault();

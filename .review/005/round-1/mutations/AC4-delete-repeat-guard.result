@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":77,"numFailedTests":3,"failed":["005 AC4: (a) WIFI, a repeated Enter copies, opens and joins nothing","005 AC4: (a) WIFI, a repeated ⌘J copies, opens and joins nothing","005 AC4: (a) LINK, a repeated ⌘O copies, opens and joins nothing"]}
