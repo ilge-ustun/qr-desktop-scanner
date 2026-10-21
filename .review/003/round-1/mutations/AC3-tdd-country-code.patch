@@ -1,0 +1,13 @@
+diff --git a/src/lib/urlSafety.ts b/src/lib/urlSafety.ts
+index 0aa2f21..ef5f844 100644
+--- a/src/lib/urlSafety.ts
++++ b/src/lib/urlSafety.ts
+@@ -55,7 +55,7 @@ const TWO_PART_SUFFIXES = new Set([
+ ]);
+ 
+ // Labels that make a name look like it ends there: paypal.com.example.net.
+-const DECOY_LABELS = new Set(["com", "net", "org", "io", "co", "gov", "edu"]);
++const DECOY_LABELS = new Set(["com", "net", "org", "io", "co", "gov", "edu", "us"]);
+ 
+ const IPV4 = /^\d{1,3}(\.\d{1,3}){3}$/;
+ 

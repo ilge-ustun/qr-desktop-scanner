@@ -1,0 +1,13 @@
+diff --git a/src/lib/urlSafety.ts b/src/lib/urlSafety.ts
+index 0aa2f21..fa1fb05 100644
+--- a/src/lib/urlSafety.ts
++++ b/src/lib/urlSafety.ts
+@@ -130,7 +130,7 @@ export function assess(text: string): Assessment {
+     });
+   }
+   const labels = host.split(".");
+-  const suffixLength = TWO_PART_SUFFIXES.has(labels.slice(-2).join(".")) ? 3 : 2;
++  const suffixLength = 2;
+   const registrable = labels.slice(-suffixLength).join(".");
+   const front = labels.slice(0, -suffixLength);
+   const decoyAt = front.findIndex((label, i) => i > 0 && DECOY_LABELS.has(label));
