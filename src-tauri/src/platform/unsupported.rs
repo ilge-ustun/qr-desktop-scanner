@@ -1,6 +1,6 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-use qr_core::{Capture, Capturer, ScreenPermission};
+use qr_core::{Capture, Capturer, DisplaysCapturer, ScreenPermission};
 
 const UNSUPPORTED: &str = "screen capture is implemented for macOS only";
 
@@ -22,6 +22,14 @@ pub struct Screencapture;
 
 impl Capturer for Screencapture {
     fn capture(&self, _: &Path) -> Result<Capture, String> {
+        Err(UNSUPPORTED.into())
+    }
+}
+
+pub struct ScreencaptureDisplays;
+
+impl DisplaysCapturer for ScreencaptureDisplays {
+    fn capture_displays(&self, _: &Path) -> Result<Vec<PathBuf>, String> {
         Err(UNSUPPORTED.into())
     }
 }
