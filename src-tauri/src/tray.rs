@@ -8,7 +8,8 @@ use tauri::AppHandle;
 use crate::{popover, scan};
 
 pub fn create(app: &AppHandle) -> tauri::Result<()> {
-    let scan_item = MenuItem::with_id(app, "scan", "Scan QR Code", true, Some("Alt+Shift+Q"))?;
+    let scan_item =
+        MenuItem::with_id(app, "scan", "Scan QR Code", true, Some("CmdOrCtrl+Shift+2"))?;
     let quit = MenuItem::with_id(app, "quit", "Quit QR Scanner", true, None::<&str>)?;
     let menu = Menu::with_items(
         app,

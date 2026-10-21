@@ -35,7 +35,7 @@ describe("App", () => {
 
   it("scans from the shortcut key shown in the header", () => {
     render(<App />);
-    fireEvent.click(screen.getByRole("button", { name: "⌥⇧Q" }));
+    fireEvent.click(screen.getByRole("button", { name: "⌘⇧2" }));
     expect(ipc.startScan).toHaveBeenCalledOnce();
   });
 });

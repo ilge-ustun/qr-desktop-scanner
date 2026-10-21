@@ -4,4 +4,4 @@ Download the `.dmg` below, open it and drag **QR Scanner** to Applications. It r
 
 **Screen access.** The first scan asks for Screen Recording permission: switch QR Scanner on under *Privacy & Security → Screen & System Audio Recording*, then quit it (right-click the menu-bar icon → Quit) and open it again. After installing a new version you may need to allow it again.
 
-Press **⌥⇧Q** anywhere, or click the QR icon in the menu bar, and drag a box around a code.
+Press **⌘⇧2** anywhere, or click the QR icon in the menu bar, and drag a box around a code.

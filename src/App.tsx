@@ -60,8 +60,8 @@ export function App() {
             Scan again
           </button>
         ) : (
-          <button type="button" className="hotkey" onClick={scan} title="Scan — or press ⌥⇧Q in any app">
-            ⌥⇧Q
+          <button type="button" className="hotkey" onClick={scan} title="Scan — or press ⌘⇧2 in any app">
+            ⌘⇧2
           </button>
         )}
       </header>

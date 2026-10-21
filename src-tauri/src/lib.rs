@@ -9,9 +9,10 @@ mod tray;
 
 use tauri_plugin_global_shortcut::{Code, Modifiers, Shortcut, ShortcutState};
 
-/// ⌥⇧Q starts a scan from anywhere.
+/// ⌘⇧2 starts a scan from anywhere: beside the system's screenshot keys
+/// (⌘⇧3/4/5), and unused by macOS. ⌥⇧Q, the first choice, closed windows.
 fn hotkey() -> Shortcut {
-    Shortcut::new(Some(Modifiers::ALT | Modifiers::SHIFT), Code::KeyQ)
+    Shortcut::new(Some(Modifiers::SUPER | Modifiers::SHIFT), Code::Digit2)
 }
 
 pub fn run() {

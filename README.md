@@ -2,7 +2,7 @@
 
 A macOS menu-bar app that reads a QR code from anywhere on your screen — a
 photo, a PDF, a paused video, a web page. Click the menu-bar icon (or press
-**⌥⇧Q**), drag a box around the code, and it shows what the code says, with
+**⌘⇧2**), drag a box around the code, and it shows what the code says, with
 **Copy** and **Open** — or, for a Wi-Fi code, the network with **Connect**
 and **Copy password**. Nothing is copied, opened or joined until you click.
 
@@ -72,7 +72,7 @@ allowed again, because the permission is tied to the signature.
 8. A Wi-Fi code shows the network name, the password hidden behind Show,
    and Connect joins it (System Settings → Wi-Fi shows it connected).
 9. The popover is only as tall as its content.
-10. ⌥⇧Q works while another app is in front.
+10. ⌘⇧2 works while another app is in front.
 
 ## How it works
 
