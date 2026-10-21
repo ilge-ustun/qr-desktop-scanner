@@ -1,8 +1,10 @@
 import { useEffect, useId, useState } from "react";
 
+import { SHORTCUTS } from "../lib/cardKeys";
 import { headlineSize } from "../lib/headline";
 import { DismissButton } from "./DismissButton";
-import { PrimaryButton } from "./Ink";
+import { Keyed, PrimaryButton } from "./Ink";
+import { useCardKeys } from "./useCardKeys";
 
 /** A value read from the code, under the app's name for it. */
 export type Field = { label: string; value: string };
@@ -15,7 +17,8 @@ type Props = {
   /** The label of the button that copies the headline ("Copy name"). */
   copyHeadline: string;
   fields: Field[];
-  /** The card's one other action (Open in Maps), when it has one. */
+  /** The card's one other action, an Open (Open in Maps), when it has one: ⌘O
+   * runs it. */
   action?: { label: string; run: () => Promise<void> };
   onCopy: (text: string) => Promise<void>;
   onDismiss: () => void;
@@ -45,9 +48,10 @@ export function FieldCard({ meta, headline, copyHeadline, fields, action, onCopy
     setFailure(null);
     task().catch((e: unknown) => setFailure(String(e)));
   };
+  const keyed = useCardKeys({ copy: copy("headline", headline), open: action && run(action.run) });
 
   return (
-    <article className="card tone-ok">
+    <article className="card tone-ok" {...keyed}>
       <header className="card-head">
         <div className="titles">
           <span className="meta">{meta}</span>
@@ -81,15 +85,24 @@ export function FieldCard({ meta, headline, copyHeadline, fields, action, onCopy
       )}
       {failure && <p className="failure">{failure}</p>}
       <div className="actions">
-        <button
-          type="button"
-          className="ghost"
-          aria-describedby={`${id}-headline`}
-          onClick={copy("headline", headline)}
-        >
-          {copied?.key === "headline" ? "Copied" : copyHeadline}
-        </button>
-        {action && <PrimaryButton onClick={run(action.run)}>{action.label}</PrimaryButton>}
+        <Keyed shortcut="copy">
+          <button
+            type="button"
+            className="ghost"
+            aria-describedby={`${id}-headline`}
+            aria-keyshortcuts={SHORTCUTS.copy.aria}
+            onClick={copy("headline", headline)}
+          >
+            {copied?.key === "headline" ? "Copied" : copyHeadline}
+          </button>
+        </Keyed>
+        {action && (
+          <Keyed shortcut="open">
+            <PrimaryButton onClick={run(action.run)} keyshortcuts={SHORTCUTS.open.aria}>
+              {action.label}
+            </PrimaryButton>
+          </Keyed>
+        )}
       </div>
     </article>
   );
