@@ -23,6 +23,11 @@ const card = (text: string) => {
 };
 
 describe("ResultCard", () => {
+  it("AC2 headlines a decoy link with its registrable domain", () => {
+    card("https://paypal.com.secure-login.example.net/");
+    expect(document.querySelector(".headline")?.textContent).toBe("example.net");
+  });
+
   it("shows a link's domain and opens it only when asked", () => {
     const { onOpen } = card("https://example.com/menu");
     expect(screen.getByText("example.com")).toBeTruthy();
