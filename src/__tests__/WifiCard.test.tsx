@@ -47,7 +47,7 @@ describe("WifiCard", () => {
 
   it("has no password row or copy button for an open network", () => {
     card({ ssid: "Guest", password: "", security: "nopass", hidden: false });
-    expect(screen.getByText("Open")).toBeTruthy();
+    expect(screen.getByText("Wi-Fi · open network")).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Copy password" })).toBeNull();
     expect(screen.getByRole("button", { name: "Connect" })).toBeTruthy();
   });

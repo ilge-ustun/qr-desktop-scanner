@@ -94,6 +94,16 @@ src/           the React popover. lib/ holds the pure logic (payload kinds,
                URL safety, view state); __tests__/ its tests.
 ```
 
+## Look
+
+Neon · Pixel: black with neon viewfinder corners, a moving scan line and
+gradient buttons (motion stops under *Reduce motion*). Fonts are bundled, all
+under the SIL Open Font License: WDXL Lubrifont JP N (names, buttons),
+Silkscreen (small labels — it has no lower case, so never for URLs or
+passwords) and IBM Plex Mono (URLs, passwords, raw text). The window is
+transparent so the popover can draw its own rounded edge, which needs
+Tauri's `macos-private-api` (fine outside the Mac App Store).
+
 ## Development
 
 ```sh

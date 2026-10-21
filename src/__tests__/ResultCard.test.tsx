@@ -38,6 +38,14 @@ describe("ResultCard", () => {
     await waitFor(() => expect(screen.getByRole("button", { name: "Copied" })).toBeTruthy());
   });
 
+  it("asks for a second look before opening a link with warnings", () => {
+    const { onOpen } = card("http://bit.ly/3xQ9kLm");
+    expect(screen.getByText("Link · check before opening")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Open" })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Open anyway" }));
+    expect(onOpen).toHaveBeenCalledWith("http://bit.ly/3xQ9kLm");
+  });
+
   it("has no Open button for a javascript: link, and warns", () => {
     card("javascript:alert(1)");
     expect(screen.queryByRole("button", { name: "Open" })).toBeNull();

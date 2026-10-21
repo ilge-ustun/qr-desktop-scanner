@@ -21,16 +21,21 @@
         "alwaysOnTop": true,
         "skipTaskbar": true,
         "visible": false,
-        "visibleOnAllWorkspaces": true
+        "visibleOnAllWorkspaces": true,
+        "transparent": true,
+        "shadow": false
       }
     ],
     "security": {
       "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src ipc: http://ipc.localhost"
-    }
+    },
+    "macOSPrivateApi": true
   },
   "bundle": {
     "active": true,
-    "targets": ["app"],
+    "targets": [
+      "app"
+    ],
     "category": "Utility",
     "shortDescription": "Scan a QR code anywhere on your screen",
     "icon": [

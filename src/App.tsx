@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useRef } from "react";
 
+import { Corners, PrimaryButton } from "./components/Neon";
 import { PermissionGate } from "./components/PermissionGate";
 import { ResultCard } from "./components/ResultCard";
 import * as ipc from "./lib/ipc";
@@ -44,50 +45,69 @@ export function App() {
   }, []);
 
   const scan = () => void ipc.startScan();
+  const ready = view.name === "idle" || view.name === "scanning";
+  const afterScan = view.name === "found" || view.name === "notFound" || view.name === "error";
 
   return (
     <main className="popover" ref={popover}>
       <header className="top">
-        <h1>QR Scanner</h1>
-        <kbd title="Scan from anywhere">⌥⇧Q</kbd>
+        <span className="brand">
+          <span className="dot" aria-hidden="true" />
+          QR Scanner
+        </span>
+        {afterScan ? (
+          <button type="button" className="ghost small" onClick={scan}>
+            Scan again
+          </button>
+        ) : (
+          <kbd title="Scan from anywhere">⌥⇧Q</kbd>
+        )}
       </header>
 
-      {view.name !== "permission" && (
-        <button type="button" className="scan" onClick={scan} disabled={view.name === "scanning"}>
-          {view.name === "scanning" ? "Select the code…" : "Scan QR code on screen"}
-        </button>
-      )}
-
       <section className="body">
-        {view.name === "idle" && (
-          <p className="hint">
-            Drag a box around a QR code anywhere on your screen — a photo, a PDF, a paused video or a web page.
-            Press Esc to cancel.
-          </p>
+        {ready && (
+          <>
+            <div className="viewfinder tone-ok">
+              <Corners />
+              <span className="scanline" aria-hidden="true" />
+              <span className="prompt">
+                {view.name === "scanning" ? "Select the code…" : "Drag a box around\nany code on screen"}
+              </span>
+            </div>
+            <PrimaryButton big onClick={scan} disabled={view.name === "scanning"}>
+              Scan
+            </PrimaryButton>
+            <p className="hint">Photo, PDF, paused video, web page. Esc cancels.</p>
+          </>
         )}
-        {view.name === "scanning" && <p className="hint">Drag a box around the QR code. Esc cancels.</p>}
         {view.name === "notFound" && (
-          <p className="notice">No QR code found there. Try a box around the whole code, including its white border.</p>
+          <div className="card tone-warn">
+            <Corners />
+            <span className="meta">Nothing found</span>
+            <p className="notice">No QR code in that area. Try a box around the whole code, including its white border.</p>
+          </div>
         )}
-        {view.name === "error" && <p className="warning danger">Scan failed: {view.message}</p>}
+        {view.name === "error" && (
+          <div className="card tone-danger">
+            <Corners />
+            <span className="meta">Scan failed</span>
+            <p className="failure">{view.message}</p>
+          </div>
+        )}
         {view.name === "permission" && (
           <PermissionGate onOpenSettings={() => void ipc.openScreenSettings()} onRetry={scan} />
         )}
-        {view.name === "found" && (
-          <>
-            {view.codes.length > 1 && <p className="hint">{view.codes.length} codes found</p>}
-            {view.codes.map((code) => (
-              <ResultCard
-                key={code.text}
-                code={code}
-                onCopy={ipc.copyText}
-                onOpen={ipc.openLink}
-                onJoin={ipc.joinWifi}
-                onDismiss={() => dispatch({ type: "dismiss", text: code.text })}
-              />
-            ))}
-          </>
-        )}
+        {view.name === "found" &&
+          view.codes.map((code) => (
+            <ResultCard
+              key={code.text}
+              code={code}
+              onCopy={ipc.copyText}
+              onOpen={ipc.openLink}
+              onJoin={ipc.joinWifi}
+              onDismiss={() => dispatch({ type: "dismiss", text: code.text })}
+            />
+          ))}
       </section>
     </main>
   );

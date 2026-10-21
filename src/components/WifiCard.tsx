@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import type { WifiNetwork } from "../lib/payload";
 import { DismissButton } from "./DismissButton";
+import { Corners, PrimaryButton } from "./Neon";
 
 type Props = {
   network: WifiNetwork;
@@ -13,8 +14,8 @@ type Props = {
 type Join = { state: "idle" } | { state: "joining" } | { state: "joined" } | { state: "failed"; message: string };
 
 const SECURITY: Record<string, string> = {
-  "": "Open",
-  NOPASS: "Open",
+  "": "open network",
+  NOPASS: "open network",
   WEP: "WEP",
   WPA: "WPA/WPA2",
   WPA2: "WPA2",
@@ -33,6 +34,7 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
   }, [copied]);
 
   const security = SECURITY[network.security.toUpperCase()] ?? network.security;
+  const meta = ["Wi-Fi", security, network.hidden ? "hidden" : ""].filter(Boolean).join(" · ");
   const connect = () => {
     setJoin({ state: "joining" });
     onJoin(network.ssid, network.password).then(
@@ -42,49 +44,38 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
   };
 
   return (
-    <article className="card">
-      <header>
-        <span className="badge badge-wifi">Wi-Fi</span>
-        <span className="headline">{network.ssid}</span>
+    <article className="card tone-ok">
+      <Corners />
+      <header className="card-head">
+        <div className="titles">
+          <span className="meta">{meta}</span>
+          <span className="headline">{network.ssid}</span>
+        </div>
         <DismissButton onClick={onDismiss} />
       </header>
-      <dl className="fields">
-        <dt>Security</dt>
-        <dd>
-          {security}
-          {network.hidden && " · hidden network"}
-        </dd>
-        {network.password && (
-          <>
-            <dt>Password</dt>
-            <dd className="secret">
-              <span className="mono">{shown ? network.password : "•".repeat(Math.min(network.password.length, 12))}</span>
-              <button type="button" className="link" onClick={() => setShown(!shown)}>
-                {shown ? "Hide" : "Show"}
-              </button>
-            </dd>
-          </>
-        )}
-      </dl>
-      {join.state === "joined" && <p className="notice ok">Connected to {network.ssid}.</p>}
-      {join.state === "failed" && <p className="warning danger">Could not connect: {join.message}</p>}
+      {network.password && (
+        <div className="secret">
+          <span className="mono">{shown ? network.password : "•".repeat(Math.min(network.password.length, 12))}</span>
+          <button type="button" className="show" onClick={() => setShown(!shown)}>
+            {shown ? "Hide" : "Show"}
+          </button>
+        </div>
+      )}
+      {join.state === "joined" && <p className="success">Connected to {network.ssid}.</p>}
+      {join.state === "failed" && <p className="failure">Could not connect: {join.message}</p>}
       <div className="actions">
         {network.password && (
           <button
             type="button"
+            className="ghost"
             onClick={() => onCopy(network.password).then(() => setCopied(true), () => undefined)}
           >
             {copied ? "Copied" : "Copy password"}
           </button>
         )}
-        <button
-          type="button"
-          className="primary"
-          onClick={connect}
-          disabled={join.state === "joining" || join.state === "joined"}
-        >
+        <PrimaryButton onClick={connect} disabled={join.state === "joining" || join.state === "joined"}>
           {join.state === "joining" ? "Connecting…" : join.state === "joined" ? "Connected" : "Connect"}
-        </button>
+        </PrimaryButton>
       </div>
     </article>
   );

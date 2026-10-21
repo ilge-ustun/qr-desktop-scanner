@@ -4,6 +4,7 @@ import type { DecodedCode } from "../lib/ipc";
 import { classify, LABELS, type Payload } from "../lib/payload";
 import { assess } from "../lib/urlSafety";
 import { DismissButton } from "./DismissButton";
+import { Corners, PrimaryButton, WarningIcon, type Tone } from "./Neon";
 import { WifiCard } from "./WifiCard";
 
 type Props = {
@@ -25,7 +26,15 @@ export function ResultCard({ code, onCopy, onOpen, onJoin, onDismiss }: Props) {
 function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload } & Omit<Props, "code" | "onJoin">) {
   const linkish = payload.kind === "url" || payload.kind === "email";
   const safety = linkish ? assess(payload.text) : null;
-  const headline = payload.kind === "email" ? payload.address : safety?.domain;
+  const warnings = safety?.warnings ?? [];
+  const tone: Tone = warnings.some((w) => w.severity === "danger")
+    ? "danger"
+    : warnings.length
+      ? "warn"
+      : "ok";
+  const headline =
+    payload.kind === "email" ? payload.address : payload.kind === "phone" ? payload.number : safety?.domain;
+  const meta = tone === "ok" ? LABELS[payload.kind] : `${LABELS[payload.kind]} · check before opening`;
 
   const [copied, setCopied] = useState(false);
   const [failure, setFailure] = useState<string | null>(null);
@@ -39,30 +48,42 @@ function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload 
     setFailure(null);
     action().then(after, (e: unknown) => setFailure(String(e)));
   };
+  const open = run(() => onOpen(payload.text));
 
   return (
-    <article className="card">
-      <header>
-        <span className={`badge badge-${payload.kind}`}>{LABELS[payload.kind]}</span>
-        {headline && <span className="headline">{headline}</span>}
+    <article className={`card tone-${tone}`}>
+      <Corners />
+      <header className="card-head">
+        <div className="titles">
+          <span className="meta">{meta}</span>
+          {headline && <span className="headline">{headline}</span>}
+        </div>
         <DismissButton onClick={onDismiss} />
       </header>
       <p className="content">{payload.text}</p>
-      {safety?.warnings.map((w) => (
-        <p key={w.code} className={`warning ${w.severity}`} role="alert">
-          {w.message}
-        </p>
-      ))}
-      {failure && <p className="warning danger">{failure}</p>}
+      {warnings.length > 0 && (
+        <ul className="warnings">
+          {warnings.map((w) => (
+            <li key={w.code} role="alert">
+              <WarningIcon />
+              {w.message}
+            </li>
+          ))}
+        </ul>
+      )}
+      {failure && <p className="failure">{failure}</p>}
       <div className="actions">
-        <button type="button" onClick={run(() => onCopy(payload.text), () => setCopied(true))}>
+        <button type="button" className="ghost" onClick={run(() => onCopy(payload.text), () => setCopied(true))}>
           {copied ? "Copied" : "Copy"}
         </button>
-        {safety?.openable && (
-          <button type="button" className="primary" onClick={run(() => onOpen(payload.text))}>
-            Open
-          </button>
-        )}
+        {safety?.openable &&
+          (tone === "ok" ? (
+            <PrimaryButton onClick={open}>Open</PrimaryButton>
+          ) : (
+            <button type="button" className="risky" onClick={open}>
+              Open anyway
+            </button>
+          ))}
       </div>
     </article>
   );
