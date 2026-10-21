@@ -1,6 +1,6 @@
 [package]
 name = "qr-core"
-version = "0.1.0"
+version = "0.1.1"
 description = "The app's logic: decoding, the scan flow and the URL guard. No Tauri, no macOS APIs, so it builds and tests on any OS."
 edition.workspace = true
 license.workspace = true
