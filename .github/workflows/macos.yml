@@ -1,13 +1,12 @@
 name: macOS build
 
-# Manual only while the repository is private: macOS runner minutes are billed
-# at 10x there. Once it is public they are free; then uncomment push and
-# pull_request so every change gets a real macOS build.
+# Every change gets a real macOS build: the only place the macOS-only code
+# compiles and the app is bundled. (Free: the repository is public.)
 on:
+  push:
+    branches: [main, develop]
+  pull_request:
   workflow_dispatch:
-  # push:
-  #   branches: [main, develop]
-  # pull_request:
 
 jobs:
   build:

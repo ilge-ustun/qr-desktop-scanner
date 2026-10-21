@@ -125,6 +125,17 @@ cargo clippy --workspace --all-targets -- -D warnings   # the shell needs macOS
                                                         # (or webkit2gtk on Linux)
 ```
 
-`.github/workflows/macos.yml` runs all of this on a macOS runner, builds the
-`.app` and uploads it zipped. It is manual (*Actions → macOS build → Run
-workflow*) while the repository is private.
+`.github/workflows/macos.yml` runs all of this on a macOS runner for every
+push and pull request, and attaches the DMG to the run.
+
+## Releasing
+
+1. Set the new version in `src-tauri/tauri.conf.json` (and, to keep them in
+   step, `package.json` and the two `Cargo.toml` files). Commit and push.
+2. `git tag v0.1.1 && git push origin v0.1.1`
+
+`.github/workflows/release.yml` checks that the tag matches the version,
+runs the tests, builds one DMG for Apple Silicon and Intel, and publishes it
+as a GitHub Release with the notes in `.github/release-notes.md`. The
+download link to share is the Releases page:
+https://github.com/ilge-ustun/qr-desktop-scanner/releases/latest
