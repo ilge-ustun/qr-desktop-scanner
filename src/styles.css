@@ -358,6 +358,49 @@ button.hotkey.recording {
   letter-spacing: 0.06em;
 }
 
+/* A contact: one row per value read from the code, each with its own Copy.
+   The row's name is the app's word (Silkscreen); the value is mono. */
+.fields {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 2px dotted var(--ink);
+  padding: 8px 0;
+}
+
+.field:last-child {
+  padding-bottom: 0;
+}
+
+.field-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.field-name {
+  font: 700 10px var(--pixel);
+}
+
+/* An organisation can hold a line break (\n in a vCard). */
+.field .mono {
+  white-space: pre-wrap;
+}
+
+.field > button {
+  flex: none;
+}
+
 .warnings {
   margin: 0;
   padding: 0;
