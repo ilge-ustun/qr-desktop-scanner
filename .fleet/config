@@ -1,0 +1,28 @@
+# The fleet's side of this repo: read by load_repo (bin/lib.sh) in ~/work/fleet.
+# Env-style, sourced. A variable in the caller's environment wins over a line
+# here. Every key is required except REPO_RULES; SEED_FILES may be empty.
+#
+# The fleet's units run with a PATH that has no Rust on it, and this file is
+# read in a child shell whose exports do not reach the commands. So each
+# command sets its own: cargo from ~/.cargo/bin, and one shared target
+# directory, so that a fresh worktree reuses the compiled dependencies
+# instead of rebuilding them all (minutes and gigabytes per worktree).
+BASE_BRANCH=develop
+INSTALL_CMD='npm ci'
+VITEST_CMD='npx vitest run'
+# Rust is a gate here, not an instrument: the fleet reads only vitest results
+# as evidence until it has a cargo runner. The shell is built for macOS only
+# (scripts/check-macos-shell.sh), because building it for Linux needs Tauri's
+# webkit2gtk packages, which this box does not have yet. With them installed,
+# `cargo clippy --workspace --all-targets -- -D warnings` can replace the
+# `-p qr-core` clippy.
+BUILD_CMD='export PATH="$HOME/.cargo/bin:$PATH" CARGO_TARGET_DIR="$HOME/.cache/fleet-cargo/qr-desktop-scanner"; npm run build && cargo clippy -p qr-core --all-targets -- -D warnings && cargo test -p qr-core && scripts/check-macos-shell.sh'
+LINT_CMD='export PATH="$HOME/.cargo/bin:$PATH"; npm run lint && cargo fmt --all --check'
+# No untracked files are needed: the app has no secrets or env files.
+SEED_FILES=''
+# vitest collects src/**/*.test.{ts,tsx}; a reviewer's probe lands here.
+PROBE_DIR='src/__tests__'
+# Rules the agents get on top of the fleet's own, rendered into their prompts.
+REPO_RULES='.fleet/rules.md'
+# No E2E_CMD: there is no browser suite, and the app itself runs only on a Mac.
+# No test deploy either: a person tries the .app from macOS CI on a Mac.
