@@ -54,4 +54,12 @@ describe("assess", () => {
   it("refuses what is not a URL", () => {
     expect(assess("not a url")).toEqual({ domain: null, openable: false, warnings: [] });
   });
+
+  it("flags a user name dressed up as the destination", () => {
+    const result = assess("https://paypal.com@evil.xyz/login");
+    expect(result.domain).toBe("evil.xyz");
+    expect(result.warnings.map((w) => w.code)).toContain("userinfo");
+    expect(result.warnings.find((w) => w.code === "userinfo")?.severity).toBe("danger");
+    expect(codes("https://user:pass@example.com/")).toContain("userinfo");
+  });
 });

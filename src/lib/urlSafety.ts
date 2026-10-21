@@ -66,6 +66,15 @@ export function assess(text: string): Assessment {
   // The URL parser turns Unicode hostnames into punycode, so look-alike
   // characters always show up as an xn-- label here.
   const host = url.hostname.toLowerCase();
+  // https://paypal.com@evil.xyz goes to evil.xyz: everything before the @ is
+  // a user name, there only to look like the destination.
+  if (url.username || url.password) {
+    warnings.push({
+      code: "userinfo",
+      severity: "danger",
+      message: `The part before "@" is decoration: this link really goes to ${host}.`,
+    });
+  }
   if (scheme === "http") {
     warnings.push({
       code: "not-encrypted",

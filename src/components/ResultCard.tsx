@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import type { DecodedCode } from "../lib/ipc";
 import { classify, LABELS, type Payload } from "../lib/payload";
+import { headlineSize } from "../lib/headline";
 import { assess } from "../lib/urlSafety";
 import { DismissButton } from "./DismissButton";
 import { Corners, PrimaryButton, WarningIcon, type Tone } from "./Neon";
@@ -56,7 +57,7 @@ function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload 
       <header className="card-head">
         <div className="titles">
           <span className="meta">{meta}</span>
-          {headline && <span className="headline">{headline}</span>}
+          {headline && <span className={`headline size-${headlineSize(headline)}`}>{headline}</span>}
         </div>
         <DismissButton onClick={onDismiss} />
       </header>

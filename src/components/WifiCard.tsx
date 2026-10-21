@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { headlineSize } from "../lib/headline";
 import type { WifiNetwork } from "../lib/payload";
 import { DismissButton } from "./DismissButton";
 import { Corners, PrimaryButton } from "./Neon";
@@ -49,7 +50,7 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
       <header className="card-head">
         <div className="titles">
           <span className="meta">{meta}</span>
-          <span className="headline">{network.ssid}</span>
+          <span className={`headline size-${headlineSize(network.ssid)}`}>{network.ssid}</span>
         </div>
         <DismissButton onClick={onDismiss} />
       </header>
