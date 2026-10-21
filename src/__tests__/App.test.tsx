@@ -111,6 +111,24 @@ describe("App", () => {
     ]);
   });
 
+  it("AC4: dismissing the middle one of three cards leaves the other two, in order", async () => {
+    await rendered();
+    act(() => start("screen"));
+    act(() =>
+      emit({
+        kind: "found",
+        codes: [
+          { text: "first code", format: "qrcode" },
+          { text: "second code", format: "qrcode" },
+          { text: "third code", format: "qrcode" },
+        ],
+      }),
+    );
+    fireEvent.click(screen.getAllByRole("button", { name: "Dismiss" })[1]);
+    const contents = [...document.querySelectorAll("article.card .content")].map((c) => c.textContent);
+    expect(contents).toEqual(["first code", "third code"]);
+  });
+
   it("shows the saved shortcut, and clicking it records a new one instead of scanning", async () => {
     render(<App />);
     const chip = await screen.findByRole("button", { name: /Shortcut ⇧⌘2/ });
