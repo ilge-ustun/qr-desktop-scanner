@@ -3,8 +3,10 @@
   Silkscreen never for decoded text; no history).
 - Rust is in `~/.cargo/bin`, not on your PATH. Start every shell that runs
   cargo with `export PATH="$HOME/.cargo/bin:$PATH"
-  CARGO_TARGET_DIR="$HOME/.cache/fleet-cargo/qr-desktop-scanner"` — the
-  shared target directory saves rebuilding every dependency in your tree.
+  CARGO_TARGET_DIR="$HOME/.cache/fleet-cargo/qr-desktop-scanner/${PWD##*/}"`,
+  run from the top of your worktree: a target directory of your worktree's
+  own, kept between your rounds. Never point two worktrees at one target
+  directory: cargo then takes another tree's build as current for yours.
 - This box is Linux. The app runs only on macOS, so you cannot start it:
   never run `npm run tauri dev` or `npm run tauri build`. Build only `qr-core`
   for the host (`cargo test -p qr-core`, `cargo clippy -p qr-core ...`):

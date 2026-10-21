@@ -4,9 +4,13 @@
 #
 # The fleet's units run with a PATH that has no Rust on it, and this file is
 # read in a child shell whose exports do not reach the commands. So each
-# command sets its own: cargo from ~/.cargo/bin, and one shared target
-# directory, so that a fresh worktree reuses the compiled dependencies
-# instead of rebuilding them all (minutes and gigabytes per worktree).
+# command sets its own: cargo from ~/.cargo/bin, and a target directory per
+# worktree, named after it (wt-004, merge-…), so a story's later rounds reuse
+# what its first round compiled. Not one directory for all worktrees: cargo
+# decides freshness by file times, and a build in one worktree was taken as
+# current by another with different sources (seen by the builder of story 004,
+# 22 Oct 2026), so the Rust gate could pass on code it never compiled. The
+# directories outlive their worktrees: clear ~/.cache/fleet-cargo now and then.
 BASE_BRANCH=develop
 INSTALL_CMD='npm ci'
 VITEST_CMD='npx vitest run'
@@ -16,7 +20,7 @@ VITEST_CMD='npx vitest run'
 # webkit2gtk packages, which this box does not have yet. With them installed,
 # `cargo clippy --workspace --all-targets -- -D warnings` can replace the
 # `-p qr-core` clippy.
-BUILD_CMD='export PATH="$HOME/.cargo/bin:$PATH" CARGO_TARGET_DIR="$HOME/.cache/fleet-cargo/qr-desktop-scanner"; npm run build && cargo clippy -p qr-core --all-targets -- -D warnings && cargo test -p qr-core && scripts/check-macos-shell.sh'
+BUILD_CMD='export PATH="$HOME/.cargo/bin:$PATH" CARGO_TARGET_DIR="$HOME/.cache/fleet-cargo/qr-desktop-scanner/${PWD##*/}"; npm run build && cargo clippy -p qr-core --all-targets -- -D warnings && cargo test -p qr-core && scripts/check-macos-shell.sh'
 LINT_CMD='export PATH="$HOME/.cargo/bin:$PATH"; npm run lint && cargo fmt --all --check'
 # No untracked files are needed: the app has no secrets or env files.
 SEED_FILES=''
