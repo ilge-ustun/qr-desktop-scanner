@@ -50,11 +50,65 @@ function notice() {
   return notices[0].textContent ?? "";
 }
 
+const scanButton = () => screen.getByRole<HTMLButtonElement>("button", { name: "Scan" });
+const findAllButton = () => screen.getByRole<HTMLButtonElement>("button", { name: "Find all on screen" });
+
 describe("App", () => {
-  it("scans from the Scan button", () => {
+  it("AC2: the Scan button starts only the drag scan", () => {
     render(<App />);
-    fireEvent.click(screen.getByRole("button", { name: "Scan" }));
+    fireEvent.click(scanButton());
     expect(ipc.startScan).toHaveBeenCalledOnce();
+    expect(ipc.findAllOnScreen).not.toHaveBeenCalled();
+  });
+
+  it("AC1: Find all on screen is the secondary button right under Scan, and starts a whole-screen scan", () => {
+    render(<App />);
+    const findAll = findAllButton();
+    expect(scanButton().nextElementSibling).toBe(findAll);
+    expect(findAll.classList.contains("ghost")).toBe(true);
+    expect(findAll.classList.contains("primary")).toBe(false);
+    fireEvent.click(findAll);
+    expect(ipc.findAllOnScreen).toHaveBeenCalledOnce();
+    expect(ipc.startScan).not.toHaveBeenCalled();
+  });
+
+  it("AC2: both buttons are disabled while a scan of either kind runs, and enabled again after", async () => {
+    await rendered();
+    for (const scope of ["area", "screen"]) {
+      expect(scanButton().disabled).toBe(false);
+      expect(findAllButton().disabled).toBe(false);
+      act(() => start(scope));
+      expect(scanButton().disabled).toBe(true);
+      expect(findAllButton().disabled).toBe(true);
+      fireEvent.click(findAllButton());
+      fireEvent.click(scanButton());
+      expect(ipc.findAllOnScreen).not.toHaveBeenCalled();
+      expect(ipc.startScan).not.toHaveBeenCalled();
+      // Esc on the selection: back to the start, ready for another scan.
+      act(() => emit({ kind: "cancelled" }));
+    }
+  });
+
+  it("AC4: a found outcome with three codes shows three cards, in its order", async () => {
+    await rendered();
+    act(() => start("screen"));
+    act(() =>
+      emit({
+        kind: "found",
+        codes: [
+          { text: "first code", format: "qrcode" },
+          { text: "second code", format: "qrcode" },
+          { text: "third code", format: "qrcode" },
+        ],
+      }),
+    );
+    const cards = [...document.querySelectorAll("article.card")];
+    expect(cards).toHaveLength(3);
+    expect(cards.map((card) => card.querySelector(".content")?.textContent)).toEqual([
+      "first code",
+      "second code",
+      "third code",
+    ]);
   });
 
   it("shows the saved shortcut, and clicking it records a new one instead of scanning", async () => {

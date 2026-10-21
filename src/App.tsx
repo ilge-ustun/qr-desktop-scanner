@@ -61,6 +61,7 @@ export function App() {
   }, []);
 
   const scan = () => void ipc.startScan();
+  const findAll = () => void ipc.findAllOnScreen();
   const reset = () => dispatch({ type: "reset" });
   const ready = view.name === "idle" || view.name === "scanning";
   const afterScan = view.name === "found" || view.name === "notFound" || view.name === "error";
@@ -98,6 +99,9 @@ export function App() {
             <PrimaryButton big onClick={scan} disabled={view.name === "scanning"}>
               Scan
             </PrimaryButton>
+            <button type="button" className="ghost" onClick={findAll} disabled={view.name === "scanning"}>
+              Find all on screen
+            </button>
             <p className="hint">Photo, PDF, paused video, web page. Esc cancels.</p>
           </>
         )}
