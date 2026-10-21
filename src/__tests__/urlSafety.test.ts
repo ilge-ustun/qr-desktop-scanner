@@ -67,4 +67,44 @@ describe("assess", () => {
     expect(result.warnings.find((w) => w.code === "userinfo")?.severity).toBe("danger");
     expect(codes("https://user:pass@example.com/")).toContain("userinfo");
   });
+
+  describe("decoy domains", () => {
+    const decoy = "https://paypal.com.secure-login.example.net/";
+
+    it("AC1 warns once, as danger, naming both domains", () => {
+      const a = assess(decoy);
+      expect(a.warnings.map((w) => w.code)).toEqual(["decoy-domain"]);
+      expect(a.warnings[0].severity).toBe("danger");
+      expect(a.warnings[0].message).toContain("paypal.com");
+      expect(a.warnings[0].message).toContain("example.net");
+      expect(a.warnings[0].message).not.toContain("secure-login");
+      expect(a.openable).toBe(true);
+      for (const g of ["com", "net", "org", "io", "co", "gov", "edu"]) {
+        expect(codes(`https://paypal.${g}.secure-login.example.net/`)).toEqual(["decoy-domain"]);
+      }
+      expect(codes("https://paypal.com.google.com.example.net/")).toEqual(["decoy-domain"]);
+    });
+
+    it("AC2 shows the registrable domain", () => {
+      expect(assess(decoy).domain).toBe("example.net");
+      for (const s of ["co.uk", "com.au", "co.jp", "com.br"]) {
+        const a = assess(`https://paypal.com.secure-login.example.${s}/`);
+        expect(a.domain).toBe(`example.${s}`);
+        expect(a.warnings.map((w) => w.code)).toContain("decoy-domain");
+      }
+    });
+
+    it("AC3 leaves ordinary hosts alone", () => {
+      for (const h of [
+        "www.example.com",
+        "mail.google.com",
+        "a.b.example.co.uk",
+        "api.us.example.com",
+        "co.example.com",
+        "staging.app.example.com",
+      ]) {
+        expect(assess(`https://${h}/`)).toEqual({ domain: h, openable: true, warnings: [] });
+      }
+    });
+  });
 });
