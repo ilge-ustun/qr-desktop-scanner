@@ -9,6 +9,10 @@ describe("classify", () => {
 
   it("keeps dangerous and app schemes as links so their warning is shown", () => {
     expect(classify("javascript:alert(1)").kind).toBe("url");
+    // A space must not let a script link pass as plain text (found on the Mac).
+    expect(classify("javascript:alert('QR test')").kind).toBe("url");
+    expect(classify("JavaScript: alert(document.cookie)").kind).toBe("url");
+    expect(classify("data:text/html,<b>hi there</b>").kind).toBe("url");
     expect(classify("otpauth://totp/Acme?secret=ABC").kind).toBe("url");
   });
 

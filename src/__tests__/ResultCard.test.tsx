@@ -46,8 +46,8 @@ describe("ResultCard", () => {
     expect(onOpen).toHaveBeenCalledWith("http://bit.ly/3xQ9kLm");
   });
 
-  it("has no Open button for a javascript: link, and warns", () => {
-    card("javascript:alert(1)");
+  it("has no Open button for a javascript: link, and warns, even with a space in it", () => {
+    card("javascript:alert('QR test')");
     expect(screen.queryByRole("button", { name: "Open" })).toBeNull();
     expect(screen.getByRole("alert").textContent).toMatch(/Don't open it/);
   });

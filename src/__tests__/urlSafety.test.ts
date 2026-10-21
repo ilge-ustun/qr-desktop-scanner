@@ -14,7 +14,12 @@ describe("assess", () => {
   });
 
   it("never offers Open for script, data or file links", () => {
-    for (const text of ["javascript:alert(1)", "data:text/html,<b>hi</b>", "file:///etc/passwd"]) {
+    for (const text of [
+      "javascript:alert(1)",
+      "javascript:alert('QR test')",
+      "data:text/html,<b>hi</b>",
+      "file:///etc/passwd",
+    ]) {
       const result = assess(text);
       expect(result.openable, text).toBe(false);
       expect(codes(text), text).toEqual(["dangerous-scheme"]);

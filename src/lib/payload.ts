@@ -26,6 +26,10 @@ export const LABELS: Record<Payload["kind"], string> = {
 
 const SCHEME = /^[a-z][a-z0-9+.-]*:/i;
 
+/** Schemes that run code or read local content: always a link, so the card
+ * shows its warning, whatever else the text contains. */
+const DANGEROUS_SCHEME = /^\s*(javascript|data|vbscript|file):/i;
+
 export function classify(raw: string): Payload {
   const text = raw.trim();
   if (/^mailto:/i.test(text)) {
@@ -37,8 +41,12 @@ export function classify(raw: string): Payload {
   if (/^WIFI:/i.test(text)) {
     return { kind: "wifi", text, network: parseWifi(text) };
   }
-  // Anything with a scheme and no spaces is a link, whatever the scheme: a
-  // `javascript:` or app link must still be shown as one, with its warning.
+  if (DANGEROUS_SCHEME.test(text)) {
+    return { kind: "url", text };
+  }
+  // Anything else with a scheme and no spaces is a link, whatever the scheme:
+  // an app link must still be shown as one, with its warning. ("Note: call
+  // me" has a scheme-like start and spaces, and stays text.)
   if (SCHEME.test(text) && !/\s/.test(text) && URL.canParse(text)) {
     return { kind: "url", text };
   }
