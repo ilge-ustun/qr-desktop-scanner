@@ -1,0 +1,13 @@
+[workspace]
+members = ["core", "src-tauri"]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true
