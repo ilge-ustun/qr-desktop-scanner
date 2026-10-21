@@ -30,10 +30,8 @@ jobs:
       - run: cargo clippy --workspace --all-targets -- -D warnings
       - run: cargo test --workspace
 
-      - run: npm run tauri build -- --bundles app
-      # Zip with ditto: an uploaded .app directory loses its executable bits.
-      - run: ditto -c -k --keepParent "target/release/bundle/macos/QR Scanner.app" QR-Scanner.zip
+      - run: npm run tauri build -- --bundles app,dmg
       - uses: actions/upload-artifact@v4
         with:
           name: QR-Scanner-macos-arm64
-          path: QR-Scanner.zip
+          path: target/release/bundle/dmg/*.dmg

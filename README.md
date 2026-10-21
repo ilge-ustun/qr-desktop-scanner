@@ -46,8 +46,18 @@ Recording, quit it (right-click the menu-bar icon → Quit) and open it again.
 The build is ad-hoc signed, so after every rebuild macOS may ask for the
 permission again. macOS 15 also re-confirms screen access from time to time.
 
-An `.app` downloaded from the CI artifact is quarantined by Gatekeeper; clear
-it with `xattr -dr com.apple.quarantine "QR Scanner.app"`.
+**A DMG to share:** `npm run tauri build` makes both the app and
+`target/release/bundle/dmg/QR Scanner_0.1.0_aarch64.dmg`. The first time,
+macOS may ask to let your terminal control Finder (it lays out the DMG
+window); allow it.
+
+The build is not signed with an Apple Developer ID, so on any other Mac
+Gatekeeper refuses it at first ("Apple could not verify…"). The person
+opens it once, then goes to *System Settings → Privacy & Security* and
+clicks **Open Anyway** (or runs
+`xattr -dr com.apple.quarantine "/Applications/QR Scanner.app"`). After
+that it opens normally. Each new build may also need Screen Recording
+allowed again, because the permission is tied to the signature.
 
 ### What to check
 

@@ -34,7 +34,8 @@
   "bundle": {
     "active": true,
     "targets": [
-      "app"
+      "app",
+      "dmg"
     ],
     "category": "Utility",
     "shortDescription": "Scan a QR code anywhere on your screen",
