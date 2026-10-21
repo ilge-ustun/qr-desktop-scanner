@@ -21,6 +21,20 @@ pub fn canvas(width: u32, height: u32, grey: u8) -> GrayImage {
     GrayImage::from_pixel(width, height, Luma([grey]))
 }
 
+/// A code drawn the way some PDF generators draw it: every module its own
+/// square, so a thin light seam runs between neighbouring dark modules.
+pub fn qr_with_seams(text: &str, module: u32) -> GrayImage {
+    let mut image = qr(text, module);
+    for y in 0..image.height() {
+        for x in 0..image.width() {
+            if x % module == 0 || y % module == 0 {
+                image.put_pixel(x, y, Luma([235]));
+            }
+        }
+    }
+    image
+}
+
 pub fn paste(onto: &mut GrayImage, what: &GrayImage, x: i64, y: i64) {
     imageops::overlay(onto, what, x, y);
 }

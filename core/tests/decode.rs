@@ -1,6 +1,6 @@
 mod common;
 
-use common::{canvas, paste, qr};
+use common::{canvas, paste, qr, qr_with_seams};
 use image::{imageops, DynamicImage};
 use qr_core::{Decoder, RxingDecoder};
 
@@ -46,6 +46,15 @@ fn a_small_code_is_decoded() {
     assert_eq!(
         texts(qr("https://example.com/s", 2)),
         ["https://example.com/s"]
+    );
+}
+
+#[test]
+fn a_code_with_seams_between_its_modules_is_decoded() {
+    // Seen on the first Mac test: a Wi-Fi card PDF rendered this way.
+    assert_eq!(
+        texts(qr_with_seams("WIFI:T:WPA;S:Cafe;P:pass;;", 9)),
+        ["WIFI:T:WPA;S:Cafe;P:pass;;"]
     );
 }
 
