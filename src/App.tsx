@@ -60,7 +60,9 @@ export function App() {
             Scan again
           </button>
         ) : (
-          <kbd title="Scan from anywhere">⌥⇧Q</kbd>
+          <button type="button" className="hotkey" onClick={scan} title="Scan — or press ⌥⇧Q in any app">
+            ⌥⇧Q
+          </button>
         )}
       </header>
 

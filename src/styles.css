@@ -75,13 +75,19 @@ body {
   animation: glow 2.2s ease-in-out infinite;
 }
 
-/* Silkscreen has no ⌥ or ⇧. */
-kbd {
+/* The shortcut, shown as a key; clicking it scans too. Silkscreen has no ⌥ or ⇧. */
+button.hotkey {
+  height: 24px;
+  padding: 0 7px;
   font: 500 12px var(--mono);
   color: var(--lime);
+  background: none;
   border: 1px solid rgba(190, 242, 100, 0.4);
   border-radius: 6px;
-  padding: 3px 7px;
+}
+
+button.hotkey:hover {
+  background: rgba(190, 242, 100, 0.1);
 }
 
 .body {
