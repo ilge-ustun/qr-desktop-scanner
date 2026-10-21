@@ -38,6 +38,8 @@ pub fn run() {
             commands::open_screen_settings,
             commands::open_link,
             commands::hide_popover,
+            commands::fit_popover,
+            commands::join_wifi,
         ])
         .setup(|app| {
             // A menu-bar app: no Dock icon, no entry in the app switcher.

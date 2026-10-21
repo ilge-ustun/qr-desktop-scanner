@@ -25,3 +25,7 @@ impl Capturer for Screencapture {
         Err(UNSUPPORTED.into())
     }
 }
+
+pub fn join_wifi(_: &str, _: Option<&str>) -> Result<(), String> {
+    Err("joining Wi-Fi is implemented for macOS only".into())
+}

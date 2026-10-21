@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useRef } from "react";
 
 import { PermissionGate } from "./components/PermissionGate";
 import { ResultCard } from "./components/ResultCard";
@@ -8,6 +8,17 @@ import { initialState, reduce } from "./lib/scanState";
 export function App() {
   const [state, dispatch] = useReducer(reduce, initialState);
   const { view } = state;
+  const popover = useRef<HTMLElement>(null);
+
+  // The window is as tall as what it shows: Rust resizes it whenever the
+  // content's height changes (bounded there, with the rest scrolling here).
+  useEffect(() => {
+    const element = popover.current;
+    if (!element) return;
+    const observer = new ResizeObserver(() => void ipc.fitPopover(Math.ceil(element.offsetHeight)));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     let unlisten: (() => void) | undefined;
@@ -35,7 +46,7 @@ export function App() {
   const scan = () => void ipc.startScan();
 
   return (
-    <main className="popover">
+    <main className="popover" ref={popover}>
       <header className="top">
         <h1>QR Scanner</h1>
         <kbd title="Scan from anywhere">⌥⇧Q</kbd>
@@ -66,7 +77,13 @@ export function App() {
           <>
             {view.codes.length > 1 && <p className="hint">{view.codes.length} codes found</p>}
             {view.codes.map((code) => (
-              <ResultCard key={code.text} code={code} onCopy={ipc.copyText} onOpen={ipc.openLink} />
+              <ResultCard
+                key={code.text}
+                code={code}
+                onCopy={ipc.copyText}
+                onOpen={ipc.openLink}
+                onJoin={ipc.joinWifi}
+              />
             ))}
           </>
         )}

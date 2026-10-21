@@ -8,8 +8,9 @@ afterEach(cleanup);
 const card = (text: string) => {
   const onCopy = vi.fn(() => Promise.resolve());
   const onOpen = vi.fn(() => Promise.resolve());
-  render(<ResultCard code={{ text, format: "qrcode" }} onCopy={onCopy} onOpen={onOpen} />);
-  return { onCopy, onOpen };
+  const onJoin = vi.fn(() => Promise.resolve());
+  render(<ResultCard code={{ text, format: "qrcode" }} onCopy={onCopy} onOpen={onOpen} onJoin={onJoin} />);
+  return { onCopy, onOpen, onJoin };
 };
 
 describe("ResultCard", () => {
@@ -22,9 +23,9 @@ describe("ResultCard", () => {
   });
 
   it("copies the exact content", async () => {
-    const { onCopy } = card("WIFI:S:Home;T:WPA;P:secret;;");
+    const { onCopy } = card("Table 12 · order at the bar");
     fireEvent.click(screen.getByRole("button", { name: "Copy" }));
-    expect(onCopy).toHaveBeenCalledWith("WIFI:S:Home;T:WPA;P:secret;;");
+    expect(onCopy).toHaveBeenCalledWith("Table 12 · order at the bar");
     await waitFor(() => expect(screen.getByRole("button", { name: "Copied" })).toBeTruthy());
   });
 
@@ -37,6 +38,19 @@ describe("ResultCard", () => {
   it("has no Open button for plain text", () => {
     card("just some words");
     expect(screen.queryByRole("button", { name: "Open" })).toBeNull();
+  });
+
+  it("shows a Wi-Fi code as a network to connect to", () => {
+    const { onJoin } = card("WIFI:T:WPA;S:Home;P:secret;;");
+    expect(screen.getByText("Home")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Connect" }));
+    expect(onJoin).toHaveBeenCalledWith("Home", "secret");
+  });
+
+  it("falls back to plain text for a Wi-Fi code without a network name", () => {
+    card("WIFI:T:WPA;P:secret;;");
+    expect(screen.queryByRole("button", { name: "Connect" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Copy" })).toBeTruthy();
   });
 
   it("renders markup in the content as text", () => {

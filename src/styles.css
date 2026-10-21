@@ -11,6 +11,7 @@
   --danger: #b42318;
   --caution-bg: #fff6e0;
   --caution: #8a5a00;
+  --ok: #1a7f37;
   font: 13px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
 }
 
@@ -26,6 +27,7 @@
     --danger: #ff8a80;
     --caution-bg: #3a2f14;
     --caution: #f5c26b;
+    --ok: #4ac26b;
   }
 }
 
@@ -36,7 +38,6 @@
 html,
 body {
   margin: 0;
-  height: 100%;
   background: var(--bg);
   color: var(--text);
   user-select: none;
@@ -44,10 +45,12 @@ body {
   cursor: default;
 }
 
+/* Content height, not window height: the window is sized to this element.
+   Past max-height (the window's maximum in popover.rs) the body scrolls. */
 .popover {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  max-height: 640px;
   padding: 14px;
   gap: 12px;
 }
@@ -108,7 +111,7 @@ button:disabled {
 }
 
 .body {
-  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -200,4 +203,44 @@ button:disabled {
 
 .gate ol {
   padding-left: 18px;
+}
+
+.notice.ok {
+  color: var(--ok);
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin: 0;
+}
+
+.fields dt {
+  color: var(--muted);
+}
+
+.fields dd {
+  margin: 0;
+  min-width: 0;
+}
+
+.secret {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.mono {
+  font: 12px/1.4 ui-monospace, "SF Mono", Menlo, monospace;
+  word-break: break-all;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+button.link {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--accent);
 }

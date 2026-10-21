@@ -39,7 +39,24 @@ pub fn open_link(app: AppHandle, url: String) -> Result<(), String> {
     Ok(())
 }
 
+/// Joins the Wi-Fi network from a scanned code. Only the user's click on
+/// Connect calls this; the name and password are checked first.
+#[tauri::command]
+pub async fn join_wifi(ssid: String, password: Option<String>) -> Result<(), String> {
+    qr_core::wifi::validate(&ssid, password.as_deref()).map_err(|e| e.to_string())?;
+    tauri::async_runtime::spawn_blocking(move || platform::join_wifi(&ssid, password.as_deref()))
+        .await
+        .map_err(|e| e.to_string())?
+}
+
 #[tauri::command]
 pub fn hide_popover(app: AppHandle) {
     popover::hide(&app);
+}
+
+/// The page reports its height; the window follows, so it is never taller
+/// than what it shows.
+#[tauri::command]
+pub fn fit_popover(app: AppHandle, height: f64) {
+    popover::fit(&app, height);
 }

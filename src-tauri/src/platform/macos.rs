@@ -59,3 +59,43 @@ impl Capturer for Screencapture {
         }
     }
 }
+
+const NETWORKSETUP: &str = "/usr/sbin/networksetup";
+
+/// Joins a Wi-Fi network the way System Settings does. Blocks for as long as
+/// the join takes (seconds), so call it off the main thread.
+pub fn join_wifi(ssid: &str, password: Option<&str>) -> Result<(), String> {
+    let ports = Command::new(NETWORKSETUP)
+        .arg("-listallhardwareports")
+        .output()
+        .map_err(|e| format!("could not run networksetup: {e}"))?;
+    let device = qr_core::wifi::wifi_device(&String::from_utf8_lossy(&ports.stdout))
+        .ok_or("this Mac has no Wi-Fi interface")?;
+
+    // Arguments, not a shell line: nothing in the code is interpreted. The
+    // password is briefly visible to other processes of this user in `ps`.
+    let mut join = Command::new(NETWORKSETUP);
+    join.args(["-setairportnetwork", &device, ssid]);
+    if let Some(password) = password.filter(|p| !p.is_empty()) {
+        join.arg(password);
+    }
+    let out = join
+        .output()
+        .map_err(|e| format!("could not run networksetup: {e}"))?;
+
+    // networksetup reports a failed join on stdout and still exits 0; on
+    // success it prints nothing.
+    let said = format!(
+        "{}{}",
+        String::from_utf8_lossy(&out.stdout),
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let said = said.trim();
+    if out.status.success() && said.is_empty() {
+        Ok(())
+    } else if said.is_empty() {
+        Err(format!("networksetup failed: {}", out.status))
+    } else {
+        Err(said.lines().next().unwrap_or(said).to_owned())
+    }
+}

@@ -19,6 +19,9 @@ export const openScreenSettings = () => invoke<void>("open_screen_settings");
 export const openLink = (url: string) => invoke<void>("open_link", { url });
 export const hidePopover = () => invoke<void>("hide_popover");
 export const copyText = (text: string) => writeText(text);
+export const fitPopover = (height: number) => invoke<void>("fit_popover", { height });
+export const joinWifi = (ssid: string, password: string) =>
+  invoke<void>("join_wifi", { ssid, password: password || null });
 
 /** Scans started anywhere (button, hotkey, tray menu) report here. */
 export async function onScan(handlers: {

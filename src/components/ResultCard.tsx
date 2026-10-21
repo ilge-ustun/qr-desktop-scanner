@@ -1,17 +1,26 @@
 import { useEffect, useState } from "react";
 
 import type { DecodedCode } from "../lib/ipc";
-import { classify, LABELS } from "../lib/payload";
+import { classify, LABELS, type Payload } from "../lib/payload";
 import { assess } from "../lib/urlSafety";
+import { WifiCard } from "./WifiCard";
 
 type Props = {
   code: DecodedCode;
   onCopy: (text: string) => Promise<void>;
   onOpen: (url: string) => Promise<void>;
+  onJoin: (ssid: string, password: string) => Promise<void>;
 };
 
-export function ResultCard({ code, onCopy, onOpen }: Props) {
+export function ResultCard({ code, onCopy, onOpen, onJoin }: Props) {
   const payload = classify(code.text);
+  if (payload.kind === "wifi" && payload.network) {
+    return <WifiCard network={payload.network} onCopy={onCopy} onJoin={onJoin} />;
+  }
+  return <GenericCard payload={payload} onCopy={onCopy} onOpen={onOpen} />;
+}
+
+function GenericCard({ payload, onCopy, onOpen }: { payload: Payload } & Omit<Props, "code" | "onJoin">) {
   const linkish = payload.kind === "url" || payload.kind === "email";
   const safety = linkish ? assess(payload.text) : null;
   const headline = payload.kind === "email" ? payload.address : safety?.domain;

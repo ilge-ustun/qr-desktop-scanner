@@ -3,7 +3,8 @@
 A macOS menu-bar app that reads a QR code from anywhere on your screen — a
 photo, a PDF, a paused video, a web page. Click the menu-bar icon (or press
 **⌥⇧Q**), drag a box around the code, and it shows what the code says, with
-**Copy** and **Open**. Nothing is copied or opened until you click.
+**Copy** and **Open** — or, for a Wi-Fi code, the network with **Connect**
+and **Copy password**. Nothing is copied, opened or joined until you click.
 
 Tauri v2 (Rust) + React + TypeScript. macOS 12 or later.
 
@@ -58,7 +59,10 @@ it with `xattr -dr com.apple.quarantine "QR Scanner.app"`.
 5. A box with no code says "No QR code found"; two codes give two cards.
 6. Copy puts the exact text on the clipboard; Open launches the browser.
 7. A `javascript:` code shows a warning and no Open button.
-8. ⌥⇧Q works while another app is in front.
+8. A Wi-Fi code shows the network name, the password hidden behind Show,
+   and Connect joins it (System Settings → Wi-Fi shows it connected).
+9. The popover is only as tall as its content.
+10. ⌥⇧Q works while another app is in front.
 
 ## How it works
 
@@ -73,6 +77,10 @@ it with `xattr -dr com.apple.quarantine "QR Scanner.app"`.
   warns on `http`, look-alike (punycode) hosts, bare IPs and link shorteners,
   and offers Open only for `http`, `https` and `mailto` — checked again in
   Rust before anything is opened.
+- **Wi-Fi codes** are joined with macOS's own
+  `networksetup -setairportnetwork`, after Rust checks the name and password
+  against 802.11's limits. The password is passed as an argument, so for the
+  second or two the join takes it is visible in `ps` to your own user.
 - **Privacy:** no network access, no telemetry. The screenshot is written to
   a temporary folder in the app's cache directory and deleted as soon as it is
   decoded, whatever the outcome.

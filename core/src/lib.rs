@@ -5,6 +5,7 @@
 pub mod decode;
 pub mod scan;
 pub mod url_guard;
+pub mod wifi;
 
 pub use decode::{DecodedCode, Decoder, RxingDecoder};
 pub use scan::{run_scan, Capture, Capturer, ScanOutcome, ScreenPermission};
