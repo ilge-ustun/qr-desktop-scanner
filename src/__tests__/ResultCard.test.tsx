@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ResultCard } from "../components/ResultCard";
+import { F3 } from "./contactCodes";
 
 afterEach(cleanup);
 
@@ -83,5 +84,17 @@ describe("ResultCard", () => {
     card("<img src=x onerror=alert(1)>");
     expect(screen.getByText("<img src=x onerror=alert(1)>")).toBeTruthy();
     expect(document.querySelector("img")).toBeNull();
+  });
+});
+
+describe("ResultCard, contacts", () => {
+  it("AC2: gives a MECARD without a name (F3) the text card, whose one Copy copies the whole code", () => {
+    const { onCopy, onOpen } = card(F3);
+    expect(document.querySelector(".meta")?.textContent).toBe("Text");
+    expect(document.querySelectorAll("button")).toHaveLength(2);
+    expect(screen.getByRole("button", { name: "Dismiss" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Copy" }));
+    expect(onCopy).toHaveBeenCalledExactlyOnceWith(F3);
+    expect(onOpen).not.toHaveBeenCalled();
   });
 });
