@@ -4,6 +4,7 @@ import type { DecodedCode } from "../lib/ipc";
 import { classify, LABELS, type Payload } from "../lib/payload";
 import { headlineSize } from "../lib/headline";
 import { assess } from "../lib/urlSafety";
+import { ContactCard } from "./ContactCard";
 import { DismissButton } from "./DismissButton";
 import { PrimaryButton, WarningIcon, type Tone } from "./Ink";
 import { WifiCard } from "./WifiCard";
@@ -20,6 +21,9 @@ export function ResultCard({ code, onCopy, onOpen, onJoin, onDismiss }: Props) {
   const payload = classify(code.text);
   if (payload.kind === "wifi" && payload.network) {
     return <WifiCard network={payload.network} onCopy={onCopy} onJoin={onJoin} onDismiss={onDismiss} />;
+  }
+  if (payload.kind === "contact") {
+    return <ContactCard contact={payload.contact} onCopy={onCopy} onDismiss={onDismiss} />;
   }
   return <GenericCard payload={payload} onCopy={onCopy} onOpen={onOpen} onDismiss={onDismiss} />;
 }

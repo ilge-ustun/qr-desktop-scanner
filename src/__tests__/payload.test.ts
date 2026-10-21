@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { classify, parseWifi } from "../lib/payload";
+import { F1, F2, F3, M1, M1_CONTACT, V1, V1_CONTACT, V2, V2_CONTACT } from "./contactCodes";
 
 describe("classify", () => {
   it("treats web links as links", () => {
@@ -83,5 +84,25 @@ describe("parseWifi", () => {
 
   it("is what classify attaches to a Wi-Fi code", () => {
     expect(classify("WIFI:S:Home;;")).toMatchObject({ kind: "wifi", network: { ssid: "Home" } });
+  });
+});
+
+describe("classify, contacts", () => {
+  it("AC1: reads the vCard V1: FN, phones, emails, unescaped ORG, unfolded URL without group or type", () => {
+    expect(classify(V1)).toEqual({ kind: "contact", text: V1, contact: V1_CONTACT });
+  });
+
+  it("AC1: reads the vCard V2: the name from N when there is no FN, \\n in ORG as a newline", () => {
+    expect(classify(V2)).toEqual({ kind: "contact", text: V2, contact: V2_CONTACT });
+  });
+
+  it("AC1: reads the MECARD M1: N as First Last, a backslash before any character, colons in a value", () => {
+    expect(classify(M1)).toEqual({ kind: "contact", text: M1, contact: M1_CONTACT });
+  });
+
+  it("AC2: a contact code that does not parse is text, never a link", () => {
+    expect(classify(F1).kind, "F1: no END:VCARD").toBe("text");
+    expect(classify(F2).kind, "F2: no FN, no N").toBe("text");
+    expect(classify(F3).kind, "F3: no N").toBe("text");
   });
 });
