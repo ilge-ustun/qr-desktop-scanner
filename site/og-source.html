@@ -1,0 +1,24 @@
+<!doctype html>
+<!-- Source of img/og.png, the 1200x630 social preview. Render it with a
+     headless browser at 1200x630 when the look changes. -->
+<html><head><meta charset="utf-8"><style>
+@font-face { font-family: "Silkscreen"; font-weight: 700; src: url(fonts/silkscreen-latin-700-normal.woff2) format("woff2"); }
+@font-face { font-family: "Sometype Mono"; font-weight: 400; src: url(fonts/sometype-mono-latin-400-normal.woff2) format("woff2"); }
+html, body { margin: 0; }
+.card { width: 1200px; height: 630px; box-sizing: border-box; background: #e9e2d3; color: #2a3c63; position: relative; overflow: hidden;
+  display: flex; align-items: center; gap: 56px; padding: 0 72px; font-family: "Sometype Mono", monospace; border: 10px solid #3d5588; }
+.left { display: flex; flex-direction: column; gap: 26px; flex: 1; min-width: 0; }
+.icon { width: 132px; height: 132px; }
+h1 { margin: 0; font: 700 58px/1.08 "Silkscreen", monospace; color: #3d5588; text-shadow: 4px 4px 0 #ff7477; }
+p { margin: 0; font-size: 26px; }
+.shot { width: 360px; transform: rotate(4deg); flex: none; }
+</style></head><body>
+<div class="card">
+  <div class="left">
+    <img class="icon" src="img/icon.png" alt="">
+    <h1>Read any QR code on your screen</h1>
+    <p>QR Scanner for Mac · free and open source</p>
+  </div>
+  <img class="shot" src="img/warning.png" alt="">
+</div>
+</body></html>

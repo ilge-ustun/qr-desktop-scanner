@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QR Scanner for Mac</title>
+<meta name="description" content="A small menu-bar app for Mac that reads any QR code on your screen and shows exactly what it says before anything opens. Free and open source.">
+<link rel="canonical" href="https://ilge-ustun.github.io/qr-desktop-scanner/">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ilge-ustun.github.io/qr-desktop-scanner/">
+<meta property="og:title" content="QR Scanner for Mac">
+<meta property="og:description" content="Press ⇧⌘2, drag a box around any QR code on your screen, and see exactly what it says before anything opens. Free and open source.">
+<meta property="og:image" content="https://ilge-ustun.github.io/qr-desktop-scanner/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="QR Scanner: read any QR code on your screen">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+/* Layout: the app's own Risograph sheet. Hero (pitch + tilted screenshots),
+   a full-width band for the three steps, then checks, facts, first launch.
+   Two inks only: Federal Blue carries text, Fluo Orange marks and shadows. */
+@font-face { font-family: "Silkscreen"; font-weight: 400; font-display: swap; src: url(fonts/silkscreen-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "Silkscreen"; font-weight: 700; font-display: swap; src: url(fonts/silkscreen-latin-700-normal.woff2) format("woff2"); }
+@font-face { font-family: "Sometype Mono"; font-weight: 400; font-display: swap; src: url(fonts/sometype-mono-latin-400-normal.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Sometype Mono"; font-weight: 400; font-display: swap; src: url(fonts/sometype-mono-latin-ext-400-normal.woff2) format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Sometype Mono"; font-weight: 600; font-display: swap; src: url(fonts/sometype-mono-latin-600-normal.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Sometype Mono"; font-weight: 600; font-display: swap; src: url(fonts/sometype-mono-latin-ext-600-normal.woff2) format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+:root {
+  --paper: #e9e2d3;
+  --sheet: #fbf7ee;
+  --ink: #3d5588;
+  --ink-deep: #2a3c63;
+  --ink-soft: #4b5a7c;
+  --orange: #ff7477;
+  --mark: rgba(255, 116, 119, 0.55);
+  --pixel: "Silkscreen", ui-monospace, monospace;
+  --mono: "Sometype Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink-deep); font: 400 16px/1.55 var(--mono); }
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--ink); }
+a:hover { color: var(--ink-deep); }
+a:focus-visible, .button:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+code { font: 600 0.95em var(--mono); overflow-wrap: anywhere; }
+
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); }
+.pixel { font-family: var(--pixel); font-weight: 700; color: var(--ink); }
+.mark { box-shadow: inset 0 -8px 0 var(--mark); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* Header */
+.top { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; padding-block: 22px; }
+.brand { font: 700 18px var(--pixel); color: var(--ink); text-shadow: 2px 2px 0 var(--orange); text-decoration: none; }
+.top nav { display: flex; flex-wrap: wrap; gap: 18px; font: 700 12px var(--pixel); }
+
+/* Hero */
+.hero { display: flex; flex-wrap: wrap; gap: 48px; align-items: center; padding-block: 28px 72px; }
+.pitch { flex: 999 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 22px; }
+.pitch .icon { width: 104px; }
+h1 { margin: 0; font: 700 clamp(30px, 4.4vw, 50px)/1.08 var(--pixel); color: var(--ink); text-shadow: 3px 3px 0 var(--orange); text-wrap: balance; }
+.lede { margin: 0; max-width: 54ch; font-size: 18px; }
+.ctas { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.button { display: inline-flex; align-items: center; text-decoration: none; font: 700 13px var(--pixel); color: var(--ink); border: 2px solid var(--ink); height: 48px; padding: 0 18px; }
+.button.primary { height: 52px; padding: 0 22px; font-size: 15px; background: var(--ink); color: var(--sheet); border: none; box-shadow: 4px 4px 0 var(--orange); }
+.button.primary:hover { color: var(--sheet); transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--orange); }
+.button.primary:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--orange); }
+.fine { font-size: 13px; color: var(--ink-soft); }
+.shots { flex: 1 1 380px; min-width: 0; display: flex; justify-content: center; padding-block: 10px 40px; }
+.shots img { width: 74%; max-width: 330px; }
+.shots img:first-child { transform: rotate(-3deg); }
+.shots img:last-child { transform: rotate(4deg) translate(-18%, 22%); margin-left: -30%; }
+
+/* Steps */
+.band { background: var(--sheet); border-block: 2px solid var(--ink); }
+.band .wrap { padding-block: 56px; display: flex; flex-direction: column; gap: 28px; }
+h2 { margin: 0; font: 700 26px/1.2 var(--pixel); color: var(--ink); text-wrap: balance; }
+.steps { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+.steps li { display: flex; flex-direction: column; gap: 10px; }
+.steps .n { font: 700 40px/1 var(--pixel); color: var(--orange); }
+.steps .t { font: 700 14px var(--pixel); color: var(--ink); }
+
+/* Checks */
+.checks { display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start; padding-block: 64px; }
+.checks .text { flex: 999 1 440px; min-width: 0; display: flex; flex-direction: column; gap: 18px; }
+.checks p { margin: 0; max-width: 58ch; }
+.checks ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.checks .shot { flex: 1 1 320px; min-width: 0; display: flex; justify-content: center; }
+.checks .shot img { width: 100%; max-width: 340px; transform: rotate(-2deg); }
+
+/* Facts */
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; padding-bottom: 64px; }
+.facts div { border: 2px solid var(--ink); padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+.facts .pixel { font-size: 13px; }
+
+/* First launch */
+.first { padding-bottom: 72px; }
+.first .sheet { background: var(--sheet); border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--orange); padding: 28px; display: flex; flex-direction: column; gap: 16px; }
+.first .label { align-self: flex-start; font: 700 12px var(--pixel); padding: 3px 8px; background: repeating-linear-gradient(135deg, var(--orange) 0 8px, #ff9496 8px 16px); }
+.first h2 { font-size: 22px; }
+.first p, .first ol { margin: 0; max-width: 64ch; }
+.first ol { padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.first .verify { font-size: 14px; color: var(--ink-soft); }
+
+footer { border-top: 2px solid var(--ink); }
+footer .wrap { padding-block: 26px 34px; display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; font-size: 14px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .button.primary:hover, .button.primary:active { transform: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="wrap top">
+  <a class="brand" href="./">QR SCANNER</a>
+  <nav aria-label="Page">
+    <a href="#how">How it works</a>
+    <a href="#first-launch">First launch</a>
+    <a href="https://github.com/ilge-ustun/qr-desktop-scanner">GitHub</a>
+  </nav>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div class="pitch">
+      <img class="icon" src="img/icon.png" width="104" height="104" alt="QR Scanner app icon">
+      <h1>Read any QR code on your screen</h1>
+      <p class="lede">A small menu-bar app for Mac. Press ⇧⌘2, drag a box around a code in a photo, a PDF, a paused video or a web page, and see exactly what it says before anything opens.</p>
+      <div class="ctas">
+        <a class="button primary" href="https://github.com/ilge-ustun/qr-desktop-scanner/releases/latest">Download for Mac</a>
+        <a class="button" href="https://github.com/ilge-ustun/qr-desktop-scanner">Source on GitHub</a>
+      </div>
+      <span class="fine">One DMG for Apple Silicon and Intel · macOS 12 or later · free and open source</span>
+    </div>
+    <div class="shots">
+      <img src="img/ready.png" width="360" height="339" alt="The QR Scanner popover, ready to scan">
+      <img src="img/warning.png" width="360" height="363" alt="A scanned link with two warnings: not encrypted, and a link shortener">
+    </div>
+  </section>
+
+  <section id="how" class="band">
+    <div class="wrap">
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li><span class="n" aria-hidden="true">1</span><span class="t">Press ⇧⌘2</span><span>Or click the QR in the menu bar. Change the shortcut by clicking it in the app.</span></li>
+        <li><span class="n" aria-hidden="true">2</span><span class="t">Drag a box</span><span>The Mac's own screenshot crosshair. Around a code on any screen, in any app. Esc cancels.</span></li>
+        <li><span class="n" aria-hidden="true">3</span><span class="t">Read, then decide</span><span>See the link, text or Wi-Fi network. Copy it, open it, or join the network. Nothing happens until you click.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="wrap checks">
+    <div class="text">
+      <h2>Checks the link before you do</h2>
+      <p>A QR code is a link from a stranger. QR Scanner shows where it really goes and marks what looks wrong:</p>
+      <ul>
+        <li><span class="mark">Fake destinations</span>: <code>paypal.com@evil.example</code> really goes to evil.example.</li>
+        <li><span class="mark">Look-alike letters</span> in the address, like a Cyrillic а in apple.</li>
+        <li><span class="mark">Unencrypted links</span>, bare IP addresses and link shorteners.</li>
+        <li><span class="mark">Script and file links</span> that can't be opened at all.</li>
+      </ul>
+      <p>Wi-Fi codes show the network and keep the password hidden until you ask. Join with one click.</p>
+    </div>
+    <div class="shot">
+      <img src="img/wifi.png" width="360" height="267" alt="A scanned Wi-Fi code with Copy password and Connect">
+    </div>
+  </section>
+
+  <section class="wrap facts" aria-label="At a glance">
+    <div><span class="pixel">Private</span><span>No network access, no account, no analytics. The screenshot is deleted as soon as it's read.</span></div>
+    <div><span class="pixel">Open source</span><span>Rust and React on Tauri. Read the code, build it yourself, or check how a release was made.</span></div>
+    <div><span class="pixel">Small</span><span>About 8 MB. Lives in the menu bar, no Dock icon, no window until you need it.</span></div>
+  </section>
+
+  <section id="first-launch" class="wrap first">
+    <div class="sheet">
+      <span class="label">▲ About the first launch</span>
+      <h2>macOS will warn you once</h2>
+      <p>QR Scanner isn't signed with an Apple Developer ID yet, as this is a free side project. So the first time you open it, macOS says it "could not verify" the app. To open it anyway:</p>
+      <ol>
+        <li>Drag QR Scanner from the DMG to Applications, and open it. Click <b>Done</b> on the warning.</li>
+        <li>Open System Settings → Privacy &amp; Security, scroll down and click <b>Open Anyway</b>.</li>
+        <li>Enter your Mac password, then click <b>Open</b>. It opens normally from then on.</li>
+      </ol>
+      <p>On the first scan it asks for Screen Recording permission. It needs it to read the box you drag, and it never records anything else.</p>
+      <p class="verify">Want to check the download first? Every release lists its SHA-256 and a build attestation from GitHub: <code>gh attestation verify QR-Scanner-*.dmg -R ilge-ustun/qr-desktop-scanner</code></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Made by ilge ustun | MIT licence</span>
+    <a href="https://github.com/ilge-ustun/qr-desktop-scanner">github.com/ilge-ustun/qr-desktop-scanner</a>
+  </div>
+</footer>
+
+</body>
+</html>

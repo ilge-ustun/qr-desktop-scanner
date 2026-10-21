@@ -6,7 +6,11 @@ photo, a PDF, a paused video, a web page. Click the menu-bar icon (or press
 **Copy** and **Open** — or, for a Wi-Fi code, the network with **Connect**
 and **Copy password**. Nothing is copied, opened or joined until you click.
 
-Tauri v2 (Rust) + React + TypeScript. macOS 12 or later.
+Tauri v2 (Rust) + React + TypeScript. macOS 12 or later. MIT licence.
+
+**Project page:** https://ilge-ustun.github.io/qr-desktop-scanner/ (from
+`site/`, published by `.github/workflows/pages.yml`) ·
+**Download:** https://github.com/ilge-ustun/qr-desktop-scanner/releases/latest
 
 ## Try it on your Mac
 
