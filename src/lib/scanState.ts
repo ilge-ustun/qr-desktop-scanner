@@ -19,7 +19,8 @@ export type Action =
   | { type: "started" }
   | { type: "result"; outcome: ScanOutcome }
   | { type: "permissionMissing" }
-  | { type: "dismiss"; text: string };
+  | { type: "dismiss"; text: string }
+  | { type: "reset" };
 
 export const initialState: State = { view: { name: "idle" }, beforeScan: { name: "idle" } };
 
@@ -31,6 +32,8 @@ export function reduce(state: State, action: Action): State {
       return { ...state, view: { name: "permission" } };
     case "result":
       return { ...state, view: viewFor(action.outcome, state.beforeScan) };
+    case "reset":
+      return initialState;
     case "dismiss": {
       if (state.view.name !== "found") return state;
       const codes = state.view.codes.filter((c) => c.text !== action.text);

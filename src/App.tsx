@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
+import { DismissButton } from "./components/DismissButton";
 import { HotkeyButton } from "./components/HotkeyButton";
 import { Corners, PrimaryButton } from "./components/Neon";
 import { PermissionGate } from "./components/PermissionGate";
@@ -59,6 +60,7 @@ export function App() {
   }, []);
 
   const scan = () => void ipc.startScan();
+  const reset = () => dispatch({ type: "reset" });
   const ready = view.name === "idle" || view.name === "scanning";
   const afterScan = view.name === "found" || view.name === "notFound" || view.name === "error";
 
@@ -102,14 +104,20 @@ export function App() {
         {view.name === "notFound" && (
           <div className="card tone-warn">
             <Corners />
-            <span className="meta">Nothing found</span>
+            <header className="card-head">
+              <span className="meta">Nothing found</span>
+              <DismissButton onClick={reset} />
+            </header>
             <p className="notice">No QR code in that area. Try a box around the whole code, including its white border.</p>
           </div>
         )}
         {view.name === "error" && (
           <div className="card tone-danger">
             <Corners />
-            <span className="meta">Scan failed</span>
+            <header className="card-head">
+              <span className="meta">Scan failed</span>
+              <DismissButton onClick={reset} />
+            </header>
             <p className="failure">{view.message}</p>
           </div>
         )}

@@ -1,10 +1,14 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+let emit: (outcome: unknown) => void = () => {};
 const ipc = vi.hoisted(() => ({
   startScan: vi.fn(() => Promise.resolve()),
   screenPermission: vi.fn(() => Promise.resolve(true)),
-  onScan: vi.fn(() => Promise.resolve(() => {})),
+  onScan: vi.fn((h: { result: (o: unknown) => void }) => {
+    emit = h.result;
+    return Promise.resolve(() => {});
+  }),
   fitPopover: vi.fn(() => Promise.resolve()),
   hidePopover: vi.fn(() => Promise.resolve()),
   openScreenSettings: vi.fn(() => Promise.resolve()),
@@ -46,5 +50,15 @@ describe("App", () => {
     fireEvent.keyDown(window, { code: "KeyQ", key: "q", metaKey: true, ctrlKey: true });
     expect(ipc.setHotkey).toHaveBeenCalledWith("control+super+KeyQ");
     expect(await screen.findByRole("button", { name: /Shortcut ⌃⌘Q/ })).toBeTruthy();
+  });
+
+  it("closes a 'nothing found' result back to the start screen", async () => {
+    render(<App />);
+    await vi.waitFor(() => expect(ipc.onScan).toHaveBeenCalled());
+    act(() => emit({ kind: "notFound" }));
+    expect(screen.getByText("Nothing found")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Dismiss" }));
+    expect(screen.queryByText("Nothing found")).toBeNull();
+    expect(screen.getByRole("button", { name: "Scan" })).toBeTruthy();
   });
 });

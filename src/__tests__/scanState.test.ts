@@ -52,4 +52,10 @@ describe("reduce", () => {
     expect(one.view).toEqual({ name: "found", codes: [{ text: "b", format: "qrcode" }] });
     expect(reduce(one, { type: "dismiss", text: "b" }).view).toEqual({ name: "idle" });
   });
+
+  it("goes back to the start screen from any result", () => {
+    expect(reduce(found, { type: "reset" }).view).toEqual({ name: "idle" });
+    const nothing = reduce(found, { type: "result", outcome: { kind: "notFound" } });
+    expect(reduce(nothing, { type: "reset" }).view).toEqual({ name: "idle" });
+  });
 });
