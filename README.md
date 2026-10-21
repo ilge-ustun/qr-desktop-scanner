@@ -108,13 +108,17 @@ src/           the React popover. lib/ holds the pure logic (payload kinds,
 
 ## Look
 
-Neon · Pixel: black with neon viewfinder corners, a moving scan line and
-gradient buttons (motion stops under *Reduce motion*). Fonts are bundled, all
-under the SIL Open Font License: WDXL Lubrifont JP N (names, buttons),
-Silkscreen (small labels — it has no lower case, so never for URLs or
-passwords) and IBM Plex Mono (URLs, passwords, raw text). The window is
-transparent so the popover can draw its own rounded edge, which needs
-Tauri's `macos-private-api` (fine outside the Mac App Store).
+Risograph: two inks on paper, Federal Blue and Fluo Orange, with grain, a
+halftone viewfinder, an orange scan bar and an off-register printed shadow
+(motion stops under *Reduce motion*). Two bundled fonts, both under the SIL
+Open Font License: Silkscreen for the app's own words (title, labels,
+buttons) and Sometype Mono for everything read from the code and for
+sentences. Silkscreen has no lower case, so it never shows a network name,
+URL or password, where case matters. The window is transparent so the
+popover can print its own sheet and shadow, which needs Tauri's
+`macos-private-api` (fine outside the Mac App Store). The app icon is the
+same two inks: a pixel "QR" over an orange circle
+(`src-tauri/icons/app-icon.png`, all sizes generated with `npx tauri icon`).
 
 ## Development
 

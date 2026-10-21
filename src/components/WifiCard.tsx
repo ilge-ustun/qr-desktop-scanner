@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { headlineSize } from "../lib/headline";
 import type { WifiNetwork } from "../lib/payload";
 import { DismissButton } from "./DismissButton";
-import { Corners, PrimaryButton } from "./Neon";
+import { PrimaryButton } from "./Ink";
 
 type Props = {
   network: WifiNetwork;
@@ -46,7 +46,6 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
 
   return (
     <article className="card tone-ok">
-      <Corners />
       <header className="card-head">
         <div className="titles">
           <span className="meta">{meta}</span>

@@ -1,9 +1,9 @@
-// The small pieces every Neon screen is built from.
+// The small pieces every screen is built from: Risograph print, two inks.
 import type { ReactNode } from "react";
 
 export type Tone = "ok" | "warn" | "danger";
 
-/** The glowing viewfinder brackets in the corners of a framed box. */
+/** The viewfinder brackets in the corners of a framed box. */
 export function Corners() {
   return (
     <span className="corners" aria-hidden="true">
@@ -15,7 +15,7 @@ export function Corners() {
   );
 }
 
-/** The gradient button with a light sweeping across it. */
+/** The solid ink button, with the second ink printed off-register behind it. */
 export function PrimaryButton({
   children,
   onClick,
@@ -29,7 +29,6 @@ export function PrimaryButton({
 }) {
   return (
     <button type="button" className={big ? "primary big" : "primary"} onClick={onClick} disabled={disabled}>
-      <span className="sheen" aria-hidden="true" />
       {children}
     </button>
   );

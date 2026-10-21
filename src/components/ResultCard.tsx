@@ -5,7 +5,7 @@ import { classify, LABELS, type Payload } from "../lib/payload";
 import { headlineSize } from "../lib/headline";
 import { assess } from "../lib/urlSafety";
 import { DismissButton } from "./DismissButton";
-import { Corners, PrimaryButton, WarningIcon, type Tone } from "./Neon";
+import { PrimaryButton, WarningIcon, type Tone } from "./Ink";
 import { WifiCard } from "./WifiCard";
 
 type Props = {
@@ -53,7 +53,6 @@ function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload 
 
   return (
     <article className={`card tone-${tone}`}>
-      <Corners />
       <header className="card-head">
         <div className="titles">
           <span className="meta">{meta}</span>
@@ -67,7 +66,10 @@ function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload 
           {warnings.map((w) => (
             <li key={w.code} role="alert">
               <WarningIcon />
-              {w.message}
+              {/* Wrapped so the mark stays inline and strikes every line. */}
+              <span>
+                <span className="mark">{w.message}</span>
+              </span>
             </li>
           ))}
         </ul>

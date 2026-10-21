@@ -1,39 +1,33 @@
-/* Neon · Pixel. Always dark: the glow only works on black.
-   WDXL Lubrifont for names and buttons, Silkscreen for small labels (it has
-   no lower case, so never for anything case-sensitive), IBM Plex Mono for
-   what must be read exactly: URLs, passwords, raw text. */
+/* Risograph: two inks on paper. Federal Blue carries text and buttons; Fluo
+   Orange does fills, the off-register shadow, the scan bar and highlights.
+   Type rule: Silkscreen for the app's own words (title, labels, buttons);
+   Sometype Mono for everything read from the code and for sentences.
+   Silkscreen has no lower case, so it never shows a network name, URL or
+   password, where case matters. */
 :root {
-  color-scheme: dark;
-  --bg: #07090a;
-  --text: #effff9;
-  --soft: #c9fbef;
-  --muted: #8fa8a1;
-  --dim: #7f948e;
-  --cyan: #5eead4;
-  --lime: #bef264;
-  --sky: #22d3ee;
-  --line: rgba(94, 234, 212, 0.35);
-  --amber: #fb923c;
-  --amber-soft: #fdba74;
-  --rose: #f43f5e;
-  --rose-soft: #fecdd3;
-  --display: "WDXL Lubrifont JP N", -apple-system, BlinkMacSystemFont, sans-serif;
+  color-scheme: light;
+  --ink: #3d5588;
+  --ink-deep: #2a3c63;
+  --orange: #ff7477;
+  --orange-soft: rgba(255, 116, 119, 0.55);
+  --paper: #fbf7ee;
   --pixel: "Silkscreen", ui-monospace, monospace;
-  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --neon: linear-gradient(100deg, var(--cyan), var(--lime), var(--sky), var(--lime), var(--cyan));
-  font: 15px/1.35 var(--display);
+  --mono: "Sometype Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.18'/></svg>");
+  --halftone: repeating-radial-gradient(circle at 0 0, rgba(255, 116, 119, 0.45) 0 1.3px, transparent 1.3px 5px);
+  font: 400 13px/1.4 var(--mono);
 }
 
 * {
   box-sizing: border-box;
 }
 
-/* The window is transparent; the popover draws its own rounded shape. */
+/* The window is transparent; the popover prints its own sheet and shadow. */
 html,
 body {
   margin: 0;
   background: transparent;
-  color: var(--text);
+  color: var(--ink);
   user-select: none;
   -webkit-user-select: none;
   cursor: default;
@@ -43,11 +37,14 @@ body {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  max-height: 640px;
+  max-height: 634px;
+  /* room for the offset shadow inside the window; App.tsx adds it to the height */
+  margin: 0 6px 6px 0;
   padding: 16px;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 18px;
+  background: var(--grain), var(--paper);
+  background-blend-mode: multiply;
+  border: 2px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--orange);
   overflow: hidden;
 }
 
@@ -57,22 +54,96 @@ body {
   justify-content: space-between;
 }
 
+/* The second ink printed slightly off-register. */
 .brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font: 700 16px var(--pixel);
-  letter-spacing: 0.02em;
+  font: 700 17px var(--pixel);
+  text-shadow: 2px 2px 0 var(--orange);
 }
 
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 4px;
-  background: var(--lime);
-  --glow-a: rgba(94, 234, 212, 0.7);
-  --glow-b: rgba(190, 242, 100, 0.95);
-  animation: glow 2.2s ease-in-out infinite;
+.body {
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Buttons: square, inked, with a printed shadow. */
+
+button {
+  font: 700 12px var(--pixel);
+  color: var(--ink);
+  background: none;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  height: 42px;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+button.primary {
+  border: none;
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 3px 3px 0 var(--orange);
+}
+
+button.primary.big {
+  height: 50px;
+  font-size: 17px;
+  box-shadow: 4px 4px 0 var(--orange);
+}
+
+button.primary:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--orange);
+}
+
+button.ghost.small {
+  height: 30px;
+  font-size: 11px;
+  padding: 0 10px;
+}
+
+button.risky {
+  border-style: dashed;
+  background: rgba(255, 116, 119, 0.25);
+}
+
+button.dismiss {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+}
+
+button.show {
+  height: auto;
+  padding: 0;
+  border: none;
+  font-size: 11px;
+  box-shadow: inset 0 -6px 0 var(--orange);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actions > button {
+  flex: 1;
+  font-size: 10px;
+  padding: 0 6px;
+  white-space: nowrap;
 }
 
 /* The shortcut chip: shows the keys; click it to record new ones.
@@ -86,24 +157,17 @@ body {
 
 button.hotkey {
   height: 26px;
-  padding: 0 8px;
-  font: 500 13px var(--mono);
-  color: var(--lime);
-  background: none;
-  border: 1px solid rgba(190, 242, 100, 0.4);
-  border-radius: 6px;
+  padding: 0 7px;
+  font: 600 12px var(--mono);
 }
 
 button.hotkey:hover {
-  background: rgba(190, 242, 100, 0.1);
+  background: rgba(255, 116, 119, 0.2);
 }
 
 button.hotkey.recording {
-  color: #041010;
-  background-image: var(--neon);
-  background-size: 200% 100%;
-  border-color: transparent;
-  animation: flow 2s linear infinite, pulse 1.4s ease-out infinite;
+  font: 700 11px var(--pixel);
+  background: var(--orange);
 }
 
 .hotkey-error {
@@ -112,256 +176,98 @@ button.hotkey.recording {
   right: 0;
   padding: 4px 8px;
   white-space: nowrap;
-  font-size: 13px;
-  color: var(--rose-soft);
-  background: var(--bg);
-  border: 1px solid rgba(244, 63, 94, 0.5);
-  border-radius: 7px;
+  font: 600 12px var(--mono);
+  background: var(--paper);
+  border: 2px solid var(--orange);
   z-index: 1;
 }
 
-.body {
-  min-height: 0;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+/* The viewfinder: halftone, square ink corners, the orange scan bar. */
 
-/* Buttons */
-
-button {
-  font: 16px var(--display);
-  color: var(--text);
-  border-radius: 11px;
-  height: 44px;
-  padding: 0 14px;
-  cursor: pointer;
-}
-
-button:disabled {
-  cursor: default;
-  opacity: 0.6;
-}
-
-button.primary {
+.viewfinder {
   position: relative;
+  height: 150px;
   overflow: hidden;
-  border: none;
-  background-image: var(--neon);
-  background-size: 200% 100%;
-  color: #041010;
-  font-size: 18px;
-  animation: flow 4s linear infinite, pulse 2s ease-out infinite;
-}
-
-button.primary.big {
-  height: 52px;
-  font-size: 22px;
-  border-radius: 13px;
-}
-
-.sheen {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 42%;
-  height: 100%;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
-  animation: sheen 2.8s ease-in-out infinite;
-  pointer-events: none;
-}
-
-button.ghost {
-  border: 1px solid rgba(94, 234, 212, 0.45);
-  background: rgba(94, 234, 212, 0.06);
-  color: #d6fff4;
-}
-
-button.ghost.small {
-  height: 30px;
-  font-size: 15px;
-  border-radius: 8px;
-  padding: 0 12px;
-}
-
-button.risky {
-  border: 1.5px solid var(--rose);
-  background: rgba(244, 63, 94, 0.1);
-  color: var(--rose-soft);
-}
-
-button.dismiss {
-  flex: none;
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  border-radius: 9px;
-  border: 1px solid var(--line);
-  background: var(--bg);
-  color: #9ff5e3;
+  background: var(--halftone), var(--paper);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-button.show {
-  height: auto;
-  padding: 0;
-  border: none;
-  background: none;
-  font: 11px var(--pixel);
-  color: var(--lime);
-}
-
-.actions {
-  display: flex;
-  gap: 8px;
-}
-
-.actions > button {
-  flex: 1;
-}
-
-/* Viewfinder corners: one look for the idle frame and every card. */
-
-.tone-ok {
-  --c1: var(--cyan);
-  --c2: #8ef0a0;
-  --c3: var(--lime);
-  --glow-a: rgba(94, 234, 212, 0.7);
-  --glow-b: rgba(190, 242, 100, 0.95);
-}
-
-.tone-warn {
-  --c1: #fbbf24;
-  --c2: #fb7a50;
-  --c3: var(--rose);
-  --glow-a: rgba(251, 146, 60, 0.7);
-  --glow-b: rgba(244, 63, 94, 0.95);
-}
-
-.tone-danger {
-  --c1: var(--rose);
-  --c2: #ef2f55;
-  --c3: #e11d48;
-  --glow-a: rgba(244, 63, 94, 0.7);
-  --glow-b: rgba(225, 29, 72, 1);
 }
 
 .corners {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  animation: glow 2.2s ease-in-out infinite;
 }
 
 .corners > span {
   position: absolute;
   width: 22px;
   height: 22px;
-  border-style: solid;
-  border-width: 0;
+  border: 0 solid var(--ink);
 }
 
 .corners > .c-tl {
-  top: 0;
-  left: 0;
-  border-top-width: 3px;
-  border-left-width: 3px;
-  border-top-left-radius: 7px;
-  border-color: var(--c1);
+  top: 8px;
+  left: 8px;
+  border-top-width: 5px;
+  border-left-width: 5px;
 }
 
 .corners > .c-tr {
-  top: 0;
-  right: 0;
-  border-top-width: 3px;
-  border-right-width: 3px;
-  border-top-right-radius: 7px;
-  border-color: var(--c2);
+  top: 8px;
+  right: 8px;
+  border-top-width: 5px;
+  border-right-width: 5px;
 }
 
 .corners > .c-bl {
-  bottom: 0;
-  left: 0;
-  border-bottom-width: 3px;
-  border-left-width: 3px;
-  border-bottom-left-radius: 7px;
-  border-color: var(--c2);
+  bottom: 8px;
+  left: 8px;
+  border-bottom-width: 5px;
+  border-left-width: 5px;
 }
 
 .corners > .c-br {
-  bottom: 0;
-  right: 0;
-  border-bottom-width: 3px;
-  border-right-width: 3px;
-  border-bottom-right-radius: 7px;
-  border-color: var(--c3);
-}
-
-/* The idle viewfinder */
-
-.viewfinder {
-  position: relative;
-  height: 160px;
-  border-radius: 12px;
-  background: radial-gradient(ellipse at center, #0c1a18, #060808 70%);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  bottom: 8px;
+  right: 8px;
+  border-bottom-width: 5px;
+  border-right-width: 5px;
 }
 
 .scanline {
   position: absolute;
-  left: 18px;
-  right: 18px;
-  height: 3px;
-  border-radius: 3px;
-  background: linear-gradient(90deg, rgba(94, 234, 212, 0), var(--cyan) 30%, var(--lime) 70%, rgba(190, 242, 100, 0));
-  box-shadow: 0 0 18px 4px rgba(94, 234, 212, 0.5);
-  animation: sweep 2.6s ease-in-out infinite;
+  left: 0;
+  right: 0;
+  height: 9px;
+  background: var(--orange);
+  mix-blend-mode: multiply;
+  animation: sweep 2.8s ease-in-out infinite;
 }
 
 .prompt {
   position: relative;
-  font-size: 18px;
-  line-height: 1.3;
-  color: var(--soft);
+  font: 700 13px/1.3 var(--pixel);
   text-align: center;
   white-space: pre-line;
 }
 
 .hint {
   margin: 0;
-  font: 10px/1.6 var(--pixel);
-  color: var(--dim);
+  font: 400 10px/1.6 var(--pixel);
 }
 
 /* Cards */
 
 .card {
   position: relative;
-  border-radius: 12px;
-  padding: 16px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background: radial-gradient(ellipse at top, #0c1a18, #060808 75%);
-  animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-.card.tone-warn,
-.card.tone-danger {
-  background: radial-gradient(ellipse at top, #1e0d0a, #0a0606 75%);
-}
-
-.card.tone-warn button.ghost,
-.card.tone-danger button.ghost {
-  border-color: rgba(251, 146, 60, 0.45);
-  background: rgba(251, 146, 60, 0.06);
-  color: #ffe4d4;
+  animation: rise 0.35s ease-out both;
 }
 
 .card-head {
@@ -374,54 +280,61 @@ button.show {
 .titles {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   min-width: 0;
 }
 
+/* The kind of code, on an orange label: striped and marked ▲ when the link
+   needs a second look, solid ink when it must not be opened. */
 .meta {
-  font: 11px var(--pixel);
-  color: var(--lime);
+  align-self: flex-start;
+  font: 700 10px var(--pixel);
+  padding: 2px 6px;
+  background: var(--orange);
 }
 
 .tone-warn .meta {
-  color: var(--amber);
+  background: repeating-linear-gradient(135deg, var(--orange) 0 8px, #ff9496 8px 16px);
+}
+
+.tone-warn .meta::before,
+.tone-danger .meta::before {
+  content: "▲ ";
 }
 
 .tone-danger .meta {
-  color: var(--rose);
+  background: var(--ink);
+  color: var(--paper);
 }
 
-/* Sized by length (lib/headline.ts) so a domain stays on one line; a very
-   long one may still wrap as a last resort. */
+.card.tone-warn,
+.card.tone-danger {
+  border-width: 3px;
+}
+
+/* Read from the code: exact characters, exact case. */
 .headline {
-  font-size: 30px;
-  line-height: 1.05;
-  color: #fff;
+  font: 600 22px/1.15 var(--mono);
+  color: var(--ink-deep);
   overflow-wrap: anywhere;
 }
 
 .headline.size-m {
-  font-size: 24px;
+  font-size: 19px;
 }
 
 .headline.size-s {
-  font-size: 19px;
-  line-height: 1.15;
+  font-size: 16px;
 }
 
 .content,
 .mono {
-  font: 500 13px/1.5 var(--mono);
-  color: #ffe4d4;
+  font: 400 13px/1.5 var(--mono);
+  color: var(--ink-deep);
   word-break: break-all;
   user-select: text;
   -webkit-user-select: text;
   cursor: text;
-}
-
-.tone-ok .content,
-.mono {
-  color: #d6fff4;
 }
 
 .content {
@@ -436,13 +349,13 @@ button.show {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  border-top: 1px solid rgba(94, 234, 212, 0.22);
-  padding-top: 12px;
+  border-top: 2px dotted var(--ink);
+  padding-top: 10px;
 }
 
 .secret .mono {
   font-size: 15px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
 }
 
 .warnings {
@@ -452,9 +365,7 @@ button.show {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 15px;
-  line-height: 1.3;
-  color: var(--amber-soft);
+  color: var(--ink-deep);
 }
 
 .warnings li {
@@ -466,30 +377,31 @@ button.show {
 .warnings svg {
   flex: none;
   margin-top: 2px;
-  color: var(--amber);
 }
 
-.tone-danger .warnings {
-  color: var(--rose-soft);
+/* Highlighter: how the orange ink marks things on paper. */
+.mark,
+.success {
+  box-shadow: inset 0 -8px 0 var(--orange-soft);
+  /* every wrapped line gets its own stroke, not just the last */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .notice,
 .success,
 .failure {
   margin: 0;
-  font-size: 15px;
-}
-
-.notice {
-  color: var(--soft);
 }
 
 .success {
-  color: var(--lime);
+  align-self: flex-start;
+  font-weight: 600;
 }
 
 .failure {
-  color: var(--rose-soft);
+  font-weight: 600;
+  color: var(--ink-deep);
   overflow-wrap: anywhere;
 }
 
@@ -497,98 +409,51 @@ button.show {
 
 .gate h2 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 1.1;
+  font: 700 15px/1.3 var(--pixel);
 }
 
 .gate ol {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 18px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  color: var(--soft);
 }
 
 .gate strong {
-  font-weight: 400;
-  color: #fff;
+  font-weight: 600;
 }
 
-/* Long instructions read better out of the pixel face. */
 .gate .hint {
-  font: 13px/1.4 var(--display);
-  color: var(--muted);
+  font: 400 12px/1.4 var(--mono);
+  opacity: 0.85;
 }
 
 .gate code {
-  font: 12px var(--mono);
+  font: 600 12px var(--mono);
 }
 
-/* Motion */
-
-@keyframes glow {
-  0%,
-  100% {
-    filter: drop-shadow(0 0 4px var(--glow-a));
-  }
-  50% {
-    filter: drop-shadow(0 0 12px var(--glow-b));
-  }
-}
+/* Motion: only the scan bar, and cards arriving. */
 
 @keyframes sweep {
   0%,
   100% {
-    top: 8%;
+    top: 10%;
   }
   50% {
-    top: 86%;
-  }
-}
-
-@keyframes flow {
-  to {
-    background-position: 200% 50%;
-  }
-}
-
-@keyframes sheen {
-  0%,
-  60% {
-    transform: translateX(-140%) skewX(-20deg);
-  }
-  90%,
-  100% {
-    transform: translateX(260%) skewX(-20deg);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(190, 242, 100, 0.55);
-  }
-  70%,
-  100% {
-    box-shadow: 0 0 0 12px rgba(190, 242, 100, 0);
+    top: 78%;
   }
 }
 
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
     transform: none;
   }
-}
-
-button:disabled,
-button:disabled .sheen {
-  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

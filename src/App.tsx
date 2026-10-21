@@ -2,7 +2,7 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
 import { DismissButton } from "./components/DismissButton";
 import { HotkeyButton } from "./components/HotkeyButton";
-import { Corners, PrimaryButton } from "./components/Neon";
+import { Corners, PrimaryButton } from "./components/Ink";
 import { PermissionGate } from "./components/PermissionGate";
 import { ResultCard } from "./components/ResultCard";
 import * as ipc from "./lib/ipc";
@@ -31,7 +31,8 @@ export function App() {
   useEffect(() => {
     const element = popover.current;
     if (!element) return;
-    const observer = new ResizeObserver(() => void ipc.fitPopover(Math.ceil(element.offsetHeight)));
+    // + the offset shadow printed below and right of the popover (styles.css).
+    const observer = new ResizeObserver(() => void ipc.fitPopover(Math.ceil(element.offsetHeight) + 6));
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
@@ -68,7 +69,6 @@ export function App() {
     <main className="popover" ref={popover}>
       <header className="top">
         <span className="brand">
-          <span className="dot" aria-hidden="true" />
           QR Scanner
         </span>
         {afterScan ? (
@@ -103,7 +103,6 @@ export function App() {
         )}
         {view.name === "notFound" && (
           <div className="card tone-warn">
-            <Corners />
             <header className="card-head">
               <span className="meta">Nothing found</span>
               <DismissButton onClick={reset} />
@@ -113,7 +112,6 @@ export function App() {
         )}
         {view.name === "error" && (
           <div className="card tone-danger">
-            <Corners />
             <header className="card-head">
               <span className="meta">Scan failed</span>
               <DismissButton onClick={reset} />

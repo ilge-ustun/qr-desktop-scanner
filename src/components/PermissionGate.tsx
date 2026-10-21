@@ -1,4 +1,4 @@
-import { Corners, PrimaryButton } from "./Neon";
+import { PrimaryButton } from "./Ink";
 
 type Props = {
   onOpenSettings: () => void;
@@ -8,7 +8,6 @@ type Props = {
 export function PermissionGate({ onOpenSettings, onRetry }: Props) {
   return (
     <section className="card tone-warn gate">
-      <Corners />
       <span className="meta">Screen access needed</span>
       <h2>Let QR Scanner see your screen</h2>
       <ol>
