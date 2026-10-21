@@ -20,6 +20,10 @@ export const openLink = (url: string) => invoke<void>("open_link", { url });
 export const hidePopover = () => invoke<void>("hide_popover");
 export const copyText = (text: string) => writeText(text);
 export const fitPopover = (height: number) => invoke<void>("fit_popover", { height });
+export const getHotkey = () => invoke<string | null>("get_hotkey");
+export const suspendHotkey = () => invoke<void>("suspend_hotkey");
+export const resumeHotkey = () => invoke<void>("resume_hotkey");
+export const setHotkey = (accelerator: string) => invoke<string>("set_hotkey", { accelerator });
 export const joinWifi = (ssid: string, password: string) =>
   invoke<void>("join_wifi", { ssid, password: password || null });
 

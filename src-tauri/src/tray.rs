@@ -3,13 +3,13 @@
 use tauri::image::Image;
 use tauri::menu::{Menu, MenuItem, PredefinedMenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
-use tauri::AppHandle;
+use tauri::{AppHandle, Wry};
 
 use crate::{popover, scan};
 
-pub fn create(app: &AppHandle) -> tauri::Result<()> {
-    let scan_item =
-        MenuItem::with_id(app, "scan", "Scan QR Code", true, Some("CmdOrCtrl+Shift+2"))?;
+/// Returns the Scan menu item, whose shortcut label follows the user's choice.
+pub fn create(app: &AppHandle) -> tauri::Result<MenuItem<Wry>> {
+    let scan_item = MenuItem::with_id(app, "scan", "Scan QR Code", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, "quit", "Quit QR Scanner", true, None::<&str>)?;
     let menu = Menu::with_items(
         app,
@@ -40,5 +40,5 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
             }
         })
         .build(app)?;
-    Ok(())
+    Ok(scan_item)
 }

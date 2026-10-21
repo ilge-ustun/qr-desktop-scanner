@@ -2,23 +2,18 @@
 //! `qr-core`; this crate wires it to the platform.
 
 mod commands;
+mod hotkey;
 mod platform;
 mod popover;
 mod scan;
 mod tray;
 
-use tauri_plugin_global_shortcut::{Code, Modifiers, Shortcut, ShortcutState};
-
-/// ⌘⇧2 starts a scan from anywhere: beside the system's screenshot keys
-/// (⌘⇧3/4/5), and unused by macOS. ⌥⇧Q, the first choice, closed windows.
-fn hotkey() -> Shortcut {
-    Shortcut::new(Some(Modifiers::SUPER | Modifiers::SHIFT), Code::Digit2)
-}
+use tauri::Manager;
+use tauri_plugin_global_shortcut::ShortcutState;
 
 pub fn run() {
+    // Whatever shortcut is registered (hotkey.rs decides which) starts a scan.
     let shortcuts = tauri_plugin_global_shortcut::Builder::new()
-        .with_shortcut(hotkey())
-        .expect("the hotkey is a valid shortcut")
         .with_handler(|app, _, event| {
             if event.state() == ShortcutState::Pressed {
                 scan::spawn(app.clone());
@@ -41,12 +36,18 @@ pub fn run() {
             commands::hide_popover,
             commands::fit_popover,
             commands::join_wifi,
+            commands::get_hotkey,
+            commands::suspend_hotkey,
+            commands::resume_hotkey,
+            commands::set_hotkey,
         ])
         .setup(|app| {
             // A menu-bar app: no Dock icon, no entry in the app switcher.
             #[cfg(target_os = "macos")]
             app.set_activation_policy(tauri::ActivationPolicy::Accessory);
-            tray::create(app.handle())?;
+            let scan_item = tray::create(app.handle())?;
+            app.manage(hotkey::Hotkey::new(scan_item));
+            hotkey::register_saved(app.handle());
             popover::hide_on_blur(app.handle());
             // Open once at launch, so it is clear where the app lives.
             popover::show(app.handle());

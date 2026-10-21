@@ -75,11 +75,19 @@ body {
   animation: glow 2.2s ease-in-out infinite;
 }
 
-/* The shortcut, shown as a key; clicking it scans too. Silkscreen has no ⌥ or ⇧. */
+/* The shortcut chip: shows the keys; click it to record new ones.
+   Silkscreen has no ⌘ ⌥ ⇧, so the mono face. */
+.hotkey-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
 button.hotkey {
-  height: 24px;
-  padding: 0 7px;
-  font: 500 12px var(--mono);
+  height: 26px;
+  padding: 0 8px;
+  font: 500 13px var(--mono);
   color: var(--lime);
   background: none;
   border: 1px solid rgba(190, 242, 100, 0.4);
@@ -88,6 +96,28 @@ button.hotkey {
 
 button.hotkey:hover {
   background: rgba(190, 242, 100, 0.1);
+}
+
+button.hotkey.recording {
+  color: #041010;
+  background-image: var(--neon);
+  background-size: 200% 100%;
+  border-color: transparent;
+  animation: flow 2s linear infinite, pulse 1.4s ease-out infinite;
+}
+
+.hotkey-error {
+  position: absolute;
+  top: 32px;
+  right: 0;
+  padding: 4px 8px;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--rose-soft);
+  background: var(--bg);
+  border: 1px solid rgba(244, 63, 94, 0.5);
+  border-radius: 7px;
+  z-index: 1;
 }
 
 .body {

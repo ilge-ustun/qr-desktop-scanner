@@ -11,6 +11,10 @@ const ipc = vi.hoisted(() => ({
   copyText: vi.fn(() => Promise.resolve()),
   openLink: vi.fn(() => Promise.resolve()),
   joinWifi: vi.fn(() => Promise.resolve()),
+  getHotkey: vi.fn(() => Promise.resolve("shift+super+Digit2")),
+  suspendHotkey: vi.fn(() => Promise.resolve()),
+  resumeHotkey: vi.fn(() => Promise.resolve()),
+  setHotkey: vi.fn((a: string) => Promise.resolve(a)),
 }));
 vi.mock("../lib/ipc", () => ipc);
 
@@ -33,9 +37,14 @@ describe("App", () => {
     expect(ipc.startScan).toHaveBeenCalledOnce();
   });
 
-  it("scans from the shortcut key shown in the header", () => {
+  it("shows the saved shortcut, and clicking it records a new one instead of scanning", async () => {
     render(<App />);
-    fireEvent.click(screen.getByRole("button", { name: "⌘⇧2" }));
-    expect(ipc.startScan).toHaveBeenCalledOnce();
+    const chip = await screen.findByRole("button", { name: /Shortcut ⇧⌘2/ });
+    fireEvent.click(chip);
+    expect(ipc.startScan).not.toHaveBeenCalled();
+    expect(ipc.suspendHotkey).toHaveBeenCalledOnce();
+    fireEvent.keyDown(window, { code: "KeyQ", key: "q", metaKey: true, ctrlKey: true });
+    expect(ipc.setHotkey).toHaveBeenCalledWith("control+super+KeyQ");
+    expect(await screen.findByRole("button", { name: /Shortcut ⌃⌘Q/ })).toBeTruthy();
   });
 });

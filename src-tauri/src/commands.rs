@@ -5,7 +5,7 @@ use qr_core::{check_openable, ScreenPermission};
 use tauri::AppHandle;
 use tauri_plugin_opener::OpenerExt;
 
-use crate::{platform, popover, scan};
+use crate::{hotkey, platform, popover, scan};
 
 /// Starts a scan; the result arrives as the `scan://result` event, the same
 /// way as for a scan started by the hotkey or the tray menu.
@@ -59,4 +59,27 @@ pub fn hide_popover(app: AppHandle) {
 #[tauri::command]
 pub fn fit_popover(app: AppHandle, height: f64) {
     popover::fit(&app, height);
+}
+
+/// The scan shortcut, as `shift+super+Digit2`, or None when none is set.
+#[tauri::command]
+pub fn get_hotkey(app: AppHandle) -> Option<String> {
+    hotkey::current(&app)
+}
+
+/// Recording a new shortcut: the current one stops scanning until
+/// set_hotkey or resume_hotkey.
+#[tauri::command]
+pub fn suspend_hotkey(app: AppHandle) {
+    hotkey::suspend(&app);
+}
+
+#[tauri::command]
+pub fn resume_hotkey(app: AppHandle) {
+    hotkey::resume(&app);
+}
+
+#[tauri::command]
+pub fn set_hotkey(app: AppHandle, accelerator: String) -> Result<String, String> {
+    hotkey::change(&app, &accelerator)
 }

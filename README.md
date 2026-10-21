@@ -72,7 +72,9 @@ allowed again, because the permission is tied to the signature.
 8. A Wi-Fi code shows the network name, the password hidden behind Show,
    and Connect joins it (System Settings → Wi-Fi shows it connected).
 9. The popover is only as tall as its content.
-10. ⌘⇧2 works while another app is in front.
+10. ⌘⇧2 works while another app is in front. Click the ⇧⌘2 chip in the
+    popover, press another combination (with ⌘, ⌃ or ⌥) and that one works
+    instead, also after a restart; Esc while recording keeps the old one.
 
 ## How it works
 

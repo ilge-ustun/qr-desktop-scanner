@@ -1,5 +1,6 @@
-import { useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
+import { HotkeyButton } from "./components/HotkeyButton";
 import { Corners, PrimaryButton } from "./components/Neon";
 import { PermissionGate } from "./components/PermissionGate";
 import { ResultCard } from "./components/ResultCard";
@@ -10,6 +11,19 @@ export function App() {
   const [state, dispatch] = useReducer(reduce, initialState);
   const { view } = state;
   const popover = useRef<HTMLElement>(null);
+  const [hotkey, setHotkey] = useState<string | null>(null);
+
+  useEffect(() => {
+    ipc.getHotkey().then(setHotkey, () => undefined);
+  }, []);
+
+  const pickHotkey = useCallback(async (accelerator: string) => {
+    const now = await ipc.setHotkey(accelerator);
+    setHotkey(now);
+    return now;
+  }, []);
+  const suspendHotkey = useCallback(() => void ipc.suspendHotkey(), []);
+  const resumeHotkey = useCallback(() => void ipc.resumeHotkey(), []);
 
   // The window is as tall as what it shows: Rust resizes it whenever the
   // content's height changes (bounded there, with the rest scrolling here).
@@ -60,9 +74,12 @@ export function App() {
             Scan again
           </button>
         ) : (
-          <button type="button" className="hotkey" onClick={scan} title="Scan — or press ⌘⇧2 in any app">
-            ⌘⇧2
-          </button>
+          <HotkeyButton
+            current={hotkey}
+            onRecordStart={suspendHotkey}
+            onRecordCancel={resumeHotkey}
+            onPick={pickHotkey}
+          />
         )}
       </header>
 
