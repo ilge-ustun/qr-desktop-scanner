@@ -30,6 +30,7 @@ pub fn run() {
         .manage(popover::Popover::default())
         .invoke_handler(tauri::generate_handler![
             commands::start_scan,
+            commands::find_all_on_screen,
             commands::screen_permission,
             commands::open_screen_settings,
             commands::open_link,

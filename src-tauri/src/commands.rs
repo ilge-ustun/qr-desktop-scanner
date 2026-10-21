@@ -14,6 +14,13 @@ pub fn start_scan(app: AppHandle) {
     scan::spawn(app);
 }
 
+/// Finds every code on every display, with no selection; the result arrives
+/// as `scan://result`, as for `start_scan`.
+#[tauri::command]
+pub fn find_all_on_screen(app: AppHandle) {
+    scan::spawn_find_all(app);
+}
+
 #[tauri::command]
 pub fn screen_permission() -> bool {
     platform::Permission.granted()
