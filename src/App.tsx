@@ -42,7 +42,7 @@ export function App() {
     let gone = false;
     ipc
       .onScan({
-        started: () => dispatch({ type: "started" }),
+        started: (scope) => dispatch({ type: "started", scope }),
         result: (outcome) => dispatch({ type: "result", outcome }),
       })
       .then((u) => (gone ? u() : (unlisten = u)));
@@ -61,6 +61,7 @@ export function App() {
   }, []);
 
   const scan = () => void ipc.startScan();
+  const findAll = () => void ipc.findAllOnScreen();
   const reset = () => dispatch({ type: "reset" });
   const ready = view.name === "idle" || view.name === "scanning";
   const afterScan = view.name === "found" || view.name === "notFound" || view.name === "error";
@@ -98,6 +99,9 @@ export function App() {
             <PrimaryButton big onClick={scan} disabled={view.name === "scanning"}>
               Scan
             </PrimaryButton>
+            <button type="button" className="ghost" onClick={findAll} disabled={view.name === "scanning"}>
+              Find all on screen
+            </button>
             <p className="hint">Photo, PDF, paused video, web page. Esc cancels.</p>
           </>
         )}
@@ -107,7 +111,11 @@ export function App() {
               <span className="meta">Nothing found</span>
               <DismissButton onClick={reset} />
             </header>
-            <p className="notice">No QR code in that area. Try a box around the whole code, including its white border.</p>
+            <p className="notice">
+              {view.scope === "screen"
+                ? "Searched the whole screen and found no QR code. If one is small, Scan again and drag around just that code."
+                : "No QR code in that area. Try a box around the whole code, including its white border."}
+            </p>
           </div>
         )}
         {view.name === "error" && (

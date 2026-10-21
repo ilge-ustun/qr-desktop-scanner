@@ -3,26 +3,33 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
-use qr_core::{run_scan, RxingDecoder, ScanOutcome, ScreenPermission};
+use qr_core::{run_find_all, run_scan, RxingDecoder, ScanOutcome, Scope, ScreenPermission};
 use tauri::{AppHandle, Emitter, Manager};
 
 use crate::{platform, popover};
 
 /// Long enough for the window server to take the popover off the screen, so
-/// it is not in the selection.
+/// it is not in the selection or the screenshots.
 const HIDE_SETTLE: Duration = Duration::from_millis(150);
 
-/// One scan at a time: a second hotkey press during a selection is dropped.
+/// One scan at a time, of either kind: a second hotkey press during a
+/// selection, or Find All during one, is dropped.
 #[derive(Default)]
 pub struct ScanState {
     running: AtomicBool,
 }
 
+/// The drag scan: the user selects a region.
 pub fn spawn(app: AppHandle) {
-    tauri::async_runtime::spawn(scan(app));
+    tauri::async_runtime::spawn(scan(app, Scope::Area));
 }
 
-async fn scan(app: AppHandle) {
+/// Every code on every display, with no selection.
+pub fn spawn_find_all(app: AppHandle) {
+    tauri::async_runtime::spawn(scan(app, Scope::Screen));
+}
+
+async fn scan(app: AppHandle, scope: Scope) {
     if app
         .state::<ScanState>()
         .running
@@ -30,7 +37,7 @@ async fn scan(app: AppHandle) {
     {
         return;
     }
-    let outcome = capture_and_decode(&app).await;
+    let outcome = capture_and_decode(&app, scope).await;
     app.state::<ScanState>()
         .running
         .store(false, Ordering::SeqCst);
@@ -39,13 +46,14 @@ async fn scan(app: AppHandle) {
         platform::request_permission();
     }
     let _ = app.emit("scan://result", &outcome);
-    // After Esc the user is done; don't pop the window back up.
+    // After Esc the user is done; don't pop the window back up. A find-all
+    // never ends Cancelled.
     if outcome != ScanOutcome::Cancelled {
         popover::show(&app);
     }
 }
 
-async fn capture_and_decode(app: &AppHandle) -> ScanOutcome {
+async fn capture_and_decode(app: &AppHandle, scope: Scope) -> ScanOutcome {
     if !platform::Permission.granted() {
         return ScanOutcome::PermissionDenied;
     }
@@ -56,17 +64,26 @@ async fn capture_and_decode(app: &AppHandle) -> ScanOutcome {
     if let Err(e) = std::fs::create_dir_all(&scratch) {
         return error(format!("could not create {}: {e}", scratch.display()));
     }
-    let _ = app.emit("scan://started", ());
+    // "area" or "screen": the page words its result for the kind of scan.
+    let _ = app.emit("scan://started", scope);
     popover::hide(app);
 
     tauri::async_runtime::spawn_blocking(move || {
         std::thread::sleep(HIDE_SETTLE);
-        run_scan(
-            &platform::Permission,
-            &platform::Screencapture,
-            &RxingDecoder,
-            &scratch,
-        )
+        match scope {
+            Scope::Area => run_scan(
+                &platform::Permission,
+                &platform::Screencapture,
+                &RxingDecoder,
+                &scratch,
+            ),
+            Scope::Screen => run_find_all(
+                &platform::Permission,
+                &platform::ScreencaptureDisplays,
+                &RxingDecoder,
+                &scratch,
+            ),
+        }
     })
     .await
     .unwrap_or_else(|e| error(format!("the scan stopped unexpectedly: {e}")))

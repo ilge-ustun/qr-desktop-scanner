@@ -1,12 +1,17 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use qr_core::{Capture, Capturer, ScreenPermission};
+use qr_core::{Capture, Capturer, DisplaysCapturer, ScreenPermission};
 
 #[link(name = "CoreGraphics", kind = "framework")]
 extern "C" {
     fn CGPreflightScreenCaptureAccess() -> bool;
     fn CGRequestScreenCaptureAccess() -> bool;
+    fn CGGetActiveDisplayList(
+        max_displays: u32,
+        active_displays: *mut u32,
+        display_count: *mut u32,
+    ) -> i32;
 }
 
 /// Without Screen Recording permission screencapture does not fail: it
@@ -57,6 +62,43 @@ impl Capturer for Screencapture {
         } else {
             Err(format!("screencapture failed: {status}"))
         }
+    }
+}
+
+/// Every display at once, as Cmd-Shift-3 takes them: one image each.
+pub struct ScreencaptureDisplays;
+
+impl DisplaysCapturer for ScreencaptureDisplays {
+    fn capture_displays(&self, dir: &Path) -> Result<Vec<PathBuf>, String> {
+        let shots: Vec<PathBuf> = (1..=active_displays()?)
+            .map(|n| dir.join(format!("display-{n}.png")))
+            .collect();
+        // No -i: no selection. Given one file per display, screencapture
+        // writes them in order, the main display first. -x: no shutter sound.
+        let status = Command::new("/usr/sbin/screencapture")
+            .arg("-x")
+            .args(&shots)
+            .status()
+            .map_err(|e| format!("could not run screencapture: {e}"))?;
+        if status.success() {
+            Ok(shots)
+        } else {
+            Err(format!("screencapture failed: {status}"))
+        }
+    }
+}
+
+fn active_displays() -> Result<u32, String> {
+    let mut count = 0;
+    // SAFETY: with no list (null, room for none), CoreGraphics only writes
+    // the number of active displays to `count`.
+    let err = unsafe { CGGetActiveDisplayList(0, std::ptr::null_mut(), &mut count) };
+    match (err, count) {
+        (0, 0) => Err("no display is active".into()),
+        (0, count) => Ok(count),
+        (err, _) => Err(format!(
+            "could not list the displays: CoreGraphics error {err}"
+        )),
     }
 }
 

@@ -10,10 +10,22 @@ use crate::{popover, scan};
 /// Returns the Scan menu item, whose shortcut label follows the user's choice.
 pub fn create(app: &AppHandle) -> tauri::Result<MenuItem<Wry>> {
     let scan_item = MenuItem::with_id(app, "scan", "Scan QR Code", true, None::<&str>)?;
+    let find_all = MenuItem::with_id(
+        app,
+        "find_all",
+        "Find All Codes on Screen",
+        true,
+        None::<&str>,
+    )?;
     let quit = MenuItem::with_id(app, "quit", "Quit QR Scanner", true, None::<&str>)?;
     let menu = Menu::with_items(
         app,
-        &[&scan_item, &PredefinedMenuItem::separator(app)?, &quit],
+        &[
+            &scan_item,
+            &find_all,
+            &PredefinedMenuItem::separator(app)?,
+            &quit,
+        ],
     )?;
 
     TrayIconBuilder::with_id("main")
@@ -28,6 +40,7 @@ pub fn create(app: &AppHandle) -> tauri::Result<MenuItem<Wry>> {
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id().as_ref() {
             "scan" => scan::spawn(app.clone()),
+            "find_all" => scan::spawn_find_all(app.clone()),
             "quit" => app.exit(0),
             _ => {}
         })
