@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 
 import type { WifiNetwork } from "../lib/payload";
+import { DismissButton } from "./DismissButton";
 
 type Props = {
   network: WifiNetwork;
   onCopy: (text: string) => Promise<void>;
   onJoin: (ssid: string, password: string) => Promise<void>;
+  onDismiss: () => void;
 };
 
 type Join = { state: "idle" } | { state: "joining" } | { state: "joined" } | { state: "failed"; message: string };
@@ -20,7 +22,7 @@ const SECURITY: Record<string, string> = {
   SAE: "WPA3",
 };
 
-export function WifiCard({ network, onCopy, onJoin }: Props) {
+export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
   const [shown, setShown] = useState(false);
   const [copied, setCopied] = useState(false);
   const [join, setJoin] = useState<Join>({ state: "idle" });
@@ -44,6 +46,7 @@ export function WifiCard({ network, onCopy, onJoin }: Props) {
       <header>
         <span className="badge badge-wifi">Wi-Fi</span>
         <span className="headline">{network.ssid}</span>
+        <DismissButton onClick={onDismiss} />
       </header>
       <dl className="fields">
         <dt>Security</dt>

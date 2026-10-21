@@ -9,8 +9,17 @@ const card = (text: string) => {
   const onCopy = vi.fn(() => Promise.resolve());
   const onOpen = vi.fn(() => Promise.resolve());
   const onJoin = vi.fn(() => Promise.resolve());
-  render(<ResultCard code={{ text, format: "qrcode" }} onCopy={onCopy} onOpen={onOpen} onJoin={onJoin} />);
-  return { onCopy, onOpen, onJoin };
+  const onDismiss = vi.fn();
+  render(
+    <ResultCard
+      code={{ text, format: "qrcode" }}
+      onCopy={onCopy}
+      onOpen={onOpen}
+      onJoin={onJoin}
+      onDismiss={onDismiss}
+    />,
+  );
+  return { onCopy, onOpen, onJoin, onDismiss };
 };
 
 describe("ResultCard", () => {
@@ -51,6 +60,15 @@ describe("ResultCard", () => {
     card("WIFI:T:WPA;P:secret;;");
     expect(screen.queryByRole("button", { name: "Connect" })).toBeNull();
     expect(screen.getByRole("button", { name: "Copy" })).toBeTruthy();
+  });
+
+  it("has a dismiss button on every kind of card", () => {
+    for (const text of ["https://example.com", "WIFI:S:Home;P:pw;;", "plain words"]) {
+      const { onDismiss } = card(text);
+      fireEvent.click(screen.getByRole("button", { name: "Dismiss" }));
+      expect(onDismiss, text).toHaveBeenCalledOnce();
+      cleanup();
+    }
   });
 
   it("renders markup in the content as text", () => {

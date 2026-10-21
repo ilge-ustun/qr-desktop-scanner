@@ -36,4 +36,20 @@ describe("reduce", () => {
       message: "boom",
     });
   });
+
+  it("dismisses one card, and returns to the start when none is left", () => {
+    const two: State = {
+      view: {
+        name: "found",
+        codes: [
+          { text: "a", format: "qrcode" },
+          { text: "b", format: "qrcode" },
+        ],
+      },
+      beforeScan: { name: "idle" },
+    };
+    const one = reduce(two, { type: "dismiss", text: "a" });
+    expect(one.view).toEqual({ name: "found", codes: [{ text: "b", format: "qrcode" }] });
+    expect(reduce(one, { type: "dismiss", text: "b" }).view).toEqual({ name: "idle" });
+  });
 });

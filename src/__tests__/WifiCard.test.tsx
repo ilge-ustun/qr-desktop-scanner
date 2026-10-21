@@ -11,7 +11,7 @@ const home: WifiNetwork = { ssid: "Home", password: "secret123", security: "WPA"
 const card = (network: WifiNetwork, join: () => Promise<void> = () => Promise.resolve()) => {
   const onCopy = vi.fn(() => Promise.resolve());
   const onJoin = vi.fn(join);
-  render(<WifiCard network={network} onCopy={onCopy} onJoin={onJoin} />);
+  render(<WifiCard network={network} onCopy={onCopy} onJoin={onJoin} onDismiss={() => {}} />);
   return { onCopy, onJoin };
 };
 

@@ -83,6 +83,7 @@ export function App() {
                 onCopy={ipc.copyText}
                 onOpen={ipc.openLink}
                 onJoin={ipc.joinWifi}
+                onDismiss={() => dispatch({ type: "dismiss", text: code.text })}
               />
             ))}
           </>

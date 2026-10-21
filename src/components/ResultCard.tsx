@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import type { DecodedCode } from "../lib/ipc";
 import { classify, LABELS, type Payload } from "../lib/payload";
 import { assess } from "../lib/urlSafety";
+import { DismissButton } from "./DismissButton";
 import { WifiCard } from "./WifiCard";
 
 type Props = {
@@ -10,17 +11,18 @@ type Props = {
   onCopy: (text: string) => Promise<void>;
   onOpen: (url: string) => Promise<void>;
   onJoin: (ssid: string, password: string) => Promise<void>;
+  onDismiss: () => void;
 };
 
-export function ResultCard({ code, onCopy, onOpen, onJoin }: Props) {
+export function ResultCard({ code, onCopy, onOpen, onJoin, onDismiss }: Props) {
   const payload = classify(code.text);
   if (payload.kind === "wifi" && payload.network) {
-    return <WifiCard network={payload.network} onCopy={onCopy} onJoin={onJoin} />;
+    return <WifiCard network={payload.network} onCopy={onCopy} onJoin={onJoin} onDismiss={onDismiss} />;
   }
-  return <GenericCard payload={payload} onCopy={onCopy} onOpen={onOpen} />;
+  return <GenericCard payload={payload} onCopy={onCopy} onOpen={onOpen} onDismiss={onDismiss} />;
 }
 
-function GenericCard({ payload, onCopy, onOpen }: { payload: Payload } & Omit<Props, "code" | "onJoin">) {
+function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload } & Omit<Props, "code" | "onJoin">) {
   const linkish = payload.kind === "url" || payload.kind === "email";
   const safety = linkish ? assess(payload.text) : null;
   const headline = payload.kind === "email" ? payload.address : safety?.domain;
@@ -43,6 +45,7 @@ function GenericCard({ payload, onCopy, onOpen }: { payload: Payload } & Omit<Pr
       <header>
         <span className={`badge badge-${payload.kind}`}>{LABELS[payload.kind]}</span>
         {headline && <span className="headline">{headline}</span>}
+        <DismissButton onClick={onDismiss} />
       </header>
       <p className="content">{payload.text}</p>
       {safety?.warnings.map((w) => (
