@@ -1,0 +1,39 @@
+name: macOS build
+
+# Manual only while the repository is private: macOS runner minutes are billed
+# at 10x there. Once it is public they are free; then uncomment push and
+# pull_request so every change gets a real macOS build.
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [main, develop]
+  # pull_request:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo test --workspace
+
+      - run: npm run tauri build -- --bundles app
+      # Zip with ditto: an uploaded .app directory loses its executable bits.
+      - run: ditto -c -k --keepParent "target/release/bundle/macos/QR Scanner.app" QR-Scanner.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QR-Scanner-macos-arm64
+          path: QR-Scanner.zip
