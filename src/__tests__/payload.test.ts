@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { classify, parseWifi } from "../lib/payload";
+import { F1, F2, F3, M1, M1_CONTACT, V1, V1_CONTACT, V2, V2_CONTACT } from "./contactCodes";
 
 describe("classify", () => {
   it("treats web links as links", () => {
@@ -83,5 +84,69 @@ describe("parseWifi", () => {
 
   it("is what classify attaches to a Wi-Fi code", () => {
     expect(classify("WIFI:S:Home;;")).toMatchObject({ kind: "wifi", network: { ssid: "Home" } });
+  });
+});
+
+describe("classify, contacts", () => {
+  it("AC1: reads the vCard V1: FN, phones, emails, unescaped ORG, unfolded URL without group or type", () => {
+    expect(classify(V1)).toEqual({ kind: "contact", text: V1, contact: V1_CONTACT });
+  });
+
+  it("AC1: reads the vCard V2: the name from N when there is no FN, \\n in ORG as a newline", () => {
+    expect(classify(V2)).toEqual({ kind: "contact", text: V2, contact: V2_CONTACT });
+  });
+
+  it("AC1: reads the MECARD M1: N as First Last, a backslash before any character, colons in a value", () => {
+    expect(classify(M1)).toEqual({ kind: "contact", text: M1, contact: M1_CONTACT });
+  });
+
+  it("AC2: a contact code that does not parse is text, never a link", () => {
+    expect(classify(F1).kind, "F1: no END:VCARD").toBe("text");
+    expect(classify(F2).kind, "F2: no FN, no N").toBe("text");
+    expect(classify(F3).kind, "F3: no N").toBe("text");
+  });
+});
+
+describe("classify, SMS and geo", () => {
+  it("reads sms: and SMSTO: codes as SMS, with or without spaces", () => {
+    expect(classify("sms:+31201234567?body=Running%20late%3A%2010%20min")).toEqual({
+      kind: "sms",
+      text: "sms:+31201234567?body=Running%20late%3A%2010%20min",
+      sms: { number: "+31201234567", message: "Running late: 10 min" },
+    });
+    expect(classify("SMSTO:+31201234567:Running late: 10 min")).toMatchObject({
+      kind: "sms",
+      sms: { number: "+31201234567", message: "Running late: 10 min" },
+    });
+    expect(classify("SMSTO:+31201234567:<img src=x onerror=alert(1)>").kind).toBe("sms");
+  });
+
+  it("reads geo: codes as geo, valid or not, with or without spaces", () => {
+    expect(classify("geo:52.3731,4.8922;u=35")).toEqual({
+      kind: "geo",
+      text: "geo:52.3731,4.8922;u=35",
+      geo: {
+        coordinates: "52.3731,4.8922",
+        place: "",
+        search: false,
+        mapsLink: "https://maps.apple.com/?ll=52.3731,4.8922",
+      },
+    });
+    expect(classify("geo:90.0001,0")).toMatchObject({ kind: "geo", geo: { mapsLink: null } });
+    expect(classify("geo:<img src=x onerror=alert(1)>")).toMatchObject({
+      kind: "geo",
+      geo: { coordinates: "<img src=x onerror=alert(1)>" },
+    });
+  });
+
+  it("002 AC4: a code with no number or no coordinates (E1, E2, E3) stays a link, as before", () => {
+    for (const code of ["sms:?body=Hi", "SMSTO::Hi", "geo:"]) {
+      expect(classify(code), code).toEqual({ kind: "url", text: code });
+    }
+  });
+
+  it("falls back to text for a code with spaces and no number or no coordinates", () => {
+    expect(classify("SMSTO::Running late").kind).toBe("text");
+    expect(classify("geo:?q=Dam Square").kind).toBe("text");
   });
 });

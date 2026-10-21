@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 
+import { SHORTCUTS } from "../lib/cardKeys";
 import { headlineSize } from "../lib/headline";
 import type { WifiNetwork } from "../lib/payload";
 import { DismissButton } from "./DismissButton";
-import { PrimaryButton } from "./Ink";
+import { Keyed, PrimaryButton } from "./Ink";
+import { useCardKeys } from "./useCardKeys";
 
 type Props = {
   network: WifiNetwork;
@@ -36,6 +38,7 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
 
   const security = SECURITY[network.security.toUpperCase()] ?? network.security;
   const meta = ["Wi-Fi", security, network.hidden ? "hidden" : ""].filter(Boolean).join(" · ");
+  const copyPassword = () => onCopy(network.password).then(() => setCopied(true), () => undefined);
   const connect = () => {
     setJoin({ state: "joining" });
     onJoin(network.ssid, network.password).then(
@@ -43,9 +46,12 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
       (e: unknown) => setJoin({ state: "failed", message: String(e) }),
     );
   };
+  // Connect is disabled while it connects and once it has: ⌘J too.
+  const busy = join.state === "joining" || join.state === "joined";
+  const keyed = useCardKeys({ copy: network.password ? copyPassword : undefined, join: busy ? undefined : connect });
 
   return (
-    <article className="card tone-ok">
+    <article className="card tone-ok" {...keyed}>
       <header className="card-head">
         <div className="titles">
           <span className="meta">{meta}</span>
@@ -65,17 +71,17 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
       {join.state === "failed" && <p className="failure">Could not connect: {join.message}</p>}
       <div className="actions">
         {network.password && (
-          <button
-            type="button"
-            className="ghost"
-            onClick={() => onCopy(network.password).then(() => setCopied(true), () => undefined)}
-          >
-            {copied ? "Copied" : "Copy password"}
-          </button>
+          <Keyed shortcut="copy">
+            <button type="button" className="ghost" onClick={copyPassword} aria-keyshortcuts={SHORTCUTS.copy.aria}>
+              {copied ? "Copied" : "Copy password"}
+            </button>
+          </Keyed>
         )}
-        <PrimaryButton onClick={connect} disabled={join.state === "joining" || join.state === "joined"}>
-          {join.state === "joining" ? "Connecting…" : join.state === "joined" ? "Connected" : "Connect"}
-        </PrimaryButton>
+        <Keyed shortcut="join">
+          <PrimaryButton onClick={connect} disabled={busy} keyshortcuts={SHORTCUTS.join.aria}>
+            {join.state === "joining" ? "Connecting…" : join.state === "joined" ? "Connected" : "Connect"}
+          </PrimaryButton>
+        </Keyed>
       </div>
     </article>
   );

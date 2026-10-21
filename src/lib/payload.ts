@@ -1,11 +1,18 @@
 // What kind of thing a decoded QR code holds. The text is untrusted: it is
 // whatever someone printed or put on a screen.
 
+import { parseMecard, parseVCard, type Contact } from "./contact";
+import { parseGeo, type Geo } from "./geo";
+import { parseSms, type Sms } from "./sms";
+
 export type Payload =
   | { kind: "url"; text: string }
   | { kind: "email"; text: string; address: string }
   | { kind: "phone"; text: string; number: string }
   | { kind: "wifi"; text: string; network: WifiNetwork | null }
+  | { kind: "contact"; text: string; contact: Contact }
+  | { kind: "sms"; text: string; sms: Sms }
+  | { kind: "geo"; text: string; geo: Geo }
   | { kind: "text"; text: string };
 
 export type WifiNetwork = {
@@ -21,6 +28,9 @@ export const LABELS: Record<Payload["kind"], string> = {
   email: "Email",
   phone: "Phone",
   wifi: "Wi-Fi",
+  contact: "Contact",
+  sms: "SMS",
+  geo: "Location",
   text: "Text",
 };
 
@@ -38,8 +48,24 @@ export function classify(raw: string): Payload {
   if (/^tel:/i.test(text)) {
     return { kind: "phone", text, number: text.slice("tel:".length) };
   }
+  // Before the link test below: these may hold spaces. One without a number
+  // or without coordinates reads on, and gets the card it got before.
+  const sms = parseSms(text);
+  if (sms) return { kind: "sms", text, sms };
+  const geo = parseGeo(text);
+  if (geo) return { kind: "geo", text, geo };
   if (/^WIFI:/i.test(text)) {
     return { kind: "wifi", text, network: parseWifi(text) };
+  }
+  // A contact code that does not parse is text: "MECARD:…" without a space
+  // would otherwise pass for a link below.
+  if (/^BEGIN:VCARD/i.test(text)) {
+    const contact = parseVCard(text);
+    return contact ? { kind: "contact", text, contact } : { kind: "text", text };
+  }
+  if (/^MECARD:/i.test(text)) {
+    const contact = parseMecard(text);
+    return contact ? { kind: "contact", text, contact } : { kind: "text", text };
   }
   if (DANGEROUS_SCHEME.test(text)) {
     return { kind: "url", text };

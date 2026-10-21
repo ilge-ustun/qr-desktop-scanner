@@ -139,11 +139,44 @@ button.show {
   gap: 8px;
 }
 
-.actions > button {
+.actions > button,
+.keyed > button {
   flex: 1;
   font-size: 10px;
   padding: 0 6px;
   white-space: nowrap;
+}
+
+/* A button that answers a key, with the key printed on its corner like a
+   keycap: mono, as on the shortcut chip, since Silkscreen has no ⌘. */
+.keyed {
+  position: relative;
+  flex: 1;
+  display: flex;
+}
+
+.keycap {
+  position: absolute;
+  top: -8px;
+  right: -5px;
+  padding: 0 3px;
+  font: 600 10px/13px var(--mono);
+  color: var(--ink);
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--orange);
+  pointer-events: none;
+}
+
+.keyed > button:disabled + .keycap {
+  opacity: 0.55;
+}
+
+/* The keys act on the card holding focus, else on the first card: the other
+   cards print theirs faintly. */
+.body:has(> .card:focus-within) > .card:not(:focus-within) .keycap,
+.body:not(:has(> .card:focus-within)) > .card ~ .card .keycap {
+  opacity: 0.35;
 }
 
 /* The shortcut chip: shows the keys; click it to record new ones.
@@ -356,6 +389,49 @@ button.hotkey.recording {
 .secret .mono {
   font-size: 15px;
   letter-spacing: 0.06em;
+}
+
+/* A contact: one row per value read from the code, each with its own Copy.
+   The row's name is the app's word (Silkscreen); the value is mono. */
+.fields {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 2px dotted var(--ink);
+  padding: 8px 0;
+}
+
+.field:last-child {
+  padding-bottom: 0;
+}
+
+.field-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.field-name {
+  font: 700 10px var(--pixel);
+}
+
+/* An organisation can hold a line break (\n in a vCard). */
+.field .mono {
+  white-space: pre-wrap;
+}
+
+.field > button {
+  flex: none;
 }
 
 .warnings {
