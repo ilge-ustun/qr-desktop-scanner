@@ -77,10 +77,12 @@ h1 { margin: 0; font: 700 clamp(30px, 4.4vw, 50px)/1.08 var(--pixel); color: var
 .button.primary:hover { color: var(--sheet); transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--orange); }
 .button.primary:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--orange); }
 .fine { font-size: 13px; color: var(--ink-soft); }
-.shots { flex: 1 1 380px; min-width: 0; display: flex; justify-content: center; padding-block: 10px 40px; }
-.shots img { width: 74%; max-width: 330px; }
-.shots img:first-child { transform: rotate(-3deg); }
-.shots img:last-child { transform: rotate(4deg) translate(-18%, 22%); margin-left: -30%; }
+/* Both screenshots share one grid cell, one held left and one right, so
+   they overlap inside the column at every width and never leave it. */
+.shots { flex: 1 1 380px; min-width: 0; max-width: 480px; margin-inline: auto; display: grid; padding-block: 10px 20px; }
+.shots img { grid-area: 1 / 1; width: 72%; }
+.shots img:first-child { justify-self: start; transform: rotate(-3deg); }
+.shots img:last-child { justify-self: end; margin-top: 22%; transform: rotate(4deg); }
 
 /* Steps */
 .band { background: var(--sheet); border-block: 2px solid var(--ink); }
