@@ -84,6 +84,11 @@ allowed again, because the permission is tied to the signature.
 
 - **Selection** is macOS's own crosshair: `screencapture -i -x` (the
   ⌘⇧4 tool), so multiple displays, Retina and Esc behave as usual.
+- **Find all on screen** (the button under Scan, or *Find All Codes on
+  Screen* in the menu-bar icon's right-click menu) takes no selection:
+  `screencapture -x` writes one image per display, and each code found is
+  shown once, the main display's first. A small code may still need a box
+  around it: only a small selection is also tried enlarged.
 - **Decoding** is [rxing](https://crates.io/crates/rxing), a Rust port of
   ZXing. It finds several codes in one selection, rotated or light-on-dark.
   Apple Vision is planned as the primary decoder on macOS.
