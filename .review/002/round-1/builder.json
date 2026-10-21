@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 571939,
+  "stop_reason": "end_turn",
+  "session_id": "182918fe-8d15-4e73-b249-dbb504787564",
+  "total_cost_usd": 2.7585454000000005,
+  "usage": {
+    "input_tokens": 68,
+    "cache_creation_input_tokens": 116796,
+    "cache_read_input_tokens": 3133027,
+    "output_tokens": 59865,
+    "output_tokens_details": {
+      "thinking_tokens": 28509
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 116796,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1582,
+        "cache_read_input_tokens": 130107,
+        "cache_creation_input_tokens": 757,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 757
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 68,
+      "outputTokens": 59865,
+      "cacheReadInputTokens": 3133027,
+      "cacheCreationInputTokens": 116796,
+      "webSearchRequests": 0,
+      "costUSD": 2.7585454000000005,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 28509,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 34,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Story 002 is built in two commits on `story/002`. All 135 vitest tests pass, and lint, `tsc` and `npm run build` are clean. I didn't run the full baseline. Rust is untouched, so I didn't run cargo or `check-macos-shell.sh`.\n\n**Commits**\n- `23928e8` **Read sms:, SMSTO: and geo: codes.** New parsers in `src/lib/sms.ts`, `src/lib/geo.ts` and `src/lib/query.ts`, which holds the percent-decoding that never throws. `classify` gets the new kinds `sms` and `geo`, checked before the link test and allowing spaces. A code with no number or no coordinates (E1–E3) falls through to the card it gets today, kind `\"url\"`.\n- `dba1d33` **The cards.** `PhoneCard`, `SmsCard` and `GeoCard` sit on a shared `FieldCard`, which I drew out of `ContactCard`. Every Copy, including the headline's, has an `aria-describedby` pointing at the value it copies. There is no Call or Send. Open in Maps is a button that calls `onOpen` with the link the parser built from the two checked numbers; there is no `<a>` anywhere.\n\n**My choices where the story left them to me**\n- **Labels:** \"SMS\" and \"Location\".\n- **Headlines:** the number on phone and SMS cards. On geo cards, the place (`q`) when there is one, otherwise the coordinates.\n- **G3** shows \"Opera House\" as the headline, with the coordinates in a row below.\n- **A1** doesn't show `0,0`: in Android's search form it means \"no place\". I added a `search` flag to the geo parser for this. Without it, the card couldn't tell the search form from coordinates that are just invalid, since both have no Maps link. A test covers `geo:999,0?q=Dam`, which keeps its coordinates.\n- **Empty `tel:`** gets the generic card it gets today, the same fallback as Wi-Fi without a network name.\n- **Contact card:** its \"Copy name\" button now also has an `aria-describedby`. Nothing else about it changed, and story 001's tests pass unmodified.\n\n**Checking my own tests**\n- I applied every \"Goes red when…\" item in the story, 32 in all, one at a time. Each one turned its criterion's test red for the reason the story gives.\n- The five `tdd-` patches and their selectors are in `.review-out/mutations/`. They were produced at head `dba1d33`, each applies cleanly and turns its selector red, and every selector is green at head.\n- Beyond the criteria, I added tests for: two cards on screen at once, Open in Maps clicked twice, a failed open showing its error, dismissing while Maps is still opening, Dismiss neither copying nor opening, and \"Copied\" showing on the clicked button only.\n\n**Gaps in the spec**\n- **`+` in `q`** is kept as a literal `+`. Android uses it for a space (`q=1600+Amphitheatre`), so such a place will show with plus signs.\n- **Parameter names** `body` and `q` match in any case.\n- **Fonts and screen layout** can't be seen by jsdom. I changed no CSS: the new cards reuse the contact card's classes, so `.mono` and `.headline` stay in Sometype Mono. A person on a Mac still needs to look.\n\nThe working tree is clean apart from `.review-out/`, which is gitignored. I touched no denied paths and didn't push.",
+  "ttft_ms": 3974,
+  "type": "result",
+  "duration_ms": 683628,
+  "uuid": "0bdc826e-4fde-4025-a22b-db051582d99a",
+  "ttft_stream_ms": 3770,
+  "time_to_request_ms": 167,
+  "first_content_frame_ms": 3771,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

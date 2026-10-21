@@ -1,0 +1,22 @@
+diff --git a/src/components/ResultCard.tsx b/src/components/ResultCard.tsx
+index 3d066fe..adedb22 100644
+--- a/src/components/ResultCard.tsx
++++ b/src/components/ResultCard.tsx
+@@ -8,7 +8,6 @@ import { ContactCard } from "./ContactCard";
+ import { DismissButton } from "./DismissButton";
+ import { GeoCard } from "./GeoCard";
+ import { PrimaryButton, WarningIcon, type Tone } from "./Ink";
+-import { PhoneCard } from "./PhoneCard";
+ import { SmsCard } from "./SmsCard";
+ import { WifiCard } from "./WifiCard";
+ 
+@@ -28,9 +27,6 @@ export function ResultCard({ code, onCopy, onOpen, onJoin, onDismiss }: Props) {
+   if (payload.kind === "contact") {
+     return <ContactCard contact={payload.contact} onCopy={onCopy} onDismiss={onDismiss} />;
+   }
+-  if (payload.kind === "phone" && payload.number.trim()) {
+-    return <PhoneCard number={payload.number} onCopy={onCopy} onDismiss={onDismiss} />;
+-  }
+   if (payload.kind === "sms") {
+     return <SmsCard sms={payload.sms} onCopy={onCopy} onDismiss={onDismiss} />;
+   }

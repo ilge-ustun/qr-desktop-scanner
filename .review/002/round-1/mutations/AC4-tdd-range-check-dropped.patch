@@ -1,0 +1,11 @@
+diff --git a/src/lib/geo.ts b/src/lib/geo.ts
+index 32400ff..2818dd4 100644
+--- a/src/lib/geo.ts
++++ b/src/lib/geo.ts
+@@ -44,5 +44,5 @@ function latitudeLongitude(coordinates: string): [string, string] | null {
+   const parts = coordinates.split(",");
+   if (parts.length < 2 || parts.length > 3 || !parts.every((part) => NUMBER.test(part))) return null;
+   const [latitude, longitude] = parts;
+-  return Math.abs(Number(latitude)) <= 90 && Math.abs(Number(longitude)) <= 180 ? [latitude, longitude] : null;
++  return [latitude, longitude];
+ }

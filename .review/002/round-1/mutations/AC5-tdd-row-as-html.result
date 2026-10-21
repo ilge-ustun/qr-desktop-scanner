@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":35,"numFailedTests":1,"failed":["ResultCard, phone, SMS and geo cards 002 AC5: on the cards for P1, S1, G3, A1, H2 and H3, decoded text is mono text and never a button, a label, a link or markup"]}

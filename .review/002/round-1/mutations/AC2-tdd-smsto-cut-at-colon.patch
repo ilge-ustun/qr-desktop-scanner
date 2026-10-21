@@ -1,0 +1,13 @@
+diff --git a/src/lib/sms.ts b/src/lib/sms.ts
+index 161bb69..8c318b6 100644
+--- a/src/lib/sms.ts
++++ b/src/lib/sms.ts
+@@ -25,7 +25,7 @@ export function parseSms(text: string): Sms | null {
+   } else if (/^SMSTO:/i.test(text)) {
+     const [recipient, rest] = splitOnce(text.slice("SMSTO:".length), ":");
+     number = recipient;
+-    message = rest ?? "";
++    message = (rest ?? "").split(":")[0];
+   } else {
+     return null;
+   }

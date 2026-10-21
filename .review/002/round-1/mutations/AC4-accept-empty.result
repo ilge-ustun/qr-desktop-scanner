@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":23,"numFailedTests":1,"failed":["classify, SMS and geo 002 AC4: a code with no number or no coordinates (E1, E2, E3) stays a link, as before"]}

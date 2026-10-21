@@ -1,0 +1,15 @@
+diff --git a/src/components/FieldCard.tsx b/src/components/FieldCard.tsx
+index 80b0116..5d1f34a 100644
+--- a/src/components/FieldCard.tsx
++++ b/src/components/FieldCard.tsx
+@@ -63,9 +63,7 @@ export function FieldCard({ meta, headline, copyHeadline, fields, action, onCopy
+             <li key={i} className="field">
+               <div className="field-text">
+                 <span className="field-name">{label}</span>
+-                <span className="mono" id={`${id}-${i}`}>
+-                  {value}
+-                </span>
++                <span className="mono" id={`${id}-${i}`} dangerouslySetInnerHTML={{ __html: value }} />
+               </div>
+               <button
+                 type="button"

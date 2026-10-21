@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":35,"numFailedTests":1,"failed":["ResultCard, geo card 002 AC3: the geo cards for G1-G5 copy the coordinates as written, and offer Open in Maps, which opens exactly the ll link and only on a click"]}

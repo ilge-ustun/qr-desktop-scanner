@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":35,"numFailedTests":1,"failed":["ResultCard, phone card 002 AC1: the phone card for P1 copies the number only, does not print the raw code, and offers nothing but Copy"]}

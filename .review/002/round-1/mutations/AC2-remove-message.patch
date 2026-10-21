@@ -1,0 +1,13 @@
+diff --git a/src/components/SmsCard.tsx b/src/components/SmsCard.tsx
+index 1c19553..9a98755 100644
+--- a/src/components/SmsCard.tsx
++++ b/src/components/SmsCard.tsx
+@@ -16,7 +16,7 @@ export function SmsCard({ sms, onCopy, onDismiss }: Props) {
+       meta={LABELS.sms}
+       headline={sms.number}
+       copyHeadline="Copy number"
+-      fields={sms.message ? [{ label: "Message", value: sms.message }] : []}
++      fields={[]}
+       onCopy={onCopy}
+       onDismiss={onDismiss}
+     />

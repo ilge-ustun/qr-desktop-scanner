@@ -1,0 +1,11 @@
+diff --git a/src/lib/sms.ts b/src/lib/sms.ts
+index 161bb69..bc5a920 100644
+--- a/src/lib/sms.ts
++++ b/src/lib/sms.ts
+@@ -29,5 +29,5 @@ export function parseSms(text: string): Sms | null {
+   } else {
+     return null;
+   }
+-  return number.trim() ? { number, message } : null;
++  return { number, message };
+ }
