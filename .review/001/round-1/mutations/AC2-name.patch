@@ -1,0 +1,13 @@
+diff --git a/src/lib/contact.ts b/src/lib/contact.ts
+index ea41817..387c6a7 100644
+--- a/src/lib/contact.ts
++++ b/src/lib/contact.ts
+@@ -44,7 +44,7 @@ export function parseVCard(text: string): Contact | null {
+     }
+   }
+   contact.name = fullName || structuredName;
+-  return contact.name ? contact : null;
++  return contact;
+ }
+ 
+ /**

@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 659905,
+  "stop_reason": "end_turn",
+  "session_id": "78529c6f-c8fa-496b-8dae-43dfa8f8f727",
+  "total_cost_usd": 2.770214000000001,
+  "usage": {
+    "input_tokens": 72,
+    "cache_creation_input_tokens": 112490,
+    "cache_read_input_tokens": 3237330,
+    "output_tokens": 61127,
+    "output_tokens_details": {
+      "thinking_tokens": 36046
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 112490,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1614,
+        "cache_read_input_tokens": 125821,
+        "cache_creation_input_tokens": 737,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 737
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 72,
+      "outputTokens": 61127,
+      "cacheReadInputTokens": 3237330,
+      "cacheCreationInputTokens": 112490,
+      "webSearchRequests": 0,
+      "costUSD": 2.770214000000001,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 36046,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 41,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Story 001 is built in two commits on `story/001`. The new tests and lint pass, `npm run build` passes, and the tree is clean apart from `.review-out/`. The rest of the harness baseline (cargo clippy/test, `check-macos-shell.sh`, `cargo fmt`) I left to the harness; no Rust changed.\n\n**Commits**\n- **`44da66e` Read vCard and MECARD codes into contacts.** The parsers are in `src/lib/contact.ts`. `classify` has two new branches before the link branch: a contact code that parses becomes kind `\"contact\"`, and one that doesn't becomes `\"text\"`. So F3 is no longer a Link card. This covers AC1 and AC2. Edge-case tests (folding with a tab, property names in any case, `\\N`, an empty FN falling back to N, quoted parameters, a missing final `;;`) are in `src/__tests__/contact.test.ts`.\n- **`5ce1608` Contact card.** In `src/components/ContactCard.tsx`, the name is the `.headline`. Each phone, email, organisation and website gets its own row: a small Silkscreen name (Phone, Email, Organisation, Website), the value in `.mono`, and its own Copy. This covers AC3 and AC4.\n\n**Choices the story left to me**\n- **Label:** the new kind is labelled \"Contact\".\n- **The name gets a Copy**, as a \"Copy name\" button at the bottom of the card, like Wi-Fi's \"Copy password\".\n- **Field shape:** every field is a list (`phones`, `emails`, `organisations`, `websites`), because a vCard can repeat any of them. A repeated value is listed once and empty values are skipped.\n- **Organisation:** an ORG made of parts (`Acme;Marketing;`) is shown as \"Acme, Marketing\", with empty parts dropped.\n- **\"Copied\":** it shows on the last button clicked only. A second click on the same button restarts its 1.5 s.\n- **Accessibility:** each row's Copy button is linked to its value with `aria-describedby`, so a screen reader can tell the buttons apart. The value is not in the button's label.\n\n**Proof the tests catch things**\n- Every \"Goes red when …\" change in the story turns its AC's tests red. I made each change, ran the tests and undid it.\n- The four patches in `.review-out/mutations/` were written from the final commit and apply to it cleanly:\n\n| AC | Patch | What it removes | Selector |\n|---|---|---|---|\n| AC1 | `AC1-tdd-unfold` | unfolding | `src/__tests__/payload.test.ts -t \"AC1\"` |\n| AC2 | `AC2-tdd-mecard-falls-through` | a MECARD that fails falls through to the link branch | `src/__tests__/payload.test.ts -t \"AC2\"` |\n| AC3 | `AC3-tdd-generic-card` | contacts are sent to the generic card | `src/__tests__/ResultCard.test.tsx -t \"AC3\"` |\n| AC4 | `AC4-tdd-inner-html` | the name is rendered as HTML | `src/__tests__/ResultCard.test.tsx -t \"AC4\"` |\n\nI also added tests for the cases a reviewer is likely to try:\n- \"Copied\" moves to the button clicked next, and a second click restarts its time.\n- A failed copy shows its error.\n- Dismissing the card while a copy is running logs no error.\n- F1 and F2 get the text card.\n- A contact with only a name shows just the name and \"Copy name\".\n- V2's organisation keeps its line break.\n\n**For the person checking on a Mac**\n- The new CSS (the `.field` rules in `src/styles.css`) uses only the two inks and square corners, and puts no Silkscreen on any value. Tests can't see fonts, so read that diff and look at the card.\n- The row layout, wrapping, and \"Copied\" on the clicked button are on the story's human-verification list.\n\nOne unrelated thing I left alone: the existing generic card's \"Copied\" does not restart its timer on a second click.",
+  "ttft_ms": 5896,
+  "type": "result",
+  "duration_ms": 730404,
+  "uuid": "fd7c2fb2-2bb1-4211-8018-baeea76bf08a",
+  "ttft_stream_ms": 5702,
+  "time_to_request_ms": 82,
+  "first_content_frame_ms": 5703,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

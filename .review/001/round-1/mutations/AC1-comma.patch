@@ -1,0 +1,13 @@
+diff --git a/src/lib/contact.ts b/src/lib/contact.ts
+index ea41817..b536c6d 100644
+--- a/src/lib/contact.ts
++++ b/src/lib/contact.ts
+@@ -129,7 +129,7 @@ function splitUnescaped(text: string, separator: string): string[] {
+ 
+ /** vCard text escapes: `\\`, `\,`, `\;`, and `\n` or `\N` for a line break. */
+ function unescapeVCard(text: string): string {
+-  return text.replace(/\\([\\,;nN])/g, (_, c: string) => (c === "n" || c === "N" ? "\n" : c));
++  return text.replace(/\\([\\;nN])/g, (_, c: string) => (c === "n" || c === "N" ? "\n" : c));
+ }
+ 
+ /** MECARD escapes, as in a Wi-Fi code: a backslash before any character. */

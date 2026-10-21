@@ -1,0 +1,13 @@
+diff --git a/src/components/ContactCard.tsx b/src/components/ContactCard.tsx
+index cf1ff03..ddb08eb 100644
+--- a/src/components/ContactCard.tsx
++++ b/src/components/ContactCard.tsx
+@@ -54,7 +54,7 @@ export function ContactCard({ contact, onCopy, onDismiss }: Props) {
+             <li key={i} className="field">
+               <div className="field-text">
+                 <span className="field-name">{label}</span>
+-                <span className="mono" id={`${id}-${i}`}>
++                <span className="field-value" id={`${id}-${i}`}>
+                   {value}
+                 </span>
+               </div>

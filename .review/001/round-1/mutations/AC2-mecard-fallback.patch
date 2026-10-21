@@ -1,0 +1,13 @@
+diff --git a/src/lib/payload.ts b/src/lib/payload.ts
+index 8834e78..8733962 100644
+--- a/src/lib/payload.ts
++++ b/src/lib/payload.ts
+@@ -53,7 +53,7 @@ export function classify(raw: string): Payload {
+   }
+   if (/^MECARD:/i.test(text)) {
+     const contact = parseMecard(text);
+-    return contact ? { kind: "contact", text, contact } : { kind: "text", text };
++    return contact ? { kind: "contact", text, contact } : { kind: "url", text };
+   }
+   if (DANGEROUS_SCHEME.test(text)) {
+     return { kind: "url", text };

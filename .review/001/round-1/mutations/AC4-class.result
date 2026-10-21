@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":21,"numFailedTests":2,"failed":["ResultCard, contact card AC4: on the cards for V1 and M1, decoded text is mono text and never a button, a label or a link","ResultCard, contact card AC4: renders markup in a contact (H1) as text on the contact card"]}

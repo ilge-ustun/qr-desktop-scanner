@@ -1,0 +1,13 @@
+diff --git a/src/lib/contact.ts b/src/lib/contact.ts
+index ea41817..bc5217d 100644
+--- a/src/lib/contact.ts
++++ b/src/lib/contact.ts
+@@ -17,7 +17,7 @@ export type Contact = {
+  * a name (FN, or N when there is no FN).
+  */
+ export function parseVCard(text: string): Contact | null {
+-  const lines = text.replace(/(?:\r\n|\r|\n)[ \t]/g, "").split(/\r\n|\r|\n/);
++  const lines = text.split(/\r\n|\r|\n/);
+   if (!/^BEGIN:VCARD$/i.test(lines[0].trim())) return null;
+   const end = lines.findIndex((line) => /^END:VCARD$/i.test(line.trim()));
+   if (end < 0) return null;

@@ -1,0 +1,12 @@
+deny:    src/lib/urlSafety.ts src/__tests__/urlSafety.test.ts src/lib/ipc.ts src/App.tsx core/* src-tauri/* Cargo.toml Cargo.lock package.json package-lock.json site/* .github/* CLAUDE.md AGENTS.md
+scope:   CLEAN 
+changed:
+src/__tests__/ResultCard.test.tsx
+src/__tests__/contact.test.ts
+src/__tests__/contactCodes.ts
+src/__tests__/payload.test.ts
+src/components/ContactCard.tsx
+src/components/ResultCard.tsx
+src/lib/contact.ts
+src/lib/payload.ts
+src/styles.css
