@@ -2,6 +2,8 @@
 // whatever someone printed or put on a screen.
 
 import { parseMecard, parseVCard, type Contact } from "./contact";
+import { parseGeo, type Geo } from "./geo";
+import { parseSms, type Sms } from "./sms";
 
 export type Payload =
   | { kind: "url"; text: string }
@@ -9,6 +11,8 @@ export type Payload =
   | { kind: "phone"; text: string; number: string }
   | { kind: "wifi"; text: string; network: WifiNetwork | null }
   | { kind: "contact"; text: string; contact: Contact }
+  | { kind: "sms"; text: string; sms: Sms }
+  | { kind: "geo"; text: string; geo: Geo }
   | { kind: "text"; text: string };
 
 export type WifiNetwork = {
@@ -25,6 +29,8 @@ export const LABELS: Record<Payload["kind"], string> = {
   phone: "Phone",
   wifi: "Wi-Fi",
   contact: "Contact",
+  sms: "SMS",
+  geo: "Location",
   text: "Text",
 };
 
@@ -42,6 +48,12 @@ export function classify(raw: string): Payload {
   if (/^tel:/i.test(text)) {
     return { kind: "phone", text, number: text.slice("tel:".length) };
   }
+  // Before the link test below: these may hold spaces. One without a number
+  // or without coordinates reads on, and gets the card it got before.
+  const sms = parseSms(text);
+  if (sms) return { kind: "sms", text, sms };
+  const geo = parseGeo(text);
+  if (geo) return { kind: "geo", text, geo };
   if (/^WIFI:/i.test(text)) {
     return { kind: "wifi", text, network: parseWifi(text) };
   }

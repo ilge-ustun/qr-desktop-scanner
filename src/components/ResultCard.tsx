@@ -6,7 +6,10 @@ import { headlineSize } from "../lib/headline";
 import { assess } from "../lib/urlSafety";
 import { ContactCard } from "./ContactCard";
 import { DismissButton } from "./DismissButton";
+import { GeoCard } from "./GeoCard";
 import { PrimaryButton, WarningIcon, type Tone } from "./Ink";
+import { PhoneCard } from "./PhoneCard";
+import { SmsCard } from "./SmsCard";
 import { WifiCard } from "./WifiCard";
 
 type Props = {
@@ -24,6 +27,15 @@ export function ResultCard({ code, onCopy, onOpen, onJoin, onDismiss }: Props) {
   }
   if (payload.kind === "contact") {
     return <ContactCard contact={payload.contact} onCopy={onCopy} onDismiss={onDismiss} />;
+  }
+  if (payload.kind === "phone" && payload.number.trim()) {
+    return <PhoneCard number={payload.number} onCopy={onCopy} onDismiss={onDismiss} />;
+  }
+  if (payload.kind === "sms") {
+    return <SmsCard sms={payload.sms} onCopy={onCopy} onDismiss={onDismiss} />;
+  }
+  if (payload.kind === "geo") {
+    return <GeoCard geo={payload.geo} onCopy={onCopy} onOpen={onOpen} onDismiss={onDismiss} />;
   }
   return <GenericCard payload={payload} onCopy={onCopy} onOpen={onOpen} onDismiss={onDismiss} />;
 }

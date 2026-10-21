@@ -106,3 +106,47 @@ describe("classify, contacts", () => {
     expect(classify(F3).kind, "F3: no N").toBe("text");
   });
 });
+
+describe("classify, SMS and geo", () => {
+  it("reads sms: and SMSTO: codes as SMS, with or without spaces", () => {
+    expect(classify("sms:+31201234567?body=Running%20late%3A%2010%20min")).toEqual({
+      kind: "sms",
+      text: "sms:+31201234567?body=Running%20late%3A%2010%20min",
+      sms: { number: "+31201234567", message: "Running late: 10 min" },
+    });
+    expect(classify("SMSTO:+31201234567:Running late: 10 min")).toMatchObject({
+      kind: "sms",
+      sms: { number: "+31201234567", message: "Running late: 10 min" },
+    });
+    expect(classify("SMSTO:+31201234567:<img src=x onerror=alert(1)>").kind).toBe("sms");
+  });
+
+  it("reads geo: codes as geo, valid or not, with or without spaces", () => {
+    expect(classify("geo:52.3731,4.8922;u=35")).toEqual({
+      kind: "geo",
+      text: "geo:52.3731,4.8922;u=35",
+      geo: {
+        coordinates: "52.3731,4.8922",
+        place: "",
+        search: false,
+        mapsLink: "https://maps.apple.com/?ll=52.3731,4.8922",
+      },
+    });
+    expect(classify("geo:90.0001,0")).toMatchObject({ kind: "geo", geo: { mapsLink: null } });
+    expect(classify("geo:<img src=x onerror=alert(1)>")).toMatchObject({
+      kind: "geo",
+      geo: { coordinates: "<img src=x onerror=alert(1)>" },
+    });
+  });
+
+  it("002 AC4: a code with no number or no coordinates (E1, E2, E3) stays a link, as before", () => {
+    for (const code of ["sms:?body=Hi", "SMSTO::Hi", "geo:"]) {
+      expect(classify(code), code).toEqual({ kind: "url", text: code });
+    }
+  });
+
+  it("falls back to text for a code with spaces and no number or no coordinates", () => {
+    expect(classify("SMSTO::Running late").kind).toBe("text");
+    expect(classify("geo:?q=Dam Square").kind).toBe("text");
+  });
+});
