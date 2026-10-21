@@ -134,7 +134,7 @@ export function assess(text: string): Assessment {
   const registrable = labels.slice(-suffixLength).join(".");
   const front = labels.slice(0, -suffixLength);
   const decoyAt = front.findIndex((label, i) => i > 0 && DECOY_LABELS.has(label));
-  if (decoyAt > 0) {
+  if (decoyAt >= 0) {
     warnings.push({
       code: "decoy-domain",
       severity: "danger",
