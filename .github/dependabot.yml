@@ -1,0 +1,8 @@
+# Keeps the SHA-pinned actions current: each update is a pull request whose
+# macOS build must pass before it is merged.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
