@@ -31,6 +31,32 @@ const SHORTENERS = new Set([
   "tinyurl.com",
 ]);
 
+// Two-part public suffixes, so example.co.uk counts as one name, not "co.uk".
+const TWO_PART_SUFFIXES = new Set([
+  "co.uk",
+  "org.uk",
+  "ac.uk",
+  "gov.uk",
+  "com.au",
+  "net.au",
+  "org.au",
+  "co.jp",
+  "ne.jp",
+  "or.jp",
+  "com.br",
+  "net.br",
+  "org.br",
+  "co.nz",
+  "co.in",
+  "co.za",
+  "com.mx",
+  "com.cn",
+  "com.tr",
+]);
+
+// Labels that make a name look like it ends there: paypal.com.example.net.
+const DECOY_LABELS = new Set(["com", "net", "org", "io", "co", "gov", "edu"]);
+
 const IPV4 = /^\d{1,3}(\.\d{1,3}){3}$/;
 
 export function assess(text: string): Assessment {
@@ -102,6 +128,19 @@ export function assess(text: string): Assessment {
       severity: "caution",
       message: "A link shortener hides the real destination until you open it.",
     });
+  }
+  const labels = host.split(".");
+  const suffixLength = TWO_PART_SUFFIXES.has(labels.slice(-2).join(".")) ? 3 : 2;
+  const registrable = labels.slice(-suffixLength).join(".");
+  const front = labels.slice(0, -suffixLength);
+  const decoyAt = front.findIndex((label, i) => i > 0 && DECOY_LABELS.has(label));
+  if (decoyAt > 0) {
+    warnings.push({
+      code: "decoy-domain",
+      severity: "danger",
+      message: `This address starts with "${front.slice(0, decoyAt + 1).join(".")}" but belongs to ${registrable}.`,
+    });
+    return { domain: registrable, openable: true, warnings };
   }
   return { domain: host || null, openable: host !== "", warnings };
 }
