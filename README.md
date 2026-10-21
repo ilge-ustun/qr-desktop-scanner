@@ -27,10 +27,12 @@ npm ci
 
 **Quick run (dev mode):** `npm run tauri dev`. The first build takes a few
 minutes. A QR icon appears in the menu bar and the popover opens under it.
-In dev mode macOS asks for Screen Recording on behalf of your **terminal app**
-(Terminal, iTerm, …): allow it in *System Settings → Privacy & Security →
-Screen & System Audio Recording*, then quit and reopen the terminal and run
-the command again.
+In dev mode macOS asks for Screen Recording on behalf of the app you ran the
+command in (Terminal, iTerm, VS Code, Warp, …): allow it in *System Settings →
+Privacy & Security → Screen & System Audio Recording*, then quit that app with
+⌘Q, reopen it and run the command again. macOS lists an app there only after
+it has asked for access: click *Open System Settings* in the popover (it asks
+first), or add the app yourself with the **+** button under the list.
 
 **The real app:** `npm run tauri build -- --bundles app`, then
 

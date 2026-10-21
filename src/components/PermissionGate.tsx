@@ -19,7 +19,9 @@ export function PermissionGate({ onOpenSettings, onRetry }: Props) {
         </li>
       </ol>
       <p className="hint">
-        Running with <code>npm run tauri dev</code>? Allow your terminal app instead, then restart it.
+        Running with <code>npm run tauri dev</code>? macOS asks on behalf of the app you ran it in (Terminal,
+        iTerm, VS Code…): allow that one, quit it with ⌘Q and start again. If it is not in the list, add it
+        with the + button.
       </p>
       <div className="actions">
         <button type="button" className="primary" onClick={onOpenSettings}>

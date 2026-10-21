@@ -19,8 +19,11 @@ pub fn screen_permission() -> bool {
     platform::Permission.granted()
 }
 
+/// Asks for access first: macOS lists an app under Screen Recording only after
+/// it has asked, so opening the pane alone shows nothing to switch on.
 #[tauri::command]
 pub fn open_screen_settings() -> Result<(), String> {
+    platform::request_permission();
     platform::open_screen_settings()
 }
 
