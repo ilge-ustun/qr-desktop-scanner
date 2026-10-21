@@ -1,0 +1,13 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index 9157454..d0f7887 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -61,7 +61,7 @@ export function App() {
+   }, []);
+ 
+   const scan = () => void ipc.startScan();
+-  const findAll = () => void ipc.findAllOnScreen();
++  const findAll = () => void ipc.startScan();
+   const reset = () => dispatch({ type: "reset" });
+   const ready = view.name === "idle" || view.name === "scanning";
+   const afterScan = view.name === "found" || view.name === "notFound" || view.name === "error";

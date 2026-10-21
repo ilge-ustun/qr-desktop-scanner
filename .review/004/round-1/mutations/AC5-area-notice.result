@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":10,"numFailedTests":2,"failed":["App AC5: after a drag scan finds nothing, the notice is the area sentence, unchanged","App AC5: each scan's notice follows its own scope, whichever ran before"]}

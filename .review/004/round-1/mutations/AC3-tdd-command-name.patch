@@ -1,0 +1,13 @@
+diff --git a/src/lib/ipc.ts b/src/lib/ipc.ts
+index fc70b4f..4b3f074 100644
+--- a/src/lib/ipc.ts
++++ b/src/lib/ipc.ts
+@@ -18,7 +18,7 @@ export type ScanOutcome =
+ export type ScanScope = "area" | "screen";
+ 
+ export const startScan = () => invoke<void>("start_scan");
+-export const findAllOnScreen = () => invoke<void>("find_all_on_screen");
++export const findAllOnScreen = () => invoke<void>("find_all");
+ export const screenPermission = () => invoke<boolean>("screen_permission");
+ export const openScreenSettings = () => invoke<void>("open_screen_settings");
+ export const openLink = (url: string) => invoke<void>("open_link", { url });

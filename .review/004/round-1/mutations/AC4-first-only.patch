@@ -1,0 +1,13 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index 9157454..d4ce4d0 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -131,7 +131,7 @@ export function App() {
+           <PermissionGate onOpenSettings={() => void ipc.openScreenSettings()} onRetry={scan} />
+         )}
+         {view.name === "found" &&
+-          view.codes.map((code) => (
++          view.codes.slice(0, 1).map((code) => (
+             <ResultCard
+               key={code.text}
+               code={code}
