@@ -65,6 +65,37 @@ const DECOY_LABELS = new Set(["com", "net", "org", "io", "co", "gov", "edu"]);
 
 const IPV4 = /^\d{1,3}(\.\d{1,3}){3}$/;
 
+// mailto:boss@corp.com?bcc=x@evil.com also writes to x@evil.com, which the
+// card's headline (everything before the "?") does not show.
+const RECIPIENT_FIELDS = new Set(["to", "cc", "bcc"]);
+
+// Decodes each run of %XX escapes on its own, so a malformed escape stays as
+// typed instead of throwing, and an encoded address cannot hide.
+function percentDecode(text: string): string {
+  return text.replace(/(?:%[0-9a-f]{2})+/gi, (run) => {
+    try {
+      return decodeURIComponent(run);
+    } catch {
+      return run;
+    }
+  });
+}
+
+/** The addresses a mailto query's to, cc and bcc fields add, in order. */
+function extraRecipients(query: string): string[] {
+  return query
+    .replace(/^\?/, "")
+    .split("&")
+    .flatMap((field) => {
+      const eq = field.indexOf("=");
+      if (eq < 0 || !RECIPIENT_FIELDS.has(percentDecode(field.slice(0, eq)).toLowerCase())) return [];
+      return percentDecode(field.slice(eq + 1))
+        .split(",")
+        .map((address) => address.trim())
+        .filter((address) => address !== "");
+    });
+}
+
 export function assess(text: string): Assessment {
   let url: URL;
   try {
@@ -76,6 +107,14 @@ export function assess(text: string): Assessment {
   const warnings: Warning[] = [];
 
   if (scheme === "mailto") {
+    const recipients = extraRecipients(url.search);
+    if (recipients.length > 0) {
+      warnings.push({
+        code: "extra-recipients",
+        severity: "caution",
+        message: `The link adds ${recipients.join(", ")} to the recipients. Check every address before you send it.`,
+      });
+    }
     return { domain: null, openable: true, warnings };
   }
   if (DANGEROUS_SCHEMES.has(scheme)) {

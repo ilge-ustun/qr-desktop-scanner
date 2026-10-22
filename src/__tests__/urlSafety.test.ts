@@ -147,3 +147,61 @@ it.each([
 ])("010 AC2: %s belongs to %s, the last two labels", (url, owner) => {
   expect(assess(url)).toEqual(decoyResult(owner));
 });
+
+const extraRecipients = (text: string) => {
+  const a = assess(text);
+  expect(a.domain, text).toBeNull();
+  expect(a.openable, text).toBe(true);
+  expect(a.warnings, text).toHaveLength(1);
+  expect(a.warnings[0].code, text).toBe("extra-recipients");
+  expect(a.warnings[0].severity, text).toBe("caution");
+  return a.warnings[0].message;
+};
+
+it("010 AC3: a bcc names the address it adds, in the full message", () => {
+  expect(extraRecipients("mailto:boss@corp.com?bcc=x@evil.com&body=Quarterly%20figures")).toBe(
+    "The link adds x@evil.com to the recipients. Check every address before you send it.",
+  );
+});
+
+it.each([
+  ["mailto:boss@corp.com?to=a@evil.com", ["a@evil.com"]],
+  ["mailto:boss@corp.com?cc=b@evil.com", ["b@evil.com"]],
+  ["mailto:boss@corp.com?subject=Hi&CC=c@evil.com", ["c@evil.com"]],
+  ["mailto:boss@corp.com?Bcc=d@evil.com", ["d@evil.com"]],
+  ["mailto:boss@corp.com?TO=e@evil.com", ["e@evil.com"]],
+  [
+    "mailto:boss@corp.com?cc=f@evil.com,g@evil.com&cc=h@evil.com&bcc=i@evil.com",
+    ["f@evil.com", "g@evil.com", "h@evil.com", "i@evil.com"],
+  ],
+  ["mailto:boss@corp.com?bcc=j%40evil.com", ["j@evil.com"]],
+  ["mailto:boss@corp.com?bcc=k%40evil.com%ZZ", ["evil.com"]],
+])("010 AC3: %s gets one caution naming %j", (text, named) => {
+  const message = extraRecipients(text);
+  for (const n of named) expect(message).toContain(n);
+});
+
+it.each([
+  "mailto:boss@corp.com",
+  "mailto:boss@corp.com?subject=Lunch&body=See%20you%20at%201",
+  "mailto:boss@corp.com?in-reply-to=%3C42%40corp.com%3E",
+  "mailto:boss@corp.com?body=Hi%26cc%3Dx%40evil.com",
+  "mailto:boss@corp.com?subject=bcc&body=cc%20to",
+])("010 AC4: %s gets no warning", (text) => {
+  expect(assess(text)).toEqual({ domain: null, openable: true, warnings: [] });
+});
+
+it("010: a mailto with nothing before the ? still names who its to adds", () => {
+  expect(extraRecipients("mailto:?to=a@evil.com")).toBe(
+    "The link adds a@evil.com to the recipients. Check every address before you send it.",
+  );
+});
+
+it("010: an empty to, cc or bcc adds no one and gets no warning", () => {
+  expect(assess("mailto:boss@corp.com?to=&cc=%20&bcc=,")).toEqual({ domain: null, openable: true, warnings: [] });
+});
+
+it("010: an address keeps its + and a field name may be percent-encoded", () => {
+  expect(extraRecipients("mailto:boss@corp.com?bcc=x+tag@evil.com")).toContain("x+tag@evil.com");
+  expect(extraRecipients("mailto:boss@corp.com?%62cc=y@evil.com")).toContain("y@evil.com");
+});
