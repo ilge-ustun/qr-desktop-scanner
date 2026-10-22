@@ -1,0 +1,12 @@
+diff --git a/src/components/ResultCard.tsx b/src/components/ResultCard.tsx
+index 674bceb..89f2af4 100644
+--- a/src/components/ResultCard.tsx
++++ b/src/components/ResultCard.tsx
+@@ -1,6 +1,6 @@
+ import { useRef } from "react";
+ 
+-import { fieldCardModel } from "../lib/cardModel";
++
+ import type { DecodedCode } from "../lib/ipc";
+ import { classify, LABELS, type Payload } from "../lib/payload";
+ import { assess, linkMeta, toneOf } from "../lib/urlSafety";

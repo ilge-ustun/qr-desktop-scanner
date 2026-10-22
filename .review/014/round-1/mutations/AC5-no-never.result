@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":14,"numFailedTests":1,"failed":["AC5 ResultCard picks the card with one switch over payload.kind, its default binding payload to never (a) one switch over payload.kind, with a default that binds payload to never"]}

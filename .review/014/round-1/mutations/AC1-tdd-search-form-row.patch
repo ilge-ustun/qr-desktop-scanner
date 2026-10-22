@@ -1,0 +1,13 @@
+diff --git a/src/lib/cardModel.ts b/src/lib/cardModel.ts
+index 5032121..d194987 100644
+--- a/src/lib/cardModel.ts
++++ b/src/lib/cardModel.ts
+@@ -62,7 +62,7 @@ export function fieldCardModel(payload: FieldPayload): FieldCardModel {
+         headline: place || coordinates,
+         copyHeadline: place ? "Copy place" : "Copy coordinates",
+         // In the search form (geo:0,0?q=…) 0,0 is no place: the search stands alone.
+-        fields: place && !search ? [{ label: "Coordinates", value: coordinates }] : [],
++        fields: place ? [{ label: "Coordinates", value: coordinates }] : [],
+         // Only for valid coordinates, with the link the parser built from the two numbers.
+         open: mapsLink ? { label: "Open in Maps", url: mapsLink } : null,
+       };

@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":11,"numFailedTests":3,"failed":["AC2 toneOf: the link card's tone from its warnings T4: [danger] gives \"danger\"","AC2 toneOf: the link card's tone from its warnings T5: [caution, danger] gives \"danger\"","AC2 toneOf: the link card's tone from its warnings T6: [danger, caution] gives \"danger\""]}

@@ -1,0 +1,11 @@
+diff --git a/src/lib/wifi.ts b/src/lib/wifi.ts
+index 22f0f19..b37473f 100644
+--- a/src/lib/wifi.ts
++++ b/src/lib/wifi.ts
+@@ -73,5 +73,5 @@ const SECURITY: Record<string, string> = {
+  * written), and "hidden" for a network that does not broadcast its name. */
+ export function wifiMeta(network: WifiNetwork): string {
+   const security = SECURITY[network.security.toUpperCase()] ?? network.security;
+-  return ["Wi-Fi", security, network.hidden ? "hidden" : ""].filter(Boolean).join(" · ");
++  return ["Wi-Fi", security, ""].filter(Boolean).join(" · ");
+ }

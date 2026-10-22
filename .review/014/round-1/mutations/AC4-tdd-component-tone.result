@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":14,"numFailedTests":1,"failed":["AC4 the components hold no moved rule, the wrappers are gone, src/lib imports no component (a) no file under src/components/ matches a moved rule"]}

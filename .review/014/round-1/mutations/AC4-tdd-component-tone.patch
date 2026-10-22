@@ -1,0 +1,13 @@
+diff --git a/src/components/ResultCard.tsx b/src/components/ResultCard.tsx
+index 674bceb..712f9ba 100644
+--- a/src/components/ResultCard.tsx
++++ b/src/components/ResultCard.tsx
+@@ -59,7 +59,7 @@ function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload
+   const linkish = payload.kind === "url" || payload.kind === "email";
+   const safety = linkish ? assess(payload.text) : null;
+   const warnings = safety?.warnings ?? [];
+-  const tone = toneOf(warnings);
++  const tone = warnings.some((w) => w.severity === "danger") ? "danger" : toneOf(warnings);
+   // None when the code gives none: a text, a javascript: link, an empty mailto:.
+   const headline = (payload.kind === "email" ? payload.address : safety?.domain) || undefined;
+   const meta = linkMeta(LABELS[payload.kind], tone);

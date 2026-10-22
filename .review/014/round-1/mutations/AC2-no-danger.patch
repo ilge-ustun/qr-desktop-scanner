@@ -1,0 +1,13 @@
+diff --git a/src/lib/urlSafety.ts b/src/lib/urlSafety.ts
+index 259fd25..dbddab8 100644
+--- a/src/lib/urlSafety.ts
++++ b/src/lib/urlSafety.ts
+@@ -235,7 +235,7 @@ export function assess(text: string): Assessment {
+ /** A link card's tone: danger when any warning is a danger, warn when all of
+  * them are cautions, ok when there is none. */
+ export function toneOf(warnings: Warning[]): Tone {
+-  if (warnings.some((w) => w.severity === "danger")) return "danger";
++  
+   return warnings.length ? "warn" : "ok";
+ }
+ 
