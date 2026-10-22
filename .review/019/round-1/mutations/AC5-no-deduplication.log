@@ -1,0 +1,24 @@
+
+running 1 test
+test run_scan_reports_a_repeated_code_once ... FAILED
+
+failures:
+
+---- run_scan_reports_a_repeated_code_once stdout ----
+
+thread 'run_scan_reports_a_repeated_code_once' (2541052) panicked at core/tests/pipeline.rs:351:5:
+assertion `left == right` failed
+  left: Found { codes: [DecodedCode { text: "a", format: "qrcode" }, DecodedCode { text: "b", format: "qrcode" }, DecodedCode { text: "a", format: "other" }] }
+ right: Found { codes: [DecodedCode { text: "a", format: "qrcode" }, DecodedCode { text: "b", format: "qrcode" }] }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    run_scan_reports_a_repeated_code_once
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s
+
+   Compiling qr-core v0.1.2 (/home/fleet/work/projects/wt-019-review/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.93s
+     Running tests/pipeline.rs (/home/fleet/.cache/fleet-cargo/qr-desktop-scanner/wt-019-review/debug/deps/pipeline-d4352de4164b3d58)
+error: test failed, to rerun pass `-p qr-core --test pipeline`

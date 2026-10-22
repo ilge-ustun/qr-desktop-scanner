@@ -1,0 +1,22 @@
+
+running 1 test
+test run_scan_creates_a_missing_scratch ... FAILED
+
+failures:
+
+---- run_scan_creates_a_missing_scratch stdout ----
+
+thread 'run_scan_creates_a_missing_scratch' (2540117) panicked at core/tests/pipeline.rs:123:18:
+expected Found, got Error { message: "could not create a temporary directory: No such file or directory (os error 2) at path \"/tmp/.tmp6wz4ui/Caches/qr/scan-DnWlGg\"" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    run_scan_creates_a_missing_scratch
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.01s
+
+   Compiling qr-core v0.1.2 (/home/fleet/work/projects/wt-019-review/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.80s
+     Running tests/pipeline.rs (/home/fleet/.cache/fleet-cargo/qr-desktop-scanner/wt-019-review/debug/deps/pipeline-d4352de4164b3d58)
+error: test failed, to rerun pass `-p qr-core --test pipeline`

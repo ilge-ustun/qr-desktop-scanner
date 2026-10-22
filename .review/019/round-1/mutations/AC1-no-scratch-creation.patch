@@ -1,0 +1,13 @@
+--- a/core/src/scan.rs
++++ b/core/src/scan.rs
+@@ -211,10 +211,6 @@
+ }
+ 
+ fn temp_dir(scratch: &Path) -> Result<TempDir, ScanError> {
+-    fs::create_dir_all(scratch).map_err(|source| ScanError::Scratch {
+-        path: scratch.to_owned(),
+-        source,
+-    })?;
+     tempfile::Builder::new()
+         .prefix(SCAN_DIR_PREFIX)
+         .tempdir_in(scratch)

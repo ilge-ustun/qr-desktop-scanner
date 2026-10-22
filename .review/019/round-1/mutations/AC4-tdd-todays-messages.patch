@@ -1,0 +1,16 @@
+diff --git a/core/src/scan.rs b/core/src/scan.rs
+index d1c8dcf..6fd4d5c 100644
+--- a/core/src/scan.rs
++++ b/core/src/scan.rs
+@@ -211,10 +211,7 @@ fn in_scan_dir(
+ }
+ 
+ fn temp_dir(scratch: &Path) -> Result<TempDir, ScanError> {
+-    fs::create_dir_all(scratch).map_err(|source| ScanError::Scratch {
+-        path: scratch.to_owned(),
+-        source,
+-    })?;
++    fs::create_dir_all(scratch).map_err(ScanError::TempDir)?;
+     tempfile::Builder::new()
+         .prefix(SCAN_DIR_PREFIX)
+         .tempdir_in(scratch)

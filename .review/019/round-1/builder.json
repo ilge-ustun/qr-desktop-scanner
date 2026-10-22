@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 324614,
+  "stop_reason": "end_turn",
+  "session_id": "4999f6c4-5234-420f-961b-a5ccb4e7db5f",
+  "total_cost_usd": 1.9048452,
+  "usage": {
+    "input_tokens": 54,
+    "cache_creation_input_tokens": 93026,
+    "cache_read_input_tokens": 2095806,
+    "output_tokens": 37063,
+    "output_tokens_details": {
+      "thinking_tokens": 17276
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 93026,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1144,
+        "cache_read_input_tokens": 106255,
+        "cache_creation_input_tokens": 839,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 839
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 54,
+      "outputTokens": 37063,
+      "cacheReadInputTokens": 2095806,
+      "cacheCreationInputTokens": 93026,
+      "webSearchRequests": 0,
+      "costUSD": 1.9048452,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 17276,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 29,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Story 019 is done: four commits on `story/019`, and the tree is clean apart from `.review-out/`. Only the four files the story allows changed: `core/src/scan.rs`, `core/src/lib.rs`, `core/tests/pipeline.rs` (new) and `src-tauri/src/scan.rs`.\n\n**Commits**\n1. `fbdcc05` adds `ScanError`, with today's five texts and `From` into `ScanOutcome`. `temp_dir` now creates a missing scratch with `create_dir_all`. One private step, `decode_shots`, opens and decodes the shots for both flows. It skips a missing file, gives `NoScreenshot` when no file is left, and reports a code once by its text. Both flows share the permission, sweep and temp-dir steps through one helper, and errors pass on with `?`. `fn error(` is gone.\n2. `a8f8b82` adds `qr_core::run` and the two outcome methods, `asks_for_permission` and `reopens_popover`.\n3. `8ab2096` makes the shell call `qr_core::run` after `HIDE_SETTLE`, and use the two methods in today's order. The shell no longer has `create_dir_all`, `match` on the Scope, comparisons with outcome variants, or `fn error(`. The early permission check, `no cache directory: …` and `the scan stopped unexpectedly: …` stay in the shell with today's text.\n4. `eded297` adds two more tests:\n   - a granted area scan whose capturer returns `Ok(Capture::Cancelled)` gives Cancelled and decodes nothing. The story says no test covered this, and my change rewrote that line.\n   - a find-all whose capturer reports no display gives `no screenshot was written`.\n\n   I also added a test that a scan without the permission does not create the scratch directory.\n\n**Red first**\n- Before the code changed, the new tests did not compile.\n- With only the `ScanError` type added, the AC1, AC4 (scratch case) and AC5 tests failed as the story says they fail on today's tree.\n- A stub `run` and two methods that give constants made the AC2 and AC3 tests fail.\n\n**Checks run here**\n- `cargo test -p qr-core` passes, with all the existing test files unchanged.\n- clippy on qr-core and `cargo fmt --check` pass.\n- `npm run build` and `scripts/check-macos-shell.sh` pass: the shell compiles and lints clean for aarch64-apple-darwin.\n- I did not run the full baseline. The harness runs it.\n\n**Mutations:** five pairs are in `.review-out/mutations/`, one per AC. I made them after the last commit. Each one made its selector fail, and each patch applies to HEAD. I also tried one more \"Goes red when\" item for each AC, and two for AC4; all of them made their test fail.\n\n**Not tested here:** the shell's wiring and the changed order when the scratch directory cannot be created (Evidence 5). Only the story's human checks on a Mac show these.\n\nI found no problems outside the story's scope.",
+  "ttft_ms": 1500,
+  "type": "result",
+  "duration_ms": 429618,
+  "uuid": "08fd69db-bacc-4b8d-bb55-11fb52100e66",
+  "ttft_stream_ms": 1214,
+  "time_to_request_ms": 101,
+  "first_content_frame_ms": 1214,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

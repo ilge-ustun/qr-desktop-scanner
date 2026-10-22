@@ -1,0 +1,24 @@
+--- a/core/src/scan.rs
++++ b/core/src/scan.rs
+@@ -2,7 +2,6 @@
+ //! permission check and the capture; everything else is here so it can be
+ //! tested with fakes.
+ 
+-use std::collections::HashSet;
+ use std::fs;
+ use std::path::{Path, PathBuf};
+ 
+@@ -230,12 +229,11 @@
+     if shots.is_empty() {
+         return Err(ScanError::NoScreenshot);
+     }
+-    let mut seen = HashSet::new();
+     let mut codes = Vec::new();
+     for shot in shots {
+         let image = image::open(shot).map_err(ScanError::UnreadableImage)?;
+         let new = decoder.decode(&image).into_iter();
+-        codes.extend(new.filter(|code| seen.insert(code.text.clone())));
++        codes.extend(new);
+     }
+     Ok(found(codes))
+ }

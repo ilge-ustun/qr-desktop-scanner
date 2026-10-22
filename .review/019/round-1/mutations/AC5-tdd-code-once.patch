@@ -1,0 +1,14 @@
+diff --git a/core/src/scan.rs b/core/src/scan.rs
+index d1c8dcf..587934f 100644
+--- a/core/src/scan.rs
++++ b/core/src/scan.rs
+@@ -137,7 +137,8 @@ pub fn run_scan(
+         if !shot.is_file() {
+             return Ok(ScanOutcome::Cancelled);
+         }
+-        decode_shots(&[shot], decoder)
++        let image = image::open(&shot).map_err(ScanError::UnreadableImage)?;
++        Ok(found(decoder.decode(&image)))
+     })
+ }
+ 
