@@ -1,0 +1,13 @@
+diff --git a/core/src/capture.rs b/core/src/capture.rs
+index 1431e8b..179bd9c 100644
+--- a/core/src/capture.rs
++++ b/core/src/capture.rs
+@@ -29,7 +29,7 @@ pub fn selection_verdict(
+ /// displays is an error too: there is nothing to capture.
+ pub fn display_count(err: i32, count: u32) -> Result<u32, String> {
+     match (err, count) {
+-        (0, 0) => Err("no display is active".into()),
++        (0, 0) => Ok(0),
+         (0, count) => Ok(count),
+         (err, _) => Err(format!(
+             "could not list the displays: CoreGraphics error {err}"

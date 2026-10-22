@@ -1,0 +1,1 @@
+cargo:qr-core/lib::capture::tests::display_count_needs_a_display_and_no_error

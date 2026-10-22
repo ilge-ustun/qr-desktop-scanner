@@ -1,0 +1,13 @@
+diff --git a/core/src/capture.rs b/core/src/capture.rs
+index 1431e8b..8506a99 100644
+--- a/core/src/capture.rs
++++ b/core/src/capture.rs
+@@ -40,7 +40,7 @@ pub fn display_count(err: i32, count: u32) -> Result<u32, String> {
+ /// Where screencapture writes each of `count` displays in `dir`, the main
+ /// display first: given one file per display, it writes them in order.
+ pub fn display_files(dir: &Path, count: u32) -> Vec<PathBuf> {
+-    (1..=count)
++    (0..count)
+         .map(|n| dir.join(format!("display-{n}.png")))
+         .collect()
+ }

@@ -1,0 +1,13 @@
+diff --git a/core/src/capture.rs b/core/src/capture.rs
+index 1431e8b..3e21b82 100644
+--- a/core/src/capture.rs
++++ b/core/src/capture.rs
+@@ -30,7 +30,7 @@ pub fn selection_verdict(
+ pub fn display_count(err: i32, count: u32) -> Result<u32, String> {
+     match (err, count) {
+         (0, 0) => Err("no display is active".into()),
+-        (0, count) => Ok(count),
++        (_, count) if count > 0 => Ok(count),
+         (err, _) => Err(format!(
+             "could not list the displays: CoreGraphics error {err}"
+         )),
