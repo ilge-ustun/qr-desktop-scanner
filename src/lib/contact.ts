@@ -2,6 +2,8 @@
 // shows is read: the name, phones, emails, organisation and website. Every
 // value is untrusted text.
 
+import { afterPrefix, splitUnescaped, unescapeBackslashes } from "./text";
+
 export type Contact = {
   name: string;
   phones: string[];
@@ -53,18 +55,23 @@ export function parseVCard(text: string): Contact | null {
  * `:` ends the field name. Returns null without a name (N).
  */
 export function parseMecard(text: string): Contact | null {
-  if (!/^MECARD:/i.test(text)) return null;
+  const body = afterPrefix(text, "MECARD:");
+  return body === null ? null : parseMecardBody(body);
+}
+
+/** `parseMecard` for the text after `MECARD:`. */
+export function parseMecardBody(body: string): Contact | null {
   const contact = empty();
-  for (const field of splitUnescaped(text.slice("MECARD:".length), ";")) {
+  for (const field of splitUnescaped(body, ";")) {
     const [key, ...rest] = splitUnescaped(field, ":");
     if (!rest.length) continue;
     const name = key.trim().toUpperCase();
     const value = rest.join(":");
     if (name === "N") {
-      const [last = "", first = ""] = splitUnescaped(value, ",").map((part) => unescapeMecard(part).trim());
+      const [last = "", first = ""] = splitUnescaped(value, ",").map((part) => unescapeBackslashes(part).trim());
       contact.name ||= [first, last].filter(Boolean).join(" ");
     } else {
-      add(listFor(contact, name), unescapeMecard(value).trim());
+      add(listFor(contact, name), unescapeBackslashes(value).trim());
     }
   }
   return contact.name ? contact : null;
@@ -108,31 +115,7 @@ function splitProperty(line: string): { name: string; value: string } | null {
   return null;
 }
 
-/** Splits on each `separator` that has no backslash before it, keeping the
- * escapes in the parts. */
-function splitUnescaped(text: string, separator: string): string[] {
-  const parts: string[] = [];
-  let part = "";
-  for (let i = 0; i < text.length; i++) {
-    if (text[i] === "\\" && i + 1 < text.length) {
-      part += text[i] + text[++i];
-    } else if (text[i] === separator) {
-      parts.push(part);
-      part = "";
-    } else {
-      part += text[i];
-    }
-  }
-  parts.push(part);
-  return parts;
-}
-
 /** vCard text escapes: `\\`, `\,`, `\;`, and `\n` or `\N` for a line break. */
 function unescapeVCard(text: string): string {
   return text.replace(/\\([\\,;nN])/g, (_, c: string) => (c === "n" || c === "N" ? "\n" : c));
-}
-
-/** MECARD escapes, as in a Wi-Fi code: a backslash before any character. */
-function unescapeMecard(text: string): string {
-  return text.replace(/\\(.)/gs, "$1");
 }

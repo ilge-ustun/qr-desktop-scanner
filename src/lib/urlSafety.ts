@@ -1,14 +1,14 @@
 // How much to trust a decoded link before opening it. Rust re-checks the
 // scheme in open_link (qr-core url_guard); this decides what the card shows.
 
-export type Severity = "danger" | "caution";
+type Severity = "danger" | "caution";
 
 export type Warning = { code: string; severity: Severity; message: string };
 
 /** How a card is inked: ok, or the look of a caution or a danger. */
 export type Tone = "ok" | "warn" | "danger";
 
-export type Assessment = {
+type Assessment = {
   /** Shown big on the card: the part that says where the link really goes. */
   domain: string | null;
   /** Whether the card offers Open. Matches the schemes url_guard allows. */

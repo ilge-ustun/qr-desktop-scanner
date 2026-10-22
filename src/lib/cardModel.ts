@@ -5,7 +5,7 @@
 import { LABELS, type Payload } from "./payload";
 
 /** A value read from the code, under the app's name for it. */
-export type Field = { label: string; value: string };
+type Field = { label: string; value: string };
 
 export type FieldCardModel = {
   /** The kind of code: the app's word, on the label. */

@@ -1,7 +1,7 @@
 // What the popover shows, driven by scan events from Rust.
 import type { DecodedCode, ScanOutcome, ScanScope } from "./ipc";
 
-export type View =
+type View =
   | { name: "idle" }
   | { name: "scanning" }
   | { name: "found"; codes: DecodedCode[] }
@@ -18,7 +18,7 @@ export type State = {
   scope: ScanScope;
 };
 
-export type Action =
+type Action =
   | { type: "started"; scope: ScanScope }
   | { type: "result"; outcome: ScanOutcome }
   | { type: "permissionMissing" }

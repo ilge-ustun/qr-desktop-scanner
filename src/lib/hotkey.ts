@@ -9,7 +9,7 @@ export type KeyPress = {
   shiftKey: boolean;
 };
 
-export type Recorded =
+type Recorded =
   | { kind: "incomplete" } // only modifiers so far: keep listening
   | { kind: "needsModifier" } // a plain key, or Shift + key
   | { kind: "shortcut"; accelerator: string };

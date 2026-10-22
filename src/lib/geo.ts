@@ -2,6 +2,7 @@
 // Android's search form `geo:0,0?q=<place>`. Every value is untrusted text.
 
 import { queryParam, splitOnce } from "./query";
+import { afterPrefix } from "./text";
 
 export type Geo = {
   /** As written: the text between `geo:` and the first `;` or `?`. */
@@ -22,8 +23,9 @@ const NUMBER = /^-?\d+(\.\d+)?$/;
 
 /** Returns null without coordinate text. */
 export function parseGeo(text: string): Geo | null {
-  if (!/^geo:/i.test(text)) return null;
-  const [path, query] = splitOnce(text.slice("geo:".length), "?");
+  const rest = afterPrefix(text, "geo:");
+  if (rest === null) return null;
+  const [path, query] = splitOnce(rest, "?");
   const coordinates = path.split(";", 1)[0];
   if (!coordinates.trim()) return null;
 
