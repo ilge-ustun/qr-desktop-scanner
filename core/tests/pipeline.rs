@@ -356,3 +356,51 @@ fn run_scan_reports_a_repeated_code_once() {
     );
     assert_eq!(names(scratch.path()), Vec::<String>::new());
 }
+
+/// Writes a selection, then reports a cancel.
+struct WritesThenCancels;
+impl Capturer for WritesThenCancels {
+    fn capture(&self, dest: &Path) -> Result<Capture, String> {
+        qr("https://example.com", 8).save(dest).unwrap();
+        Ok(Capture::Cancelled)
+    }
+}
+
+/// Notes that it ran, and finds nothing.
+struct Watches(Cell<bool>);
+impl Decoder for Watches {
+    fn decode(&self, _: &DynamicImage) -> Vec<DecodedCode> {
+        self.0.set(true);
+        Vec::new()
+    }
+}
+
+#[test]
+fn a_cancelled_capture_is_a_cancel_and_nothing_is_decoded() {
+    // The capturer's cancel is the outcome, even with a file written.
+    let scratch = tempfile::tempdir().unwrap();
+    let decoder = Watches(Cell::new(false));
+    let outcome = run_scan(
+        &Permission(true),
+        &WritesThenCancels,
+        &decoder,
+        scratch.path(),
+    );
+    assert_eq!(outcome, ScanOutcome::Cancelled);
+    assert!(!decoder.0.get(), "the decoder ran");
+    assert_eq!(names(scratch.path()), Vec::<String>::new());
+}
+
+#[test]
+fn a_find_all_that_reports_no_display_is_no_screenshot() {
+    struct NoDisplay;
+    impl DisplaysCapturer for NoDisplay {
+        fn capture_displays(&self, _: &Path) -> Result<Vec<PathBuf>, String> {
+            Ok(Vec::new())
+        }
+    }
+    let scratch = tempfile::tempdir().unwrap();
+    let outcome = run_find_all(&Permission(true), &NoDisplay, &RxingDecoder, scratch.path());
+    assert_eq!(outcome, error("no screenshot was written".into()));
+    assert_eq!(names(scratch.path()), Vec::<String>::new());
+}
