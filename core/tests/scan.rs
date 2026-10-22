@@ -150,6 +150,8 @@ fn a_scan_sweeps_stale_scan_directories_before_it_captures() {
         then: Writes("https://example.com"),
     };
     let outcome = run_scan(&Permission(true), &capturer, &RxingDecoder, scratch.path());
+    let saw = capturer.saw.take().expect("capture was not called");
+    assert_eq!(saw, Vec::<&str>::new(), "stale at capture");
     // The scan's own directory lived until the decode.
     match outcome {
         ScanOutcome::Found { codes } => {
@@ -158,8 +160,6 @@ fn a_scan_sweeps_stale_scan_directories_before_it_captures() {
         }
         other => panic!("expected Found, got {other:?}"),
     }
-    let saw = capturer.saw.take().expect("capture was not called");
-    assert_eq!(saw, Vec::<&str>::new(), "stale at capture");
     assert_eq!(stale_left(scratch.path()), Vec::<&str>::new());
     assert_kept(scratch.path());
     assert_eq!(names(scratch.path()), ["keep.txt", "my-scan-keep"]);
@@ -175,6 +175,25 @@ fn a_scan_named_file_is_not_swept() {
         "mine"
     );
     assert_eq!(stale_left(scratch.path()), Vec::<&str>::new());
+}
+
+#[cfg(unix)]
+#[test]
+fn a_scan_directory_that_cannot_be_removed_does_not_stop_the_sweep() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let scratch = stale_scratch();
+    let locked = scratch.path().join("scan-locked");
+    fs::create_dir(&locked).unwrap();
+    fs::write(locked.join("selection.png"), b"stale").unwrap();
+    // Its entries cannot be removed. (As root they can: the test still holds.)
+    fs::set_permissions(&locked, fs::Permissions::from_mode(0o500)).unwrap();
+    sweep_stale(scratch.path());
+    if locked.exists() {
+        fs::set_permissions(&locked, fs::Permissions::from_mode(0o700)).unwrap();
+    }
+    assert_eq!(stale_left(scratch.path()), Vec::<&str>::new());
+    assert_kept(scratch.path());
 }
 
 #[test]

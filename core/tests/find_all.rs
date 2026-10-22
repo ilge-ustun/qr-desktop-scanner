@@ -313,10 +313,10 @@ fn a_find_all_sweeps_stale_scan_directories_before_it_captures() {
         then: displays(&[Some("https://example.com")]),
     };
     let outcome = run_find_all(&Permission(true), &capturer, &RxingDecoder, scratch.path());
-    // The scan's own directory lived until the decode.
-    assert_eq!(texts(&outcome), ["https://example.com"]);
     let saw = capturer.saw.take().expect("capture was not called");
     assert_eq!(saw, Vec::<&str>::new(), "stale at capture");
+    // The scan's own directory lived until the decode.
+    assert_eq!(texts(&outcome), ["https://example.com"]);
     assert_eq!(stale_left(scratch.path()), Vec::<&str>::new());
     assert_kept(scratch.path());
     assert_eq!(names(scratch.path()), ["keep.txt", "my-scan-keep"]);

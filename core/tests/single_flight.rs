@@ -13,6 +13,16 @@ fn a_second_start_is_refused_while_a_guard_lives() {
 }
 
 #[test]
+fn a_refused_start_leaves_the_flight_to_its_holder() {
+    let flight = SingleFlight::default();
+    let first = flight.try_start().expect("a new flight is free");
+    assert!(flight.try_start().is_none());
+    assert!(flight.try_start().is_none());
+    drop(first);
+    assert!(flight.try_start().is_some());
+}
+
+#[test]
 fn a_dropped_guard_frees_the_flight() {
     let flight = SingleFlight::default();
     let guard = flight.try_start().expect("a new flight is free");
