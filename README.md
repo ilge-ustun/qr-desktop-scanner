@@ -55,7 +55,7 @@ The build is ad-hoc signed, so after every rebuild macOS may ask for the
 permission again. macOS 15 also re-confirms screen access from time to time.
 
 **A DMG to share:** `npm run tauri build` makes both the app and
-`target/release/bundle/dmg/QR Scanner_0.1.0_aarch64.dmg`. The first time,
+`target/release/bundle/dmg/QR Scanner_<version>_aarch64.dmg`. The first time,
 macOS may ask to let your terminal control Finder (it lays out the DMG
 window); allow it.
 
@@ -180,7 +180,8 @@ push and pull request, and attaches the DMG to the run.
 
 1. Set the new version in `src-tauri/tauri.conf.json` (and, to keep them in
    step, `package.json` and the two `Cargo.toml` files). Commit and push.
-2. `git tag v0.1.1 && git push origin v0.1.1`
+2. Tag that version and push the tag:
+   `git tag v0.2.0 && git push origin v0.2.0`
 
 `.github/workflows/release.yml` checks that the tag matches the version,
 runs the tests, builds one DMG for Apple Silicon and Intel, and publishes it
