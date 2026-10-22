@@ -1,0 +1,13 @@
+diff --git a/src/lib/urlSafety.ts b/src/lib/urlSafety.ts
+index 6ce20b6..5cf3d77 100644
+--- a/src/lib/urlSafety.ts
++++ b/src/lib/urlSafety.ts
+@@ -94,7 +94,7 @@ function isLocal(host: string): boolean {
+ 
+ // mailto:boss@corp.com?bcc=x@evil.com also writes to x@evil.com, which the
+ // card's headline (everything before the "?") does not show.
+-const RECIPIENT_FIELDS = new Set(["to", "cc", "bcc"]);
++const RECIPIENT_FIELDS = new Set<string>([]);
+ 
+ // Decodes each run of %XX escapes on its own, so a malformed escape stays as
+ // typed instead of throwing, and an encoded address cannot hide.

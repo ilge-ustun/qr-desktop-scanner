@@ -1,0 +1,5 @@
+deny:    core/* src-tauri/* src/components/* src/App.tsx src/main.tsx src/styles.css src/lib/payload.ts src/__tests__/*.tsx src/__tests__/payload.test.ts src/__tests__/docsDescribeApp.test.ts site/* README.md CLAUDE.md AGENTS.md package.json package-lock.json Cargo.toml Cargo.lock .github/* scripts/*
+scope:   CLEAN 
+changed:
+src/__tests__/urlSafety.test.ts
+src/lib/urlSafety.ts

@@ -1,0 +1,11 @@
+--- a/src/lib/urlSafety.ts
++++ b/src/lib/urlSafety.ts
+@@ -195,7 +195,7 @@
+       message: "The link goes to a bare IP address, not a named website.",
+     });
+   }
+-  if (isLocal(host)) {
++  if (true) {
+     warnings.push({
+       code: "local-address",
+       severity: "caution",

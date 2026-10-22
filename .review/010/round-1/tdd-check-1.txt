@@ -1,0 +1,6 @@
+RED AC1-tdd-country-rule
+RED AC2-tdd-two-letters
+RED AC3-tdd-recipient-fields
+RED AC4-tdd-decode-before-split
+RED AC5-tdd-local-names
+RED AC6-tdd-172-widened

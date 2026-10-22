@@ -1,0 +1,11 @@
+--- a/src/lib/urlSafety.ts
++++ b/src/lib/urlSafety.ts
+@@ -213,7 +213,7 @@
+   const [second = "", last = ""] = labels.slice(-2);
+   const twoPartSuffix =
+     TWO_PART_SUFFIXES.has(labels.slice(-2).join(".")) ||
+-    (COUNTRY_CODE.test(last) && COUNTRY_SECOND_LABELS.has(second));
++    false;
+   const suffixLength = twoPartSuffix ? 3 : 2;
+   const registrable = labels.slice(-suffixLength).join(".");
+   const front = labels.slice(0, -suffixLength);

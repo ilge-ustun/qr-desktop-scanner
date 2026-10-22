@@ -1,0 +1,13 @@
+diff --git a/src/lib/urlSafety.ts b/src/lib/urlSafety.ts
+index 6ce20b6..453069d 100644
+--- a/src/lib/urlSafety.ts
++++ b/src/lib/urlSafety.ts
+@@ -56,7 +56,7 @@ const TWO_PART_SUFFIXES = new Set([
+ 
+ // Second labels that make a two-letter country code a two-part suffix too,
+ // so example.co.kr counts as one name even where co.kr is not listed above.
+-const COUNTRY_SECOND_LABELS = new Set(["co", "com", "net", "org", "ac", "gov", "edu", "or", "ne", "go"]);
++const COUNTRY_SECOND_LABELS = new Set<string>([]);
+ 
+ const COUNTRY_CODE = /^[a-z]{2}$/;
+ 

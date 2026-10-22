@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":108,"numFailedTests":2,"failed":["010 AC1: a two-letter country code after one of the ten labels joins the suffix","010 AC1: one trailing dot is dropped from the owner, the message and the shown domain"]}

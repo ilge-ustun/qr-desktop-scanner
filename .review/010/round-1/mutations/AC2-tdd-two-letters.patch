@@ -1,0 +1,13 @@
+diff --git a/src/lib/urlSafety.ts b/src/lib/urlSafety.ts
+index 6ce20b6..6ed0a8e 100644
+--- a/src/lib/urlSafety.ts
++++ b/src/lib/urlSafety.ts
+@@ -58,7 +58,7 @@ const TWO_PART_SUFFIXES = new Set([
+ // so example.co.kr counts as one name even where co.kr is not listed above.
+ const COUNTRY_SECOND_LABELS = new Set(["co", "com", "net", "org", "ac", "gov", "edu", "or", "ne", "go"]);
+ 
+-const COUNTRY_CODE = /^[a-z]{2}$/;
++const COUNTRY_CODE = /^[a-z]+$/;
+ 
+ // Labels that make a name look like it ends there: paypal.com.example.net.
+ const DECOY_LABELS = new Set(["com", "net", "org", "io", "co", "gov", "edu"]);

@@ -1,0 +1,11 @@
+--- a/src/lib/urlSafety.ts
++++ b/src/lib/urlSafety.ts
+@@ -164,7 +164,7 @@
+   // The URL parser turns Unicode hostnames into punycode, so look-alike
+   // characters always show up as an xn-- label here. It keeps a trailing dot
+   // (evil.com. is evil.com), which would otherwise leave an empty last label.
+-  const host = url.hostname.toLowerCase().replace(/\.$/, "");
++  const host = url.hostname.toLowerCase();
+   // https://paypal.com@evil.xyz goes to evil.xyz: everything before the @ is
+   // a user name, there only to look like the destination.
+   if (url.username || url.password) {

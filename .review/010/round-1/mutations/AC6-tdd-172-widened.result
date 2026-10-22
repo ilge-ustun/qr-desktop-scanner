@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":108,"numFailedTests":2,"failed":["010 AC6: http://172.15.255.255/ gets no local-address warning","010 AC6: http://172.32.0.1/ gets no local-address warning"]}

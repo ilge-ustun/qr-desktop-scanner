@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":108,"numFailedTests":4,"failed":["010 AC4: mailto:boss@corp.com?subject=Lunch&body=See%20you%20at%201 gets no warning","010 AC4: mailto:boss@corp.com?in-reply-to=%3C42%40corp.com%3E gets no warning","010 AC4: mailto:boss@corp.com?body=Hi%26cc%3Dx%40evil.com gets no warning","010 AC4: mailto:boss@corp.com?subject=bcc&body=cc%20to gets no warning"]}
