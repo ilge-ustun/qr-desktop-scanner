@@ -1,0 +1,13 @@
+diff --git a/src/components/useCopyFeedback.ts b/src/components/useCopyFeedback.ts
+index 7906f44..18e660e 100644
+--- a/src/components/useCopyFeedback.ts
++++ b/src/components/useCopyFeedback.ts
+@@ -13,8 +13,6 @@ export function useCopyFeedback(onCopy: (text: string) => Promise<void>) {
+   const [failure, setFailure] = useState<string | null>(null);
+   useEffect(() => {
+     if (!copied) return;
+-    const timer = setTimeout(() => setCopied(null), 1500);
+-    return () => clearTimeout(timer);
+   }, [copied]);
+ 
+   const run = (task: () => Promise<void>, after?: () => void) => () => {

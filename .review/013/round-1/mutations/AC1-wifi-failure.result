@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":13,"numFailedTests":2,"failed":["AC1 Wi-Fi card (c) a failed copy shows its reason before the actions and says Copied nowhere, (d) a later copy clears it","AC1 Wi-Fi card (f) Enter copies with the same feedback: the failure, then Copied"]}

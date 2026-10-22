@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":14,"numFailedTests":4,"failed":["AC5: the contact M1 card renders its frame and action row as before","AC5: the phone tel:+31201234567 card renders its frame and action row as before","AC5: the SMS sms:+31201234567?body=… card renders its frame and action row as before","AC5: the location geo:-33.8568,151.2153?q=Opera%20House card renders its frame and action row as before"]}

@@ -1,0 +1,12 @@
+diff --git a/src/components/Ink.tsx b/src/components/Ink.tsx
+index 913f6ed..dbb5064 100644
+--- a/src/components/Ink.tsx
++++ b/src/components/Ink.tsx
+@@ -66,7 +66,6 @@ export function KeyedButton({
+         onClick={onClick}
+         disabled={disabled}
+         aria-describedby={describedBy}
+-        aria-keyshortcuts={aria}
+       >
+         {children}
+       </button>
