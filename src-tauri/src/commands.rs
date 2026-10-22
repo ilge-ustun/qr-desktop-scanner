@@ -5,6 +5,7 @@ use qr_core::{check_openable, ScreenPermission};
 use tauri::AppHandle;
 use tauri_plugin_opener::OpenerExt;
 
+use crate::error::Error;
 use crate::{hotkey, platform, popover, scan};
 
 /// Starts a scan; the result arrives as the `scan://result` event, the same
@@ -29,19 +30,18 @@ pub fn screen_permission() -> bool {
 /// Asks for access first: macOS lists an app under Screen Recording only after
 /// it has asked, so opening the pane alone shows nothing to switch on.
 #[tauri::command]
-pub fn open_screen_settings() -> Result<(), String> {
+pub fn open_screen_settings() -> Result<(), Error> {
     platform::request_permission();
-    platform::open_screen_settings()
+    platform::open_screen_settings()?;
+    Ok(())
 }
 
 /// Opens a decoded link in the default app, after checking its scheme again:
 /// the page offers Open only for safe schemes, and this holds even if it did not.
 #[tauri::command]
-pub fn open_link(app: AppHandle, url: String) -> Result<(), String> {
-    let url = check_openable(&url).map_err(|e| e.to_string())?;
-    app.opener()
-        .open_url(url.as_str(), None::<&str>)
-        .map_err(|e| e.to_string())?;
+pub fn open_link(app: AppHandle, url: String) -> Result<(), Error> {
+    let url = check_openable(&url)?;
+    app.opener().open_url(url.as_str(), None::<&str>)?;
     popover::hide(&app);
     Ok(())
 }
@@ -49,11 +49,11 @@ pub fn open_link(app: AppHandle, url: String) -> Result<(), String> {
 /// Joins the Wi-Fi network from a scanned code. Only the user's click on
 /// Connect calls this; the name and password are checked first.
 #[tauri::command]
-pub async fn join_wifi(ssid: String, password: Option<String>) -> Result<(), String> {
-    qr_core::wifi::validate(&ssid, password.as_deref()).map_err(|e| e.to_string())?;
+pub async fn join_wifi(ssid: String, password: Option<String>) -> Result<(), Error> {
+    qr_core::wifi::validate(&ssid, password.as_deref())?;
     tauri::async_runtime::spawn_blocking(move || platform::join_wifi(&ssid, password.as_deref()))
-        .await
-        .map_err(|e| e.to_string())?
+        .await??;
+    Ok(())
 }
 
 #[tauri::command]
@@ -87,6 +87,6 @@ pub fn resume_hotkey(app: AppHandle) {
 }
 
 #[tauri::command]
-pub fn set_hotkey(app: AppHandle, accelerator: String) -> Result<String, String> {
+pub fn set_hotkey(app: AppHandle, accelerator: String) -> Result<String, Error> {
     hotkey::change(&app, &accelerator)
 }

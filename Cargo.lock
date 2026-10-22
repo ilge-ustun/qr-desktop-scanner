@@ -2977,6 +2977,7 @@ dependencies = [
  "tauri-plugin-global-shortcut",
  "tauri-plugin-opener",
  "tauri-plugin-positioner",
+ "thiserror 2.0.21",
 ]
 
 [[package]]

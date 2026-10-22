@@ -2,6 +2,7 @@
 //! `qr-core`; this crate wires it to the platform.
 
 mod commands;
+mod error;
 mod hotkey;
 mod platform;
 mod popover;
