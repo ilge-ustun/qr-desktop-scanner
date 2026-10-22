@@ -1,0 +1,13 @@
+diff --git a/src/fonts.css b/src/fonts.css
+index 89dd95b..32963a8 100644
+--- a/src/fonts.css
++++ b/src/fonts.css
+@@ -7,7 +7,7 @@
+   font-style: normal;
+   font-display: swap;
+   font-weight: 400;
+-  src: url("@fontsource/silkscreen/files/silkscreen-latin-400-normal.woff2") format("woff2");
++  src: url("@fontsource/silkscreen/files/silkscreen-latin-400-normal.woff2") format("woff2"), url("@fontsource/silkscreen/files/silkscreen-latin-400-normal.woff") format("woff");
+ }
+ 
+ @font-face {

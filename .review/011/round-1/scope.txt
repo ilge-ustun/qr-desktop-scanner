@@ -1,0 +1,7 @@
+deny:    core/* src-tauri/* site/* src/styles.css src/App.tsx src/components/* src/lib/* index.html package.json package-lock.json Cargo.toml Cargo.lock .github/* scripts/* README.md CLAUDE.md AGENTS.md
+scope:   CLEAN 
+changed:
+src/__tests__/fonts.test.ts
+src/fonts.css
+src/main.tsx
+vite.config.ts

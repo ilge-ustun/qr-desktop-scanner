@@ -1,0 +1,8 @@
+{
+  "install": "npm ci",
+  "test": "npx vitest run",
+  "build": "export PATH=\"$HOME/.cargo/bin:$PATH\" CARGO_TARGET_DIR=\"$HOME/.cache/fleet-cargo/qr-desktop-scanner/${PWD##*/}\"; npm run build && cargo clippy -p qr-core --all-targets -- -D warnings && cargo test -p qr-core && scripts/check-macos-shell.sh",
+  "lint": "export PATH=\"$HOME/.cargo/bin:$PATH\"; npm run lint && cargo fmt --all --check",
+  "e2e": null,
+  "e2eTimeoutSec": null
+}
