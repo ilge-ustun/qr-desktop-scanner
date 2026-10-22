@@ -13,10 +13,13 @@
   `cargo ... --workspace` also builds the shell for Linux, which fails here
   for want of webkit2gtk. Check the shell with `npm run build` then
   `scripts/check-macos-shell.sh`, which lints it as macOS compiles it.
-- Evidence is vitest. Every AC's instrument is a vitest test (a selector
-  under `src/`): the fleet does not read cargo test results yet. Rust tests
-  still run in the baseline and a red one vetoes, so keep them green and add
-  them where Rust logic changes.
+- Evidence is a vitest test or a Rust test in `qr-core`. Name a Rust test as
+  `cargo:qr-core/<test file>::<test name>`, for a test in
+  `core/tests/<test file>.rs`; `cargo:qr-core/lib::<module>::tests::<name>`
+  names a unit test in `core/src`. Prove Rust logic with a Rust test, not
+  with a vitest test that reads Rust source as text. The shell
+  (`src-tauri/`) has no Rust test that runs here. All Rust tests also run in
+  the baseline, and a red one vetoes.
 - Code that only macOS can run (anything under `cfg(target_os = "macos")`,
   `src-tauri/src/platform/macos.rs`) cannot be tested here. Keep it thin: put
   the logic in `core/` or `src/lib/` where a test reaches it, and list the

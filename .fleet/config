@@ -14,8 +14,7 @@
 BASE_BRANCH=develop
 INSTALL_CMD='npm ci'
 VITEST_CMD='npx vitest run'
-# Rust is a gate here, not an instrument: the fleet reads only vitest results
-# as evidence until it has a cargo runner. The shell is built for macOS only
+# The baseline runs the Rust tests too. The shell is built for macOS only
 # (scripts/check-macos-shell.sh), because building it for Linux needs Tauri's
 # webkit2gtk packages, which this box does not have yet. With them installed,
 # `cargo clippy --workspace --all-targets -- -D warnings` can replace the
@@ -26,6 +25,15 @@ LINT_CMD='export PATH="$HOME/.cargo/bin:$PATH"; npm run lint && cargo fmt --all 
 SEED_FILES=''
 # vitest collects src/**/*.test.{ts,tsx}; a reviewer's probe lands here.
 PROBE_DIR='src/__tests__'
+# A story's evidence can be vitest tests or Rust tests (squadra-fleet PR #48):
+# a selector `cargo:qr-core/<test file>::<test name>` runs as
+# `$CARGO_CMD -p qr-core --test <test file> <test name> -- --exact`. Only
+# qr-core has Rust tests that run on Linux; the shell does not build here.
+# --locked: a test run must not change Cargo.lock, or the tree is dirty.
+RUNNERS='vitest cargo'
+CARGO_CMD='export PATH="$HOME/.cargo/bin:$PATH" CARGO_TARGET_DIR="$HOME/.cache/fleet-cargo/qr-desktop-scanner/${PWD##*/}"; cargo test --locked'
+# A reviewer's Rust probe lands here, as its own integration-test file.
+CARGO_PROBE_DIR=core/tests
 # Rules the agents get on top of the fleet's own, rendered into their prompts.
 REPO_RULES='.fleet/rules.md'
 # No E2E_CMD: there is no browser suite, and the app itself runs only on a Mac.
