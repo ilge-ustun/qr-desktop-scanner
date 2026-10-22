@@ -4,7 +4,7 @@ use std::cell::{Cell, RefCell};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use common::{canvas, qr};
+use common::{assert_kept, canvas, names, qr, stale_left, stale_scratch};
 use image::DynamicImage;
 use qr_core::{
     run_find_all, DecodedCode, Decoder, DisplaysCapturer, RxingDecoder, ScanOutcome, Scope,
@@ -80,6 +80,20 @@ impl DisplaysCapturer for MustNotRun {
     fn capture_displays(&self, _: &Path) -> Result<Vec<PathBuf>, String> {
         self.0.set(true);
         Ok(Vec::new())
+    }
+}
+
+/// Notes which stale scans of [`stale_scratch`] are still there when the
+/// capture starts, then captures as `then` does.
+struct SeesStale {
+    scratch: PathBuf,
+    saw: RefCell<Option<Vec<&'static str>>>,
+    then: Displays,
+}
+impl DisplaysCapturer for SeesStale {
+    fn capture_displays(&self, dir: &Path) -> Result<Vec<PathBuf>, String> {
+        self.saw.replace(Some(stale_left(&self.scratch)));
+        self.then.capture_displays(dir)
     }
 }
 
@@ -288,6 +302,24 @@ fn the_capture_gets_a_fresh_directory_under_scratch() {
     );
     assert!(!given.exists());
     assert!(left.is_empty(), "left behind: {left:?}");
+}
+
+#[test]
+fn a_find_all_sweeps_stale_scan_directories_before_it_captures() {
+    let scratch = stale_scratch();
+    let capturer = SeesStale {
+        scratch: scratch.path().to_owned(),
+        saw: RefCell::new(None),
+        then: displays(&[Some("https://example.com")]),
+    };
+    let outcome = run_find_all(&Permission(true), &capturer, &RxingDecoder, scratch.path());
+    // The scan's own directory lived until the decode.
+    assert_eq!(texts(&outcome), ["https://example.com"]);
+    let saw = capturer.saw.take().expect("capture was not called");
+    assert_eq!(saw, Vec::<&str>::new(), "stale at capture");
+    assert_eq!(stale_left(scratch.path()), Vec::<&str>::new());
+    assert_kept(scratch.path());
+    assert_eq!(names(scratch.path()), ["keep.txt", "my-scan-keep"]);
 }
 
 #[test]

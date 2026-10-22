@@ -9,7 +9,7 @@ pub mod wifi;
 
 pub use decode::{DecodedCode, Decoder, RxingDecoder};
 pub use scan::{
-    run_find_all, run_scan, Capture, Capturer, DisplaysCapturer, ScanOutcome, Scope,
+    run_find_all, run_scan, sweep_stale, Capture, Capturer, DisplaysCapturer, ScanOutcome, Scope,
     ScreenPermission,
 };
 pub use url_guard::{check_openable, GuardError};
