@@ -20,6 +20,7 @@ const FIELD_CARD = "/src/components/FieldCard.tsx";
 const RESULT_CARD = "/src/components/ResultCard.tsx";
 const WIFI_CARD = "/src/components/WifiCard.tsx";
 const HOTKEY_BUTTON = "/src/components/HotkeyButton.tsx";
+const CARD_KEYS = "/src/lib/cardKeys.ts";
 const CARDS = [FIELD_CARD, RESULT_CARD, WIFI_CARD];
 
 type Source = { file: string; ast: ts.SourceFile; code: string };
@@ -126,7 +127,7 @@ describe("the files the source tests read", () => {
       WIFI_CARD,
       HOTKEY_BUTTON,
       "/src/components/Ink.tsx",
-      "/src/lib/cardKeys.ts",
+      CARD_KEYS,
     ]) {
       expect(files).toContain(file);
     }
@@ -202,6 +203,32 @@ describe("AC3 the card frame is written once, in a file C the cards and App impo
       expect(headers[card], card).toBeUndefined();
     }
     expect(headers[APP]).toBe(1);
+  });
+});
+
+/** The one file that writes aria-keyshortcuts: K. */
+function keyedFile(all: Source[]): string {
+  const files = Object.keys(matches(all, /aria-keyshortcuts/));
+  expect(files).toHaveLength(1);
+  return files[0];
+}
+
+describe("AC4 a keyed button names its key once, in a file K the cards import", () => {
+  it("(a) aria-keyshortcuts: once, in K, for the ghost and the primary look alike", () => {
+    const k = keyedFile(SOURCES);
+    expect(matches(SOURCES, /aria-keyshortcuts/)).toEqual({ [k]: 1 });
+  });
+
+  it("(b) SHORTCUTS: only in src/lib/cardKeys.ts and K", () => {
+    const k = keyedFile(SOURCES);
+    const readers = Object.keys(matches(SOURCES, /\bSHORTCUTS\b/));
+    expect(readers).toContain(CARD_KEYS);
+    expect(readers.filter((f) => f !== k && f !== CARD_KEYS)).toEqual([]);
+  });
+
+  it("(c) FieldCard, ResultCard and WifiCard import K", () => {
+    const k = keyedFile(SOURCES);
+    for (const card of CARDS) expect(imports(SOURCES, card, k), `${card} imports ${k}`).toBe(true);
   });
 });
 

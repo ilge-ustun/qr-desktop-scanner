@@ -1,13 +1,12 @@
 import { useRef } from "react";
 
-import { SHORTCUTS } from "../lib/cardKeys";
 import type { DecodedCode } from "../lib/ipc";
 import { classify, LABELS, type Payload } from "../lib/payload";
 import { assess } from "../lib/urlSafety";
 import { Card } from "./Card";
 import { ContactCard } from "./ContactCard";
 import { GeoCard } from "./GeoCard";
-import { Keyed, PrimaryButton, WarningIcon, type Tone } from "./Ink";
+import { KeyedButton, WarningIcon, type Tone } from "./Ink";
 import { PhoneCard } from "./PhoneCard";
 import { SmsCard } from "./SmsCard";
 import { useCardKeys } from "./useCardKeys";
@@ -86,18 +85,14 @@ function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload 
       )}
       {failure && <p className="failure">{failure}</p>}
       <div className="actions">
-        <Keyed shortcut="copy">
-          <button type="button" className="ghost" onClick={copyText} aria-keyshortcuts={SHORTCUTS.copy.aria}>
-            {copied("text") ? "Copied" : "Copy"}
-          </button>
-        </Keyed>
+        <KeyedButton shortcut="copy" onClick={copyText}>
+          {copied("text") ? "Copied" : "Copy"}
+        </KeyedButton>
         {safety?.openable &&
           (tone === "ok" ? (
-            <Keyed shortcut="open">
-              <PrimaryButton onClick={open} keyshortcuts={SHORTCUTS.open.aria}>
-                Open
-              </PrimaryButton>
-            </Keyed>
+            <KeyedButton shortcut="open" primary onClick={open}>
+              Open
+            </KeyedButton>
           ) : (
             <button type="button" className="risky" onClick={open} ref={openAnyway}>
               Open anyway

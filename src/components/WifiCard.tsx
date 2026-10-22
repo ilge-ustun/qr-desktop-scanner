@@ -1,9 +1,8 @@
 import { useState } from "react";
 
-import { SHORTCUTS } from "../lib/cardKeys";
 import type { WifiNetwork } from "../lib/payload";
 import { Card } from "./Card";
-import { Keyed, PrimaryButton } from "./Ink";
+import { KeyedButton } from "./Ink";
 import { useCardKeys } from "./useCardKeys";
 import { useCopyFeedback } from "./useCopyFeedback";
 
@@ -60,17 +59,13 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
       {failure && <p className="failure">{failure}</p>}
       <div className="actions">
         {network.password && (
-          <Keyed shortcut="copy">
-            <button type="button" className="ghost" onClick={copyPassword} aria-keyshortcuts={SHORTCUTS.copy.aria}>
-              {copied("password") ? "Copied" : "Copy password"}
-            </button>
-          </Keyed>
+          <KeyedButton shortcut="copy" onClick={copyPassword}>
+            {copied("password") ? "Copied" : "Copy password"}
+          </KeyedButton>
         )}
-        <Keyed shortcut="join">
-          <PrimaryButton onClick={connect} disabled={busy} keyshortcuts={SHORTCUTS.join.aria}>
-            {join.state === "joining" ? "Connecting…" : join.state === "joined" ? "Connected" : "Connect"}
-          </PrimaryButton>
-        </Keyed>
+        <KeyedButton shortcut="join" primary onClick={connect} disabled={busy}>
+          {join.state === "joining" ? "Connecting…" : join.state === "joined" ? "Connected" : "Connect"}
+        </KeyedButton>
       </div>
     </Card>
   );

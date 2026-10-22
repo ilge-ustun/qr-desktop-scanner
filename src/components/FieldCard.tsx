@@ -1,8 +1,7 @@
 import { useId } from "react";
 
-import { SHORTCUTS } from "../lib/cardKeys";
 import { Card } from "./Card";
-import { Keyed, PrimaryButton } from "./Ink";
+import { KeyedButton } from "./Ink";
 import { useCardKeys } from "./useCardKeys";
 import { useCopyFeedback } from "./useCopyFeedback";
 
@@ -57,23 +56,13 @@ export function FieldCard({ meta, headline, copyHeadline, fields, action, onCopy
       )}
       {failure && <p className="failure">{failure}</p>}
       <div className="actions">
-        <Keyed shortcut="copy">
-          <button
-            type="button"
-            className="ghost"
-            aria-describedby={`${id}-headline`}
-            aria-keyshortcuts={SHORTCUTS.copy.aria}
-            onClick={copy("headline", headline)}
-          >
-            {copied("headline") ? "Copied" : copyHeadline}
-          </button>
-        </Keyed>
+        <KeyedButton shortcut="copy" describedBy={`${id}-headline`} onClick={copy("headline", headline)}>
+          {copied("headline") ? "Copied" : copyHeadline}
+        </KeyedButton>
         {action && (
-          <Keyed shortcut="open">
-            <PrimaryButton onClick={run(action.run)} keyshortcuts={SHORTCUTS.open.aria}>
-              {action.label}
-            </PrimaryButton>
-          </Keyed>
+          <KeyedButton shortcut="open" primary onClick={run(action.run)}>
+            {action.label}
+          </KeyedButton>
         )}
       </div>
     </Card>
