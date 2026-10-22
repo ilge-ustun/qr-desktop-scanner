@@ -3,7 +3,7 @@
 // (data-card-keys) select on. The literals were read from epic/quality before
 // the cards shared one frame, one copy feedback and one keyed button. jsdom
 // evaluates none of that CSS: this holds the DOM it depends on, not the look.
-import { act, cleanup, render } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 
 import { M1 } from "./contactCodes";
@@ -86,6 +86,13 @@ async function start() {
 const found = (text: string) => async () => {
   await start();
   act(() => scan.result({ kind: "found", codes: [{ text, format: "qrcode" }] }));
+};
+
+/** A Wi-Fi card after Connect, while joinWifi has not answered. */
+const connecting = (text: string) => async () => {
+  await found(text)();
+  ipc.joinWifi.mockImplementationOnce(() => new Promise(() => {}));
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "Connect" })));
 };
 
 /** Nothing found, after a drag scan. */
@@ -223,6 +230,24 @@ const ROWS: Row[] = [
       "div.actions",
       "span.keyed",
       'button.primary[type=button][aria-keyshortcuts=Meta+J] "Connect"',
+      'kbd.keycap[aria-hidden=true] "⌘J"',
+    ],
+  },
+  {
+    name: "Wi-Fi WIFI:T:WPA;S:Home;P:secret;; while it connects",
+    show: connecting("WIFI:T:WPA;S:Home;P:secret;;"),
+    outline: [
+      "article.card.tone-ok[data-card-keys=]",
+      "header.card-head",
+      "div.titles",
+      'span.meta "Wi-Fi · WPA/WPA2"',
+      'span.headline.size-l "Home"',
+      'button.dismiss[type=button][aria-label=Dismiss] ""',
+      "div.secret",
+      "div.actions",
+      ...KEYED_COPY("Copy password"),
+      "span.keyed",
+      'button.primary[type=button][aria-keyshortcuts=Meta+J][disabled=] "Connecting…"',
       'kbd.keycap[aria-hidden=true] "⌘J"',
     ],
   },

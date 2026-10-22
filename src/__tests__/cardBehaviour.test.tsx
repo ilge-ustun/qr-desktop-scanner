@@ -41,6 +41,8 @@ function card(code: string, open: (url: string) => Promise<void> = () => Promise
 
 const click = (button: HTMLElement) => act(async () => fireEvent.click(button));
 const wait = (ms: number) => act(() => vi.advanceTimersByTime(ms));
+/** Enter with focus nowhere, as useCardKeys hears it. */
+const enter = () => act(async () => fireEvent.keyDown(document.body, { key: "Enter", code: "Enter" }));
 
 /** The card's p.failure children. */
 const failures = (card: Element) => card.querySelectorAll(":scope > p.failure");
@@ -92,6 +94,22 @@ for (const { name, code, button: label, value } of ROWS) {
       await click(button);
       expect(onCopy).toHaveBeenCalledTimes(2);
       expect(element.querySelector("p.failure")).toBeNull();
+      expect(button.textContent).toBe("Copied");
+    });
+
+    it("(f) Enter copies with the same feedback: the failure, then Copied", async () => {
+      const { onCopy, card: element } = card(code);
+      onCopy.mockImplementationOnce(() => Promise.reject(FAILURE));
+      const button = screen.getByRole("button", { name: label });
+
+      await enter();
+      expect(onCopy).toHaveBeenCalledExactlyOnceWith(value);
+      expect(Array.from(failures(element), (p) => p.textContent)).toEqual([FAILURE]);
+      expect(button.textContent).toBe(label);
+
+      await enter();
+      expect(onCopy).toHaveBeenCalledTimes(2);
+      expect(failures(element)).toHaveLength(0);
       expect(button.textContent).toBe("Copied");
     });
   });
