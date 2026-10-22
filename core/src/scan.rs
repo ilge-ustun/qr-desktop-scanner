@@ -26,6 +26,32 @@ pub enum ScanOutcome {
     Error { message: String },
 }
 
+/// Why a scan failed. Its text is what the page shows.
+#[derive(Debug, thiserror::Error)]
+pub enum ScanError {
+    #[error("could not create {}: {source}", .path.display())]
+    Scratch {
+        path: PathBuf,
+        source: std::io::Error,
+    },
+    #[error("could not create a temporary directory: {0}")]
+    TempDir(std::io::Error),
+    #[error("{0}")]
+    Capture(String),
+    #[error("could not read the screenshot: {0}")]
+    UnreadableImage(image::ImageError),
+    #[error("no screenshot was written")]
+    NoScreenshot,
+}
+
+impl From<ScanError> for ScanOutcome {
+    fn from(err: ScanError) -> Self {
+        ScanOutcome::Error {
+            message: err.to_string(),
+        }
+    }
+}
+
 pub trait ScreenPermission {
     fn granted(&self) -> bool;
 }
@@ -61,83 +87,45 @@ pub trait DisplaysCapturer {
 }
 
 /// Run one scan. The screenshot lives in a temporary directory under
-/// `scratch` that is removed when this returns, whatever the outcome. The
-/// directories of earlier scans that the process did not live to remove are
-/// swept first ([`sweep_stale`]), so only one scan may run under `scratch`
-/// at a time.
+/// `scratch` that is removed when this returns, whatever the outcome.
+/// `scratch` is created when it is missing. The directories of earlier scans
+/// that the process did not live to remove are swept first
+/// ([`sweep_stale`]), so only one scan may run under `scratch` at a time.
 pub fn run_scan(
     permission: &dyn ScreenPermission,
     capturer: &dyn Capturer,
     decoder: &dyn Decoder,
     scratch: &Path,
 ) -> ScanOutcome {
-    if !permission.granted() {
-        return ScanOutcome::PermissionDenied;
-    }
-    sweep_stale(scratch);
-    let dir = match temp_dir(scratch) {
-        Ok(dir) => dir,
-        Err(outcome) => return outcome,
-    };
-    let shot = dir.path().join("selection.png");
-
-    match capturer.capture(&shot) {
-        Ok(Capture::Taken) => {}
-        Ok(Capture::Cancelled) => return ScanOutcome::Cancelled,
-        Err(e) => return error(e),
-    }
-    // screencapture exits 0 and writes nothing when the user presses Esc.
-    if !shot.is_file() {
-        return ScanOutcome::Cancelled;
-    }
-    let image = match image::open(&shot) {
-        Ok(image) => image,
-        Err(e) => return error(format!("could not read the screenshot: {e}")),
-    };
-    found(decoder.decode(&image))
+    in_scan_dir(permission, scratch, |dir| {
+        let shot = dir.join("selection.png");
+        if capturer.capture(&shot).map_err(ScanError::Capture)? == Capture::Cancelled {
+            return Ok(ScanOutcome::Cancelled);
+        }
+        // screencapture exits 0 and writes nothing when the user presses Esc.
+        if !shot.is_file() {
+            return Ok(ScanOutcome::Cancelled);
+        }
+        decode_shots(&[shot], decoder)
+    })
 }
 
 /// Find every code on every display, with no selection to make. A code seen
 /// on several displays is reported once, where it first appears. As for
 /// [`run_scan`], the screenshots live in a temporary directory under
-/// `scratch` that is removed when this returns, whatever the outcome, and
-/// the stale ones are swept first.
+/// `scratch` that is removed when this returns, whatever the outcome,
+/// `scratch` is created when it is missing, and the stale ones are swept
+/// first.
 pub fn run_find_all(
     permission: &dyn ScreenPermission,
     capturer: &dyn DisplaysCapturer,
     decoder: &dyn Decoder,
     scratch: &Path,
 ) -> ScanOutcome {
-    if !permission.granted() {
-        return ScanOutcome::PermissionDenied;
-    }
-    sweep_stale(scratch);
-    let dir = match temp_dir(scratch) {
-        Ok(dir) => dir,
-        Err(outcome) => return outcome,
-    };
-    let shots = match capturer.capture_displays(dir.path()) {
-        Ok(shots) => shots,
-        Err(e) => return error(e),
-    };
-    // A display with no image (one mirroring another, say) is skipped. No
-    // image at all is a failure, never a cancel: there was no selection.
-    let shots: Vec<PathBuf> = shots.into_iter().filter(|shot| shot.is_file()).collect();
-    if shots.is_empty() {
-        return error("no screenshot was written".into());
-    }
-    let mut seen = HashSet::new();
-    let mut codes = Vec::new();
-    for shot in &shots {
-        let image = match image::open(shot) {
-            Ok(image) => image,
-            Err(e) => return error(format!("could not read the screenshot: {e}")),
-        };
-        // The decoder dedups within one image; this does it across them.
-        let new = decoder.decode(&image).into_iter();
-        codes.extend(new.filter(|code| seen.insert(code.text.clone())));
-    }
-    found(codes)
+    in_scan_dir(permission, scratch, |dir| {
+        let shots = capturer.capture_displays(dir).map_err(ScanError::Capture)?;
+        decode_shots(&shots, decoder)
+    })
 }
 
 /// Remove the scan directories that earlier scans left under `scratch`. A
@@ -174,11 +162,51 @@ pub fn sweep_stale(scratch: &Path) {
     }
 }
 
-fn temp_dir(scratch: &Path) -> Result<TempDir, ScanOutcome> {
+/// The steps before the capture, the same for both scans: the permission,
+/// the sweep and the scan's directory. `scan` gets that directory, which is
+/// removed when `scan` returns.
+fn in_scan_dir(
+    permission: &dyn ScreenPermission,
+    scratch: &Path,
+    scan: impl FnOnce(&Path) -> Result<ScanOutcome, ScanError>,
+) -> ScanOutcome {
+    if !permission.granted() {
+        return ScanOutcome::PermissionDenied;
+    }
+    sweep_stale(scratch);
+    temp_dir(scratch)
+        .and_then(|dir| scan(dir.path()))
+        .unwrap_or_else(ScanOutcome::from)
+}
+
+fn temp_dir(scratch: &Path) -> Result<TempDir, ScanError> {
+    fs::create_dir_all(scratch).map_err(|source| ScanError::Scratch {
+        path: scratch.to_owned(),
+        source,
+    })?;
     tempfile::Builder::new()
         .prefix(SCAN_DIR_PREFIX)
         .tempdir_in(scratch)
-        .map_err(|e| error(format!("could not create a temporary directory: {e}")))
+        .map_err(ScanError::TempDir)
+}
+
+/// Open and decode the screenshots, in order. A shot with no file (a display
+/// that mirrors another, say) is skipped. No file at all is a failure, never
+/// a cancel. A code is reported once, where its text first appears, in one
+/// image or across them.
+fn decode_shots(shots: &[PathBuf], decoder: &dyn Decoder) -> Result<ScanOutcome, ScanError> {
+    let shots: Vec<&PathBuf> = shots.iter().filter(|shot| shot.is_file()).collect();
+    if shots.is_empty() {
+        return Err(ScanError::NoScreenshot);
+    }
+    let mut seen = HashSet::new();
+    let mut codes = Vec::new();
+    for shot in shots {
+        let image = image::open(shot).map_err(ScanError::UnreadableImage)?;
+        let new = decoder.decode(&image).into_iter();
+        codes.extend(new.filter(|code| seen.insert(code.text.clone())));
+    }
+    Ok(found(codes))
 }
 
 fn found(codes: Vec<DecodedCode>) -> ScanOutcome {
@@ -187,8 +215,4 @@ fn found(codes: Vec<DecodedCode>) -> ScanOutcome {
     } else {
         ScanOutcome::Found { codes }
     }
-}
-
-fn error(message: String) -> ScanOutcome {
-    ScanOutcome::Error { message }
 }
