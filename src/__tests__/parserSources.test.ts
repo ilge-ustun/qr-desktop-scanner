@@ -64,7 +64,7 @@ function prefixesIn(file: string, text: string) {
   const regexes: string[] = [];
   const passed = new Set<string>();
   walk(parse(file, text), (node) => {
-    if (isText(node) && isAfterPrefixArgument(node)) passed.add(node.text.toUpperCase());
+    if (ts.isStringLiteral(node) && isAfterPrefixArgument(node)) passed.add(node.text.toUpperCase());
     else if (isText(node) && hasPrefix(node.text)) literals.push(node.text);
     else if (ts.isRegularExpressionLiteral(node) && hasPrefix(node.text)) regexes.push(node.text);
   });
@@ -171,6 +171,9 @@ describe("AC2 the seven prefixes are written only as the prefix argument of afte
     expect([comment.literals, comment.regexes, [...comment.passed]]).toEqual([[], [], []]);
     const call = prefixesIn("a.ts", 'afterPrefix(t, "WIFI:")');
     expect([call.literals, call.regexes, [...call.passed]]).toEqual([[], [], ["WIFI:"]]);
+    // A template is not a string literal: it is neither passed nor allowed.
+    const template = prefixesIn("a.ts", "afterPrefix(t, `WIFI:`)");
+    expect([template.literals, [...template.passed]]).toEqual([["WIFI:"], []]);
   });
 });
 
