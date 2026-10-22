@@ -55,6 +55,8 @@ a { color: var(--ink); }
 a:hover { color: var(--ink-deep); }
 a:focus-visible, .button:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
 code { font: 600 0.95em var(--mono); overflow-wrap: anywhere; }
+/* Keys, like the app's keycaps, in the mono face: Silkscreen has no ⌘, ⇧ or ↩. */
+kbd { font: 600 0.95em var(--mono); }
 
 .wrap { max-width: 1120px; margin: 0 auto; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); }
 .pixel { font-family: var(--pixel); font-weight: 700; color: var(--ink); }
@@ -202,9 +204,9 @@ footer .wrap { padding-block: 26px 34px; display: flex; flex-wrap: wrap; gap: 14
     <div class="wrap">
       <h2>How it works</h2>
       <ol class="steps">
-        <li><span class="n" aria-hidden="true">1</span><span class="t">Press ⇧⌘2</span><span>Or click the QR in the menu bar. Change the shortcut by clicking it in the app.</span></li>
-        <li><span class="n" aria-hidden="true">2</span><span class="t">Drag a box</span><span>The Mac's own screenshot crosshair. Around a code on any screen, in any app. Esc cancels.</span></li>
-        <li><span class="n" aria-hidden="true">3</span><span class="t">Read, then decide</span><span>See the link, text or Wi-Fi network. Copy it, open it, or join the network. Nothing happens until you click.</span></li>
+        <li><span class="n" aria-hidden="true">1</span><span class="t">Press <kbd>⇧⌘2</kbd></span><span>Or click the QR in the menu bar. Change the shortcut by clicking it in the app.</span></li>
+        <li><span class="n" aria-hidden="true">2</span><span class="t">Drag a box</span><span>The Mac's own screenshot crosshair. Around a code on any screen, in any app. Esc cancels. Or skip the box: <b>Find all on screen</b>, under Scan, looks for every code on all your displays.</span></li>
+        <li><span class="n" aria-hidden="true">3</span><span class="t">Read, then decide</span><span>See the link, text, Wi-Fi network, contact, phone number, SMS or location. Copy it, open it or join the network with a click, or with a key: <kbd>↩</kbd> copies, <kbd>⌘O</kbd> opens, <kbd>⌘J</kbd> joins. A link with a warning opens only from <b>Open anyway</b>.</span></li>
       </ol>
     </div>
   </section>
@@ -215,6 +217,7 @@ footer .wrap { padding-block: 26px 34px; display: flex; flex-wrap: wrap; gap: 14
       <p>A QR code is a link from a stranger. QR Scanner shows where it really goes and marks what looks wrong:</p>
       <ul>
         <li><span class="mark">Fake destinations</span>: <code>paypal.com@evil.example</code> really goes to evil.example.</li>
+        <li><span class="mark">Decoy domains</span>: <code>paypal.com.secure-login.example.net</code> starts with paypal.com but belongs to example.net.</li>
         <li><span class="mark">Look-alike letters</span> in the address, like a Cyrillic а in apple.</li>
         <li><span class="mark">Unencrypted links</span>, bare IP addresses and link shorteners.</li>
         <li><span class="mark">Script and file links</span> that can't be opened at all.</li>
