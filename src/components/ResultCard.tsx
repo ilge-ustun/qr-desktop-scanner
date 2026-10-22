@@ -2,11 +2,11 @@ import { useRef } from "react";
 
 import type { DecodedCode } from "../lib/ipc";
 import { classify, LABELS, type Payload } from "../lib/payload";
-import { assess } from "../lib/urlSafety";
+import { assess, linkMeta, toneOf } from "../lib/urlSafety";
 import { Card } from "./Card";
 import { ContactCard } from "./ContactCard";
 import { GeoCard } from "./GeoCard";
-import { KeyedButton, WarningIcon, type Tone } from "./Ink";
+import { KeyedButton, WarningIcon } from "./Ink";
 import { PhoneCard } from "./PhoneCard";
 import { SmsCard } from "./SmsCard";
 import { useCardKeys } from "./useCardKeys";
@@ -45,16 +45,12 @@ function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload 
   const linkish = payload.kind === "url" || payload.kind === "email";
   const safety = linkish ? assess(payload.text) : null;
   const warnings = safety?.warnings ?? [];
-  const tone: Tone = warnings.some((w) => w.severity === "danger")
-    ? "danger"
-    : warnings.length
-      ? "warn"
-      : "ok";
+  const tone = toneOf(warnings);
   // None when the code gives none: a text, a javascript: link, an empty mailto:.
   const headline =
     (payload.kind === "email" ? payload.address : payload.kind === "phone" ? payload.number : safety?.domain) ||
     undefined;
-  const meta = tone === "ok" ? LABELS[payload.kind] : `${LABELS[payload.kind]} · check before opening`;
+  const meta = linkMeta(LABELS[payload.kind], tone);
 
   const { copy, run, copied, failure } = useCopyFeedback(onCopy);
   const copyText = copy("text", payload.text);

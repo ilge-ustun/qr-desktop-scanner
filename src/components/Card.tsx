@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
 import { headlineSize } from "../lib/headline";
+import type { Tone } from "../lib/urlSafety";
 import { DismissButton } from "./DismissButton";
-import type { Tone } from "./Ink";
 import type { useCardKeys } from "./useCardKeys";
 
 type Props = {
