@@ -1,0 +1,13 @@
+diff --git a/README.md b/README.md
+index e2df8ae..1a43917 100644
+--- a/README.md
++++ b/README.md
+@@ -126,7 +126,7 @@ allowed again, because the permission is tied to the signature.
+ - **Screen Recording permission** is checked before every scan: without
+   it, screencapture silently returns only the wallpaper.
+ - **QR content is untrusted.** The card shows the real domain on its own,
+-  warns on `http`, look-alike (punycode) hosts, decoy domains
++  warns on `http`, look-alike (punycode) hosts, domains
+   (`paypal.com.secure-login.example.net` belongs to example.net), bare IPs
+   and link shorteners, and offers Open only for `http`, `https` and `mailto`
+   — checked again in Rust before anything is opened, Open in Maps included.

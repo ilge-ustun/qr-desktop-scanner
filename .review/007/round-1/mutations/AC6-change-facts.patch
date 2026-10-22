@@ -1,0 +1,13 @@
+diff --git a/site/index.html b/site/index.html
+index 471e7f3..2263aaa 100644
+--- a/site/index.html
++++ b/site/index.html
+@@ -232,7 +232,7 @@ footer .wrap { padding-block: 26px 34px; display: flex; flex-wrap: wrap; gap: 14
+   <section class="wrap facts" aria-label="At a glance">
+     <div><span class="pixel">Private</span><span>No network access, no account, no analytics. The screenshot is deleted as soon as it's read.</span></div>
+     <div><span class="pixel">Open source</span><span>Rust and React on Tauri. Read the code, build it yourself, or check how a release was made.</span></div>
+-    <div><span class="pixel">Small</span><span>About 8 MB. Lives in the menu bar, no Dock icon, no window until you need it.</span></div>
++    <div><span class="pixel">Small</span><span>About 9 MB. Lives in the menu bar, no Dock icon, no window until you need it.</span></div>
+   </section>
+ 
+   <section id="first-launch" class="wrap first">

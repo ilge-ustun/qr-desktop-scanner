@@ -1,0 +1,13 @@
+diff --git a/README.md b/README.md
+index e2df8ae..537d2ec 100644
+--- a/README.md
++++ b/README.md
+@@ -95,7 +95,7 @@ allowed again, because the permission is tied to the signature.
+     its main Copy (on Wi-Fi the password, when there is one), ⌘O opens a link
+     with no warnings or runs Open in Maps, ⌘J runs Connect on a Wi-Fi card.
+     Enter on a focused button presses that button only.
+-14. `https://paypal.com.secure-login.example.net` warns that the address
++14. `https://paypal.com-secure.example.net` warns that the address
+     belongs to example.net and shows example.net as the domain. ⌘O there only
+     moves focus to **Open anyway**, which opens it only when pressed itself.
+ 
