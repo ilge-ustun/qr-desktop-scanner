@@ -1,0 +1,12 @@
+diff --git a/core/src/scan.rs b/core/src/scan.rs
+index 8c49dc8..01989ef 100644
+--- a/core/src/scan.rs
++++ b/core/src/scan.rs
+@@ -111,7 +111,6 @@ pub fn run_find_all(
+     if !permission.granted() {
+         return ScanOutcome::PermissionDenied;
+     }
+-    sweep_stale(scratch);
+     let dir = match temp_dir(scratch) {
+         Ok(dir) => dir,
+         Err(outcome) => return outcome,

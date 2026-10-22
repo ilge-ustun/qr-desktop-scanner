@@ -1,0 +1,13 @@
+diff --git a/core/src/single_flight.rs b/core/src/single_flight.rs
+index 9f5ab94..cb846fb 100644
+--- a/core/src/single_flight.rs
++++ b/core/src/single_flight.rs
+@@ -15,7 +15,7 @@ impl SingleFlight {
+     /// The guard of the flight, or `None` while another guard lives.
+     pub fn try_start(&self) -> Option<FlightGuard<'_>> {
+         // One read-modify-write: of two callers at once, one gets the guard.
+-        if self.running.swap(true, Ordering::Acquire) {
++        if { self.running.store(true, Ordering::Relaxed); false } {
+             None
+         } else {
+             Some(FlightGuard { flight: self })

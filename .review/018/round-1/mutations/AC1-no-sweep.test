@@ -1,0 +1,1 @@
+cargo:qr-core/scan::sweep_stale_removes_stale_scan_directories

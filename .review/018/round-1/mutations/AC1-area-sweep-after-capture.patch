@@ -1,0 +1,20 @@
+diff --git a/core/src/scan.rs b/core/src/scan.rs
+index 8c49dc8..c67a883 100644
+--- a/core/src/scan.rs
++++ b/core/src/scan.rs
+@@ -74,7 +74,6 @@ pub fn run_scan(
+     if !permission.granted() {
+         return ScanOutcome::PermissionDenied;
+     }
+-    sweep_stale(scratch);
+     let dir = match temp_dir(scratch) {
+         Ok(dir) => dir,
+         Err(outcome) => return outcome,
+@@ -86,6 +85,7 @@ pub fn run_scan(
+         Ok(Capture::Cancelled) => return ScanOutcome::Cancelled,
+         Err(e) => return error(e),
+     }
++    sweep_stale(scratch);
+     // screencapture exits 0 and writes nothing when the user presses Esc.
+     if !shot.is_file() {
+         return ScanOutcome::Cancelled;

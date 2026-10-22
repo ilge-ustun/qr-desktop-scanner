@@ -1,0 +1,13 @@
+diff --git a/core/src/scan.rs b/core/src/scan.rs
+index 8c49dc8..31479cf 100644
+--- a/core/src/scan.rs
++++ b/core/src/scan.rs
+@@ -162,7 +162,7 @@ pub fn sweep_stale(scratch: &Path) {
+             entry
+                 .file_name()
+                 .to_string_lossy()
+-                .starts_with(SCAN_DIR_PREFIX)
++                .contains(SCAN_DIR_PREFIX)
+         })
+         // file_type does not follow links: a link is not a directory here.
+         .filter(|entry| entry.file_type().is_ok_and(|kind| kind.is_dir()))

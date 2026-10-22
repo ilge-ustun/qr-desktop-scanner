@@ -1,0 +1,12 @@
+diff --git a/core/src/single_flight.rs b/core/src/single_flight.rs
+index 9f5ab94..62f8dd8 100644
+--- a/core/src/single_flight.rs
++++ b/core/src/single_flight.rs
+@@ -32,6 +32,6 @@ pub struct FlightGuard<'a> {
+ 
+ impl Drop for FlightGuard<'_> {
+     fn drop(&mut self) {
+-        self.flight.running.store(false, Ordering::Release);
++        let _ = self.flight;
+     }
+ }

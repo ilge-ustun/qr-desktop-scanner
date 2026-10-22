@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 433405,
+  "stop_reason": "end_turn",
+  "session_id": "06decad6-45d7-4726-a2a3-31c9b4f9f019",
+  "total_cost_usd": 2.2135875999999994,
+  "usage": {
+    "input_tokens": 66,
+    "cache_creation_input_tokens": 97787,
+    "cache_read_input_tokens": 2582738,
+    "output_tokens": 45724,
+    "output_tokens_details": {
+      "thinking_tokens": 22128
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 97787,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1380,
+        "cache_read_input_tokens": 110275,
+        "cache_creation_input_tokens": 1580,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1580
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 66,
+      "outputTokens": 45724,
+      "cacheReadInputTokens": 2582738,
+      "cacheCreationInputTokens": 97787,
+      "webSearchRequests": 0,
+      "costUSD": 2.2135875999999994,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 22128,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 37,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I've implemented story 018 on `story/018` in three commits. All qr-core tests pass, clippy and `cargo fmt --check` are clean, and `scripts/check-macos-shell.sh` lints the shell for macOS with no warnings. I did not run the full baseline; the harness runs it.\n\n**Commits**\n- `13aa7fe` — The sweep. `sweep_stale(scratch)` in `core/src/scan.rs` removes only the directories directly under `scratch` whose names start with `SCAN_DIR_PREFIX`. `temp_dir` uses the same constant. The sweep does not follow links, and it ignores every error. `run_scan` and `run_find_all` call it just before `temp_dir`. In the shell, `setup` in `src-tauri/src/lib.rs` calls it once on `app_cache_dir()`, before the tray and the hotkey exist, so no live scan can be swept.\n- `ae86205` — The flag. `SingleFlight` is in the new file `core/src/single_flight.rs`, and `try_start` is one atomic `swap`. Its guard clears the flag in `Drop`. `ScanState` now holds a `SingleFlight`. `scan()` holds the guard in a block that ends when the outcome is back, so the flag clears at the same point as before. No swap or store is left in `src-tauri/src/scan.rs`.\n- `622ab46` — Test changes. The two scan tests now check what the capture saw before they check the outcome. This makes a sweep moved to after the capture fail with \"stale at capture\". I also added tests for cases a reviewer could probe:\n  - a `scan-*` file is kept;\n  - `scan-*` directories nested under scratch, or next to it, are kept;\n  - a link inside a stale scan does not lead the sweep out of scratch;\n  - a scratch that is a file is not an error;\n  - a scan directory that cannot be removed does not stop the sweep;\n  - a refused start leaves the flight with its holder;\n  - of 8 threads that start at once, only 1 gets the guard.\n\n**Mutations:** there are nine pairs in `.review-out/mutations/`: three for AC1, two for AC2, one for AC3 and three for AC4. I made them with `git diff` after the last commit. Each patch applies to HEAD, and each selector goes red on an assertion, not on a compile error. I also checked the other \"Goes red when\" items, and each went red:\n- the sweep after the capture, for both scans;\n- the sweep after `temp_dir`: the fake cannot write into its removed directory;\n- removing every entry, or every directory;\n- `expect` on `read_dir`;\n- a `load` then `store` in `try_start`: 4 of the 8 racing threads got a guard.\n\nThe tree is clean apart from `.review-out/`.\n\n**Not tested here (from the story's known weaknesses):**\n- The two shell edits only compile and lint here. A person on a Mac must run the story's Human verification checks.\n- The 8-thread race test catches a `load` then `store` `try_start` only by timing. Reading the code shows `try_start` is one atomic swap.\n\nI saw no unrelated problems.",
+  "ttft_ms": 3270,
+  "type": "result",
+  "duration_ms": 513781,
+  "uuid": "a15aa547-7fff-4a2f-975b-68f493ff2ebd",
+  "ttft_stream_ms": 2988,
+  "time_to_request_ms": 174,
+  "first_content_frame_ms": 2988,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

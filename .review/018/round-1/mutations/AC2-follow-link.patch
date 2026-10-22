@@ -1,0 +1,20 @@
+diff --git a/core/src/scan.rs b/core/src/scan.rs
+index 8c49dc8..952272c 100644
+--- a/core/src/scan.rs
++++ b/core/src/scan.rs
+@@ -165,11 +165,14 @@ pub fn sweep_stale(scratch: &Path) {
+                 .starts_with(SCAN_DIR_PREFIX)
+         })
+         // file_type does not follow links: a link is not a directory here.
+-        .filter(|entry| entry.file_type().is_ok_and(|kind| kind.is_dir()))
++        .filter(|entry| entry.path().is_dir())
+         .map(|entry| entry.path())
+         .collect();
+     for dir in stale {
+         // remove_dir_all removes a link inside, not what it points to.
++        if let Ok(children) = fs::read_dir(&dir) {
++            for child in children.flatten() { let _ = fs::remove_file(child.path()); }
++        }
+         let _ = fs::remove_dir_all(dir);
+     }
+ }
