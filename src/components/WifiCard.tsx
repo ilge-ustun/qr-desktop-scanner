@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { SHORTCUTS } from "../lib/cardKeys";
 import { headlineSize } from "../lib/headline";
@@ -6,6 +6,7 @@ import type { WifiNetwork } from "../lib/payload";
 import { DismissButton } from "./DismissButton";
 import { Keyed, PrimaryButton } from "./Ink";
 import { useCardKeys } from "./useCardKeys";
+import { useCopyFeedback } from "./useCopyFeedback";
 
 type Props = {
   network: WifiNetwork;
@@ -28,17 +29,12 @@ const SECURITY: Record<string, string> = {
 
 export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
   const [shown, setShown] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [join, setJoin] = useState<Join>({ state: "idle" });
-  useEffect(() => {
-    if (!copied) return;
-    const timer = setTimeout(() => setCopied(false), 1500);
-    return () => clearTimeout(timer);
-  }, [copied]);
+  const { copy, copied, failure } = useCopyFeedback(onCopy);
 
   const security = SECURITY[network.security.toUpperCase()] ?? network.security;
   const meta = ["Wi-Fi", security, network.hidden ? "hidden" : ""].filter(Boolean).join(" · ");
-  const copyPassword = () => onCopy(network.password).then(() => setCopied(true), () => undefined);
+  const copyPassword = copy("password", network.password);
   const connect = () => {
     setJoin({ state: "joining" });
     onJoin(network.ssid, network.password).then(
@@ -69,11 +65,12 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
       )}
       {join.state === "joined" && <p className="success">Connected to {network.ssid}.</p>}
       {join.state === "failed" && <p className="failure">Could not connect: {join.message}</p>}
+      {failure && <p className="failure">{failure}</p>}
       <div className="actions">
         {network.password && (
           <Keyed shortcut="copy">
             <button type="button" className="ghost" onClick={copyPassword} aria-keyshortcuts={SHORTCUTS.copy.aria}>
-              {copied ? "Copied" : "Copy password"}
+              {copied("password") ? "Copied" : "Copy password"}
             </button>
           </Keyed>
         )}

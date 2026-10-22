@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
 import { SHORTCUTS } from "../lib/cardKeys";
 import type { DecodedCode } from "../lib/ipc";
@@ -12,6 +12,7 @@ import { Keyed, PrimaryButton, WarningIcon, type Tone } from "./Ink";
 import { PhoneCard } from "./PhoneCard";
 import { SmsCard } from "./SmsCard";
 import { useCardKeys } from "./useCardKeys";
+import { useCopyFeedback } from "./useCopyFeedback";
 import { WifiCard } from "./WifiCard";
 
 type Props = {
@@ -55,25 +56,14 @@ function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload 
     payload.kind === "email" ? payload.address : payload.kind === "phone" ? payload.number : safety?.domain;
   const meta = tone === "ok" ? LABELS[payload.kind] : `${LABELS[payload.kind]} · check before opening`;
 
-  const [copied, setCopied] = useState(false);
-  const [failure, setFailure] = useState<string | null>(null);
-  useEffect(() => {
-    if (!copied) return;
-    const timer = setTimeout(() => setCopied(false), 1500);
-    return () => clearTimeout(timer);
-  }, [copied]);
-
-  const run = (action: () => Promise<void>, after?: () => void) => () => {
-    setFailure(null);
-    action().then(after, (e: unknown) => setFailure(String(e)));
-  };
-  const copy = run(() => onCopy(payload.text), () => setCopied(true));
+  const { copy, run, copied, failure } = useCopyFeedback(onCopy);
+  const copyText = copy("text", payload.text);
   const open = run(() => onOpen(payload.text));
   // ⌘O opens only a link with no warnings. On a warned one it moves focus to
   // Open anyway, which then opens only when pressed itself.
   const openAnyway = useRef<HTMLButtonElement>(null);
   const keyed = useCardKeys({
-    copy,
+    copy: copyText,
     open: safety?.openable ? (tone === "ok" ? open : () => openAnyway.current?.focus()) : undefined,
   });
 
@@ -103,8 +93,8 @@ function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload 
       {failure && <p className="failure">{failure}</p>}
       <div className="actions">
         <Keyed shortcut="copy">
-          <button type="button" className="ghost" onClick={copy} aria-keyshortcuts={SHORTCUTS.copy.aria}>
-            {copied ? "Copied" : "Copy"}
+          <button type="button" className="ghost" onClick={copyText} aria-keyshortcuts={SHORTCUTS.copy.aria}>
+            {copied("text") ? "Copied" : "Copy"}
           </button>
         </Keyed>
         {safety?.openable &&
