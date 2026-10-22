@@ -2,9 +2,7 @@
 
 use std::time::Duration;
 
-use qr_core::{
-    run_find_all, run_scan, RxingDecoder, ScanOutcome, Scope, ScreenPermission, SingleFlight,
-};
+use qr_core::{RxingDecoder, ScanOutcome, Scope, ScreenPermission, SingleFlight};
 use tauri::{AppHandle, Emitter, Manager};
 
 use crate::{platform, popover};
@@ -42,53 +40,46 @@ async fn scan(app: AppHandle, scope: Scope) {
         capture_and_decode(&app, scope).await
     };
 
-    if outcome == ScanOutcome::PermissionDenied {
+    if outcome.asks_for_permission() {
         platform::request_permission();
     }
     let _ = app.emit("scan://result", &outcome);
-    // After Esc the user is done; don't pop the window back up. A find-all
-    // never ends Cancelled.
-    if outcome != ScanOutcome::Cancelled {
+    if outcome.reopens_popover() {
         popover::show(&app);
     }
 }
 
 async fn capture_and_decode(app: &AppHandle, scope: Scope) -> ScanOutcome {
+    // Checked here too, so that without the permission the popover stays
+    // open and the page gets no started event.
     if !platform::Permission.granted() {
         return ScanOutcome::PermissionDenied;
     }
     let scratch = match app.path().app_cache_dir() {
         Ok(dir) => dir,
-        Err(e) => return error(format!("no cache directory: {e}")),
+        Err(e) => {
+            return ScanOutcome::Error {
+                message: format!("no cache directory: {e}"),
+            }
+        }
     };
-    if let Err(e) = std::fs::create_dir_all(&scratch) {
-        return error(format!("could not create {}: {e}", scratch.display()));
-    }
     // "area" or "screen": the page words its result for the kind of scan.
     let _ = app.emit("scan://started", scope);
     popover::hide(app);
 
     tauri::async_runtime::spawn_blocking(move || {
         std::thread::sleep(HIDE_SETTLE);
-        match scope {
-            Scope::Area => run_scan(
-                &platform::Permission,
-                &platform::Screencapture,
-                &RxingDecoder,
-                &scratch,
-            ),
-            Scope::Screen => run_find_all(
-                &platform::Permission,
-                &platform::ScreencaptureDisplays,
-                &RxingDecoder,
-                &scratch,
-            ),
-        }
+        qr_core::run(
+            scope,
+            &platform::Permission,
+            &platform::Screencapture,
+            &platform::ScreencaptureDisplays,
+            &RxingDecoder,
+            &scratch,
+        )
     })
     .await
-    .unwrap_or_else(|e| error(format!("the scan stopped unexpectedly: {e}")))
-}
-
-fn error(message: String) -> ScanOutcome {
-    ScanOutcome::Error { message }
+    .unwrap_or_else(|e| ScanOutcome::Error {
+        message: format!("the scan stopped unexpectedly: {e}"),
+    })
 }
