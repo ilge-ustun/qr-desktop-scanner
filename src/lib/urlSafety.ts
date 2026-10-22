@@ -65,6 +65,33 @@ const DECOY_LABELS = new Set(["com", "net", "org", "io", "co", "gov", "edu"]);
 
 const IPV4 = /^\d{1,3}(\.\d{1,3}){3}$/;
 
+// This Mac or the local network: localhost and .local names, loopback,
+// private and link-local addresses. The URL parser has already written an IP
+// in its canonical form (2130706433 is 127.0.0.1, [0:0:0:0:0:0:0:1] is [::1]).
+function isLocal(host: string): boolean {
+  if (host === "localhost" || host.endsWith(".localhost") || host.endsWith(".local")) return true;
+  if (IPV4.test(host)) {
+    const [a, b] = host.split(".").map(Number);
+    return (
+      a === 127 || // 127/8 loopback
+      a === 10 || // 10/8
+      (a === 172 && b >= 16 && b <= 31) || // 172.16/12
+      (a === 192 && b === 168) || // 192.168/16
+      (a === 169 && b === 254) // 169.254/16 link-local
+    );
+  }
+  if (host.startsWith("[")) {
+    if (host === "[::1]") return true;
+    // The first 16 bits; "[::…" means they are zero.
+    const first = Number.parseInt(host.slice(1).split(":")[0] || "0", 16);
+    return (
+      (first & 0xfe00) === 0xfc00 || // fc00::/7 unique local
+      (first & 0xffc0) === 0xfe80 // fe80::/10 link-local
+    );
+  }
+  return false;
+}
+
 // mailto:boss@corp.com?bcc=x@evil.com also writes to x@evil.com, which the
 // card's headline (everything before the "?") does not show.
 const RECIPIENT_FIELDS = new Set(["to", "cc", "bcc"]);
@@ -166,6 +193,13 @@ export function assess(text: string): Assessment {
       code: "ip-address",
       severity: "caution",
       message: "The link goes to a bare IP address, not a named website.",
+    });
+  }
+  if (isLocal(host)) {
+    warnings.push({
+      code: "local-address",
+      severity: "caution",
+      message: "The link goes to this Mac or a device on your local network, not a public website.",
     });
   }
   if (SHORTENERS.has(host.replace(/^www\./, ""))) {

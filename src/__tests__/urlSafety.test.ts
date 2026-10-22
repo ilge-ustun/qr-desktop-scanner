@@ -205,3 +205,90 @@ it("010: an address keeps its + and a field name may be percent-encoded", () => 
   expect(extraRecipients("mailto:boss@corp.com?bcc=x+tag@evil.com")).toContain("x+tag@evil.com");
   expect(extraRecipients("mailto:boss@corp.com?%62cc=y@evil.com")).toContain("y@evil.com");
 });
+
+const LOCAL = "The link goes to this Mac or a device on your local network, not a public website.";
+const LOCAL_NAMES = [
+  "http://localhost/",
+  "http://localhost:5173/",
+  "http://localhost./",
+  "http://app.localhost/",
+  "http://printer.local/",
+  "https://nas.local./",
+];
+const LOCAL_IPS = [
+  "http://127.0.0.1/",
+  "http://127.255.255.254/",
+  "http://2130706433/",
+  "http://10.0.0.1/",
+  "http://10.255.255.255/",
+  "http://172.16.0.1/",
+  "http://172.31.255.255/",
+  "https://192.168.1.10/login",
+  "http://169.254.169.254/",
+  "http://[::1]/",
+  "http://[0:0:0:0:0:0:0:1]/",
+  "http://[fc00::1]/",
+  "http://[fd12:3456:789a::1]/",
+  "http://[fe80::1]/",
+  "http://[febf::1]/",
+];
+
+// The parser rewrites these before assess reads the host.
+const PARSED_HOST: Record<string, string> = {
+  "http://2130706433/": "127.0.0.1",
+  "http://[0:0:0:0:0:0:0:1]/": "[::1]",
+};
+
+it.each([...LOCAL_NAMES, ...LOCAL_IPS])("010 AC5: %s gets one local-address caution", (text) => {
+  if (text in PARSED_HOST) expect(new URL(text).hostname).toBe(PARSED_HOST[text]);
+  const a = assess(text);
+  expect(a.warnings.filter((w) => w.code === "local-address")).toEqual([
+    { code: "local-address", severity: "caution", message: LOCAL },
+  ]);
+  expect(a.openable).toBe(true);
+});
+
+it.each(LOCAL_IPS)("010 AC5: %s keeps its ip-address caution", (text) => {
+  expect(codes(text)).toContain("ip-address");
+});
+
+const PUBLIC_NAMES = [
+  "https://www.example.com/",
+  "https://10.example.com/",
+  "https://localhost.example.com/",
+  "https://printer.local.example.com/",
+];
+const PUBLIC_IPS = [
+  "https://8.8.8.8/",
+  "http://11.0.0.1/",
+  "http://100.1.2.3/",
+  "http://126.255.255.255/",
+  "http://128.0.0.1/",
+  "http://172.15.255.255/",
+  "http://172.32.0.1/",
+  "http://192.169.0.1/",
+  "http://169.255.0.1/",
+  "https://[2606:4700:4700::1111]/",
+  "http://[fbff::1]/",
+  "http://[fe00::1]/",
+  "http://[fec0::1]/",
+];
+
+it.each([...PUBLIC_NAMES, ...PUBLIC_IPS])("010 AC6: %s gets no local-address warning", (text) => {
+  expect(codes(text)).not.toContain("local-address");
+});
+
+it.each(PUBLIC_IPS)("010 AC6: %s keeps its ip-address caution", (text) => {
+  expect(codes(text)).toContain("ip-address");
+});
+
+it.each([
+  "http://127.1/",
+  "http://0x7f.0.0.1/",
+  "http://10.0.0.1./",
+  "http://LOCALHOST:8080/",
+  "http://[FE80::1]/",
+  "https://router.example.com@192.168.0.1/",
+])("010: %s reads as local once the parser has written its host out", (text) => {
+  expect(codes(text).filter((c) => c === "local-address")).toEqual(["local-address"]);
+});
