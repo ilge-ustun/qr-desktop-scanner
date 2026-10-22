@@ -26,6 +26,21 @@ pub enum ScanOutcome {
     Error { message: String },
 }
 
+/// What the shell does after a scan, besides sending the outcome to the
+/// page.
+impl ScanOutcome {
+    /// The scan had no Screen Recording permission: the shell asks for it.
+    pub fn asks_for_permission(&self) -> bool {
+        matches!(self, ScanOutcome::PermissionDenied)
+    }
+
+    /// The popover opens again to show the outcome, except after Esc: then
+    /// the user is done. A find-all never ends Cancelled.
+    pub fn reopens_popover(&self) -> bool {
+        !matches!(self, ScanOutcome::Cancelled)
+    }
+}
+
 /// Why a scan failed. Its text is what the page shows.
 #[derive(Debug, thiserror::Error)]
 pub enum ScanError {
@@ -84,6 +99,22 @@ pub trait DisplaysCapturer {
     /// Write an image of each display into `dir`, and nowhere else, and
     /// return their paths, the main display first.
     fn capture_displays(&self, dir: &Path) -> Result<Vec<PathBuf>, String>;
+}
+
+/// Run the scan of `scope`: [`run_scan`] with `area` for [`Scope::Area`],
+/// [`run_find_all`] with `screen` for [`Scope::Screen`].
+pub fn run(
+    scope: Scope,
+    permission: &dyn ScreenPermission,
+    area: &dyn Capturer,
+    screen: &dyn DisplaysCapturer,
+    decoder: &dyn Decoder,
+    scratch: &Path,
+) -> ScanOutcome {
+    match scope {
+        Scope::Area => run_scan(permission, area, decoder, scratch),
+        Scope::Screen => run_find_all(permission, screen, decoder, scratch),
+    }
 }
 
 /// Run one scan. The screenshot lives in a temporary directory under

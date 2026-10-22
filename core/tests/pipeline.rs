@@ -1,5 +1,6 @@
-//! The steps both scans share: the scratch directory, the errors and their
-//! texts, and the decode of the screenshots.
+//! The scan as the shell runs it: `run` picks the flow, the outcome says
+//! what follows it, and the steps both flows share (the scratch directory,
+//! the errors and their texts, the decode of the screenshots).
 
 mod common;
 
@@ -11,8 +12,8 @@ use std::path::{Path, PathBuf};
 use common::{canvas, names, qr};
 use image::DynamicImage;
 use qr_core::{
-    run_find_all, run_scan, Capture, Capturer, DecodedCode, Decoder, DisplaysCapturer,
-    RxingDecoder, ScanError, ScanOutcome, ScreenPermission,
+    run, run_find_all, run_scan, Capture, Capturer, DecodedCode, Decoder, DisplaysCapturer,
+    RxingDecoder, ScanError, ScanOutcome, Scope, ScreenPermission,
 };
 
 struct Permission(bool);
@@ -49,6 +50,34 @@ impl DisplaysCapturer for ScreenWrites {
         if let Some(bytes) = &self.bytes {
             fs::write(&shot, bytes).unwrap();
         }
+        Ok(vec![shot])
+    }
+}
+
+/// Writes a code with this text to the destination, and counts its calls.
+struct AreaCounts {
+    text: &'static str,
+    calls: Cell<u32>,
+}
+impl Capturer for AreaCounts {
+    fn capture(&self, dest: &Path) -> Result<Capture, String> {
+        self.calls.set(self.calls.get() + 1);
+        qr(self.text, 8).save(dest).unwrap();
+        Ok(Capture::Taken)
+    }
+}
+
+/// Writes one display, display-1.png, with a code with this text, and
+/// counts its calls.
+struct ScreenCounts {
+    text: &'static str,
+    calls: Cell<u32>,
+}
+impl DisplaysCapturer for ScreenCounts {
+    fn capture_displays(&self, dir: &Path) -> Result<Vec<PathBuf>, String> {
+        self.calls.set(self.calls.get() + 1);
+        let shot = dir.join("display-1.png");
+        qr(self.text, 8).save(&shot).unwrap();
         Ok(vec![shot])
     }
 }
@@ -106,6 +135,72 @@ fn unreadable(name: &str, bytes: &[u8]) -> String {
 
 fn error(message: String) -> ScanOutcome {
     ScanOutcome::Error { message }
+}
+
+/// Runs `scope` with a permission that refuses, then with one that grants,
+/// and gives each outcome with the calls of the area capturer and of the
+/// displays capturer so far.
+fn refused_then_granted(scope: Scope) -> [(ScanOutcome, (u32, u32)); 2] {
+    let scratch = tempfile::tempdir().unwrap();
+    let area = AreaCounts {
+        text: "area",
+        calls: Cell::new(0),
+    };
+    let screen = ScreenCounts {
+        text: "screen",
+        calls: Cell::new(0),
+    };
+    [false, true].map(|granted| {
+        let outcome = run(
+            scope,
+            &Permission(granted),
+            &area,
+            &screen,
+            &RxingDecoder,
+            scratch.path(),
+        );
+        (outcome, (area.calls.get(), screen.calls.get()))
+    })
+}
+
+#[test]
+fn run_area_uses_the_area_capturer_only() {
+    let [(refused, refused_calls), (granted, granted_calls)] = refused_then_granted(Scope::Area);
+    assert_eq!(refused, ScanOutcome::PermissionDenied);
+    assert_eq!(refused_calls, (0, 0), "(area, displays) calls");
+    assert_eq!(texts(&granted), ["area"]);
+    assert_eq!(granted_calls, (1, 0), "(area, displays) calls");
+}
+
+#[test]
+fn run_screen_uses_the_displays_capturer_only() {
+    let [(refused, refused_calls), (granted, granted_calls)] = refused_then_granted(Scope::Screen);
+    assert_eq!(refused, ScanOutcome::PermissionDenied);
+    assert_eq!(refused_calls, (0, 0), "(area, displays) calls");
+    assert_eq!(texts(&granted), ["screen"]);
+    assert_eq!(granted_calls, (0, 1), "(area, displays) calls");
+}
+
+#[test]
+fn the_outcome_says_what_the_shell_does_next() {
+    // (outcome, asks_for_permission, reopens_popover)
+    let rows = [
+        (
+            ScanOutcome::Found {
+                codes: vec![code("t", "qrcode")],
+            },
+            false,
+            true,
+        ),
+        (ScanOutcome::NotFound, false, true),
+        (ScanOutcome::Cancelled, false, false),
+        (ScanOutcome::PermissionDenied, true, true),
+        (error("x".into()), false, true),
+    ];
+    for (outcome, asks, reopens) in rows {
+        assert_eq!(outcome.asks_for_permission(), asks, "{outcome:?}");
+        assert_eq!(outcome.reopens_popover(), reopens, "{outcome:?}");
+    }
 }
 
 #[test]

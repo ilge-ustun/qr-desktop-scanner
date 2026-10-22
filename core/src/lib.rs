@@ -11,7 +11,7 @@ pub mod wifi;
 
 pub use decode::{DecodedCode, Decoder, RxingDecoder};
 pub use scan::{
-    run_find_all, run_scan, sweep_stale, Capture, Capturer, DisplaysCapturer, ScanError,
+    run, run_find_all, run_scan, sweep_stale, Capture, Capturer, DisplaysCapturer, ScanError,
     ScanOutcome, Scope, ScreenPermission,
 };
 pub use single_flight::{FlightGuard, SingleFlight};
