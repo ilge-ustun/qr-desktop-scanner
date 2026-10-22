@@ -54,10 +54,74 @@ const TWO_PART_SUFFIXES = new Set([
   "com.tr",
 ]);
 
+// Second labels that make a two-letter country code a two-part suffix too,
+// so example.co.kr counts as one name even where co.kr is not listed above.
+const COUNTRY_SECOND_LABELS = new Set(["co", "com", "net", "org", "ac", "gov", "edu", "or", "ne", "go"]);
+
+const COUNTRY_CODE = /^[a-z]{2}$/;
+
 // Labels that make a name look like it ends there: paypal.com.example.net.
 const DECOY_LABELS = new Set(["com", "net", "org", "io", "co", "gov", "edu"]);
 
 const IPV4 = /^\d{1,3}(\.\d{1,3}){3}$/;
+
+// This Mac or the local network: localhost and .local names, loopback,
+// private and link-local addresses. The URL parser has already written an IP
+// in its canonical form (2130706433 is 127.0.0.1, [0:0:0:0:0:0:0:1] is [::1]).
+function isLocal(host: string): boolean {
+  if (host === "localhost" || host.endsWith(".localhost") || host.endsWith(".local")) return true;
+  if (IPV4.test(host)) {
+    const [a, b] = host.split(".").map(Number);
+    return (
+      a === 127 || // 127/8 loopback
+      a === 10 || // 10/8
+      (a === 172 && b >= 16 && b <= 31) || // 172.16/12
+      (a === 192 && b === 168) || // 192.168/16
+      (a === 169 && b === 254) // 169.254/16 link-local
+    );
+  }
+  if (host.startsWith("[")) {
+    if (host === "[::1]") return true;
+    // The first 16 bits; "[::…" means they are zero.
+    const first = Number.parseInt(host.slice(1).split(":")[0] || "0", 16);
+    return (
+      (first & 0xfe00) === 0xfc00 || // fc00::/7 unique local
+      (first & 0xffc0) === 0xfe80 // fe80::/10 link-local
+    );
+  }
+  return false;
+}
+
+// mailto:boss@corp.com?bcc=x@evil.com also writes to x@evil.com, which the
+// card's headline (everything before the "?") does not show.
+const RECIPIENT_FIELDS = new Set(["to", "cc", "bcc"]);
+
+// Decodes each run of %XX escapes on its own, so a malformed escape stays as
+// typed instead of throwing, and an encoded address cannot hide.
+function percentDecode(text: string): string {
+  return text.replace(/(?:%[0-9a-f]{2})+/gi, (run) => {
+    try {
+      return decodeURIComponent(run);
+    } catch {
+      return run;
+    }
+  });
+}
+
+/** The addresses a mailto query's to, cc and bcc fields add, in order. */
+function extraRecipients(query: string): string[] {
+  return query
+    .replace(/^\?/, "")
+    .split("&")
+    .flatMap((field) => {
+      const eq = field.indexOf("=");
+      if (eq < 0 || !RECIPIENT_FIELDS.has(percentDecode(field.slice(0, eq)).toLowerCase())) return [];
+      return percentDecode(field.slice(eq + 1))
+        .split(",")
+        .map((address) => address.trim())
+        .filter((address) => address !== "");
+    });
+}
 
 export function assess(text: string): Assessment {
   let url: URL;
@@ -70,6 +134,14 @@ export function assess(text: string): Assessment {
   const warnings: Warning[] = [];
 
   if (scheme === "mailto") {
+    const recipients = extraRecipients(url.search);
+    if (recipients.length > 0) {
+      warnings.push({
+        code: "extra-recipients",
+        severity: "caution",
+        message: `The link adds ${recipients.join(", ")} to the recipients. Check every address before you send it.`,
+      });
+    }
     return { domain: null, openable: true, warnings };
   }
   if (DANGEROUS_SCHEMES.has(scheme)) {
@@ -90,8 +162,9 @@ export function assess(text: string): Assessment {
   }
 
   // The URL parser turns Unicode hostnames into punycode, so look-alike
-  // characters always show up as an xn-- label here.
-  const host = url.hostname.toLowerCase();
+  // characters always show up as an xn-- label here. It keeps a trailing dot
+  // (evil.com. is evil.com), which would otherwise leave an empty last label.
+  const host = url.hostname.toLowerCase().replace(/\.$/, "");
   // https://paypal.com@evil.xyz goes to evil.xyz: everything before the @ is
   // a user name, there only to look like the destination.
   if (url.username || url.password) {
@@ -122,6 +195,13 @@ export function assess(text: string): Assessment {
       message: "The link goes to a bare IP address, not a named website.",
     });
   }
+  if (isLocal(host)) {
+    warnings.push({
+      code: "local-address",
+      severity: "caution",
+      message: "The link goes to this Mac or a device on your local network, not a public website.",
+    });
+  }
   if (SHORTENERS.has(host.replace(/^www\./, ""))) {
     warnings.push({
       code: "shortener",
@@ -130,7 +210,11 @@ export function assess(text: string): Assessment {
     });
   }
   const labels = host.split(".");
-  const suffixLength = TWO_PART_SUFFIXES.has(labels.slice(-2).join(".")) ? 3 : 2;
+  const [second = "", last = ""] = labels.slice(-2);
+  const twoPartSuffix =
+    TWO_PART_SUFFIXES.has(labels.slice(-2).join(".")) ||
+    (COUNTRY_CODE.test(last) && COUNTRY_SECOND_LABELS.has(second));
+  const suffixLength = twoPartSuffix ? 3 : 2;
   const registrable = labels.slice(-suffixLength).join(".");
   const front = labels.slice(0, -suffixLength);
   const decoyAt = front.findIndex((label, i) => i > 0 && DECOY_LABELS.has(label));
@@ -142,5 +226,5 @@ export function assess(text: string): Assessment {
     });
     return { domain: registrable, openable: true, warnings };
   }
-  return { domain: host || null, openable: host !== "", warnings };
+  return { domain: host || null, openable: url.hostname !== "", warnings };
 }
