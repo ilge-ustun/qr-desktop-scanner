@@ -2,6 +2,7 @@
 //! `qr-core`; this crate wires it to the platform.
 
 mod commands;
+mod error;
 mod hotkey;
 mod platform;
 mod popover;
@@ -43,6 +44,11 @@ pub fn run() {
             commands::set_hotkey,
         ])
         .setup(|app| {
+            // What a scan left when the app last ended during it (Quit, a
+            // crash). Nothing can start a scan yet, so no live one is swept.
+            if let Ok(scratch) = app.path().app_cache_dir() {
+                qr_core::sweep_stale(&scratch);
+            }
             // A menu-bar app: no Dock icon, no entry in the app switcher.
             #[cfg(target_os = "macos")]
             app.set_activation_policy(tauri::ActivationPolicy::Accessory);
