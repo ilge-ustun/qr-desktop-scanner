@@ -1,10 +1,15 @@
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useReducer, useRef } from "react";
 
 import { Card } from "./components/Card";
 import { HotkeyButton } from "./components/HotkeyButton";
 import { Corners, PrimaryButton } from "./components/Ink";
 import { PermissionGate } from "./components/PermissionGate";
 import { ResultCard } from "./components/ResultCard";
+import { useEscapeHides } from "./hooks/useEscapeHides";
+import { useFitPopover } from "./hooks/useFitPopover";
+import { useHotkey } from "./hooks/useHotkey";
+import { usePermissionCheck } from "./hooks/usePermissionCheck";
+import { useScanEvents } from "./hooks/useScanEvents";
 import * as ipc from "./lib/ipc";
 import { initialState, reduce } from "./lib/scanState";
 
@@ -12,53 +17,11 @@ export function App() {
   const [state, dispatch] = useReducer(reduce, initialState);
   const { view } = state;
   const popover = useRef<HTMLElement>(null);
-  const [hotkey, setHotkey] = useState<string | null>(null);
-
-  useEffect(() => {
-    ipc.getHotkey().then(setHotkey, () => undefined);
-  }, []);
-
-  const pickHotkey = useCallback(async (accelerator: string) => {
-    const now = await ipc.setHotkey(accelerator);
-    setHotkey(now);
-    return now;
-  }, []);
-  const suspendHotkey = useCallback(() => void ipc.suspendHotkey(), []);
-  const resumeHotkey = useCallback(() => void ipc.resumeHotkey(), []);
-
-  // The window is as tall as what it shows: Rust resizes it whenever the
-  // content's height changes (bounded there, with the rest scrolling here).
-  useEffect(() => {
-    const element = popover.current;
-    if (!element) return;
-    // + the offset shadow printed below and right of the popover (styles.css).
-    const observer = new ResizeObserver(() => void ipc.fitPopover(Math.ceil(element.offsetHeight) + 6));
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    let unlisten: (() => void) | undefined;
-    let gone = false;
-    ipc
-      .onScan({
-        started: (scope) => dispatch({ type: "started", scope }),
-        result: (outcome) => dispatch({ type: "result", outcome }),
-      })
-      .then((u) => (gone ? u() : (unlisten = u)));
-    ipc.screenPermission().then((granted) => {
-      if (!granted) dispatch({ type: "permissionMissing" });
-    });
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") ipc.hidePopover();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => {
-      gone = true;
-      unlisten?.();
-      window.removeEventListener("keydown", onKey);
-    };
-  }, []);
+  const { hotkey, pickHotkey, suspendHotkey, resumeHotkey } = useHotkey();
+  useFitPopover(popover);
+  useScanEvents(dispatch);
+  usePermissionCheck(dispatch);
+  useEscapeHides();
 
   const scan = () => void ipc.startScan();
   const findAll = () => void ipc.findAllOnScreen();
@@ -89,7 +52,7 @@ export function App() {
       <section className="body">
         {ready && (
           <>
-            <div className="viewfinder tone-ok">
+            <div className="viewfinder">
               <Corners />
               <span className="scanline" aria-hidden="true" />
               <span className="prompt">
