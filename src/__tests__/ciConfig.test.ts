@@ -237,3 +237,81 @@ describe("AC4 dependabot.yml covers actions, npm and cargo", () => {
     expect([...t].sort()).toEqual(["- minor", "- patch"]);
   });
 });
+
+// Story 015: a push that changes only the fleet's state does not build.
+
+/** The one `key:` line in `lines`; its index. */
+function only(lines: Line[], key: string): number {
+  const at = keyIndexes(lines, key);
+  expect(at).toHaveLength(1);
+  return at[0];
+}
+
+const ownIndent = (lines: Line[]) => Math.min(...lines.map((l) => l.indent));
+
+/** The key lines at a block's own indent, as `key` names. */
+const ownKeys = (lines: Line[]) =>
+  lines
+    .filter((l) => l.indent === ownIndent(lines))
+    .map((l) => keyLine(l)?.key ?? `(not a key line) ${l.text}`)
+    .sort();
+
+function onBlock(): Line[] {
+  const at = only(macos, "on");
+  expect(macos[at].indent).toBe(0);
+  expect(keyLine(macos[at])?.value).toBe("");
+  return block(macos, at);
+}
+
+function pushBlock(): Line[] {
+  const on = onBlock();
+  const at = only(macos, "push");
+  expect(on).toContain(macos[at]);
+  expect(macos[at].indent).toBe(ownIndent(on));
+  expect(keyLine(macos[at])?.value).toBe("");
+  return block(macos, at);
+}
+
+describe("015 AC1 macos.yml push ignores pushes that change only fleet state", () => {
+  it("push has exactly branches and paths-ignore", () => {
+    expect(ownKeys(pushBlock())).toEqual(["branches", "paths-ignore"]);
+  });
+
+  it("paths-ignore is a block list of exactly the three fleet-state patterns", () => {
+    const push = pushBlock();
+    const at = only(push, "paths-ignore");
+    expect(keyLine(push[at])?.value).toBe("");
+    const list = block(push, at);
+    expect(list).toHaveLength(3);
+    for (const l of list) {
+      expect(l.text.startsWith("- ")).toBe(true);
+      expect(l.indent).toBe(list[0].indent);
+      expect(l.indent).toBeGreaterThan(push[at].indent);
+    }
+    expect(list.map((l) => unquote(l.text.slice(2).trim())).sort()).toEqual([
+      ".blocked/**",
+      ".review/**",
+      ".stories/**",
+    ]);
+  });
+});
+
+describe("015 AC2 macos.yml still builds main, develop, pull requests and manual runs", () => {
+  it("push branches is exactly [main, develop]", () => {
+    const push = pushBlock();
+    const at = only(push, "branches");
+    expect(push[at].text).toBe("branches: [main, develop]");
+  });
+
+  it("on has exactly push, pull_request and workflow_dispatch, the last two empty", () => {
+    const on = onBlock();
+    expect(ownKeys(on)).toEqual(["pull_request", "push", "workflow_dispatch"]);
+    for (const key of ["pull_request", "workflow_dispatch"]) {
+      const at = only(on, key);
+      expect(keyLine(on[at])?.value).toBe("");
+      expect(block(on, at)).toEqual([]);
+    }
+    for (const l of on.filter((l) => l.indent === ownIndent(on)))
+      expect(keyLine(l)?.value).toBe("");
+  });
+});
