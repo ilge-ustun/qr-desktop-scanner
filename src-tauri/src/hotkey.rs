@@ -105,8 +105,8 @@ pub fn resume(app: &AppHandle) {
     }
 }
 
-/// Switches to `accelerator` and saves it. On failure the previous shortcut
-/// stays in force.
+/// Switches to `accelerator` and saves it. On failure, a failed save too,
+/// the previous shortcut stays in force.
 pub fn change(app: &AppHandle, accelerator: &str) -> Result<String, Error> {
     let shortcut: Shortcut = accelerator
         .parse()
@@ -124,13 +124,20 @@ pub fn change(app: &AppHandle, accelerator: &str) -> Result<String, Error> {
         resume(app);
         return Err("Another app already uses that shortcut.".into());
     }
-    set_current(app, Some(shortcut));
     let text = shortcut.into_string();
-    let _ = save(
+    // A shortcut that is not saved is gone at the next launch, which takes
+    // back the saved one without a word. So it does not replace the one in
+    // force: that one is registered again, and the user is told.
+    if let Err(error) = save(
         app,
         &Settings {
             hotkey: Some(text.clone()),
         },
-    );
+    ) {
+        let _ = shortcuts.unregister(shortcut);
+        resume(app);
+        return Err(Error::NotSaved(Box::new(error)));
+    }
+    set_current(app, Some(shortcut));
     Ok(text)
 }

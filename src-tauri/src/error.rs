@@ -19,6 +19,10 @@ pub enum Error {
     Io(#[from] std::io::Error),
     #[error(transparent)]
     Json(#[from] serde_json::Error),
+    /// settings.json could not be written, so the new shortcut was not
+    /// taken: the next launch would not have it.
+    #[error("Not saved: {0}")]
+    NotSaved(#[source] Box<Error>),
     /// A sentence of the shell's own, or the message of a platform function.
     #[error("{0}")]
     Message(String),
