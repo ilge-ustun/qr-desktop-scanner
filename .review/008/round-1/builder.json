@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 33725,
+  "stop_reason": "end_turn",
+  "session_id": "1543431f-17f5-489e-b373-ce3eba7e33f2",
+  "total_cost_usd": 0.1723979,
+  "usage": {
+    "input_tokens": 10,
+    "cache_creation_input_tokens": 30489,
+    "cache_read_input_tokens": 175419,
+    "output_tokens": 3288,
+    "output_tokens_details": {
+      "thinking_tokens": 117
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 30489,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 584,
+        "cache_read_input_tokens": 42388,
+        "cache_creation_input_tokens": 891,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 891
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 10,
+      "outputTokens": 3288,
+      "cacheReadInputTokens": 175419,
+      "cacheCreationInputTokens": 30489,
+      "webSearchRequests": 0,
+      "costUSD": 0.1723979,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 117,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 5,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "The popover's capability now grants only `core:event:allow-listen`, `core:event:allow-unlisten` and `clipboard-manager:allow-write-text`, and its CSP now names `base-uri 'none'`, `form-action 'none'` and `object-src 'none'`.\n\n- **Tests:** the new `src/__tests__/tauriSecurity.test.ts` covers AC1–AC3. I ran it before the change and it failed on AC1 and AC2; AC3 passed, as the story says it should. After the change, all six tests pass.\n- **Not run:** I did not run the baseline (build, clippy, `scripts/check-macos-shell.sh`). I ran `npm run lint`, which showed no errors.\n- **Not checked on a Mac:** nothing here shows the app still works at run time.\n- **Extra reds:** adding `core:image:allow-from-path` to the capability and changing `form-action 'none'` to `form-action 'self'` each turned the test red. I undid both.\n- **Mutation pairs:** three pairs are in `.review-out/mutations/`, written after the commit. Each patch takes one criterion's selector red:\n  - AC1: adds `core:default` back to the capability.\n  - AC2: drops `base-uri 'none'`.\n  - AC3: adds `devCsp` to `app.security`.\n\n  I did not run the classifier. I checked the AC3 patch's contents but did not run its selector.\n- **Prettier:** it flags the new test file. It isn't in the baseline commands, so I left it.\n\nChanges are in `src-tauri/capabilities/default.json`, `src-tauri/tauri.conf.json` and the new test file, in one commit. I didn't change the capability's `description`; it already describes only what the three permissions allow.",
+  "ttft_ms": 2268,
+  "type": "result",
+  "duration_ms": 41352,
+  "uuid": "6a0957d0-5593-4a2d-a7a3-0ab6199c15df",
+  "ttft_stream_ms": 1233,
+  "time_to_request_ms": 90,
+  "first_content_frame_ms": 1233,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

@@ -1,0 +1,13 @@
+diff --git a/src-tauri/capabilities/default.json b/src-tauri/capabilities/default.json
+index 0fbcdff..0ebae9b 100644
+--- a/src-tauri/capabilities/default.json
++++ b/src-tauri/capabilities/default.json
+@@ -4,7 +4,7 @@
+   "description": "The popover may listen to scan events and write to the clipboard. Opening links goes through the app's own open_link command, which checks the scheme.",
+   "windows": ["main"],
+   "permissions": [
+-    "core:event:allow-listen",
++    "core:event:allow-listen","core:default",
+     "core:event:allow-unlisten",
+     "clipboard-manager:allow-write-text"
+   ]

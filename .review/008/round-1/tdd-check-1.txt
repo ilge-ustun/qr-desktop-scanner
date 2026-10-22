@@ -1,0 +1,3 @@
+RED AC1-tdd-core-default
+RED AC2-tdd-base-uri
+RED AC3-tdd-dev-csp
