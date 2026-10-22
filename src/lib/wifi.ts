@@ -1,6 +1,8 @@
 // Wi-Fi codes, and what the card says about the network. Every value is
 // untrusted text.
 
+import { afterPrefix, splitUnescaped, unescapeBackslashes } from "./text";
+
 export type WifiNetwork = {
   ssid: string;
   password: string;
@@ -16,31 +18,24 @@ export type WifiNetwork = {
  * some generators wrap a value in double quotes.
  */
 export function parseWifi(text: string): WifiNetwork | null {
-  if (!/^WIFI:/i.test(text)) return null;
+  const body = afterPrefix(text, "WIFI:");
+  return body === null ? null : parseWifiBody(body);
+}
+
+/** `parseWifi` for the text after `WIFI:`. A field ends at an unescaped `;`
+ * and splits at its first unescaped `:`; the value is unescaped, then
+ * unquoted. Two quirks stay as they were: a field with no colon that ends at
+ * a `;` is stored as "" (and replaces an earlier value of its key), and the
+ * last field, with no `;` after it, is dropped when it has no colon. */
+export function parseWifiBody(body: string): WifiNetwork | null {
   const fields = new Map<string, string>();
-  let key = "";
-  let value = "";
-  let inValue = false;
-  const body = text.slice("WIFI:".length);
-  for (let i = 0; i < body.length; i++) {
-    const c = body[i];
-    if (c === "\\" && i + 1 < body.length) {
-      if (inValue) value += body[++i];
-      else key += body[++i];
-    } else if (c === ":" && !inValue) {
-      inValue = true;
-    } else if (c === ";") {
-      if (key) fields.set(key.toUpperCase(), unquote(value));
-      key = "";
-      value = "";
-      inValue = false;
-    } else if (inValue) {
-      value += c;
-    } else {
-      key += c;
-    }
-  }
-  if (key && inValue) fields.set(key.toUpperCase(), unquote(value));
+  const parts = splitUnescaped(body, ";");
+  parts.forEach((part, i) => {
+    const [rawKey, ...rest] = splitUnescaped(part, ":");
+    const key = unescapeBackslashes(rawKey);
+    if (!key || (i === parts.length - 1 && !rest.length)) return;
+    fields.set(key.toUpperCase(), unquote(unescapeBackslashes(rest.join(":"))));
+  });
 
   const ssid = fields.get("S");
   if (!ssid) return null;
