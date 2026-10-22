@@ -2,9 +2,13 @@
 
 A macOS menu-bar app that reads a QR code from anywhere on your screen — a
 photo, a PDF, a paused video, a web page. Click the menu-bar icon (or press
-**⌘⇧2**), drag a box around the code, and it shows what the code says, with
-**Copy** and **Open** — or, for a Wi-Fi code, the network with **Connect**
-and **Copy password**. Nothing is copied, opened or joined until you click.
+**⌘⇧2**) and drag a box around the code, or click **Find all on screen**,
+and it shows what the code says: a link with **Copy** and **Open**, a Wi-Fi
+network with **Connect** and **Copy password**, or a contact, phone number,
+SMS or location with a **Copy** for each part (and **Open in Maps** for
+coordinates). Nothing is copied, opened or joined until you ask: a click, or
+a key on the card (↩ copies, ⌘O opens, ⌘J connects). A link with a warning
+opens only from **Open anyway**.
 
 Tauri v2 (Rust) + React + TypeScript. macOS 12 or later. MIT licence.
 
@@ -79,6 +83,21 @@ allowed again, because the permission is tied to the signature.
 10. ⌘⇧2 works while another app is in front. Click the ⇧⌘2 chip in the
     popover, press another combination (with ⌘, ⌃ or ⌥) and that one works
     instead, also after a restart; Esc while recording keeps the old one.
+11. **Find all on screen** (under Scan, or *Find All Codes on Screen* in the
+    menu-bar icon's right-click menu) finds the codes on every display with
+    no box to drag, each code once.
+12. A vCard or MECARD contact shows the name, then each phone, email,
+    organisation and website with its own Copy. A `tel:` code shows the
+    number, an `SMSTO:` or `sms:` code the number and the message, and a
+    `geo:` code the place or coordinates, with **Open in Maps** only when the
+    coordinates are valid. None of them calls, sends or adds anything.
+13. The keys act on the card that has focus, else the first: ↩ (Enter) runs
+    its main Copy (on Wi-Fi the password, when there is one), ⌘O opens a link
+    with no warnings or runs Open in Maps, ⌘J runs Connect on a Wi-Fi card.
+    Enter on a focused button presses that button only.
+14. `https://paypal.com.secure-login.example.net` warns that the address
+    belongs to example.net and shows example.net as the domain. ⌘O there only
+    moves focus to **Open anyway**, which opens it only when pressed itself.
 
 ## How it works
 
@@ -92,12 +111,26 @@ allowed again, because the permission is tied to the signature.
 - **Decoding** is [rxing](https://crates.io/crates/rxing), a Rust port of
   ZXing. It finds several codes in one selection, rotated or light-on-dark.
   Apple Vision is planned as the primary decoder on macOS.
+- **Cards** follow what the code holds: a link or an email address, Wi-Fi,
+  a contact (vCard or MECARD), a phone number (`tel:`), an SMS (`sms:` or
+  `SMSTO:`), a location (`geo:`) or plain text. What the code says is shown
+  as text; a contact, an SMS or a location has a Copy for each value, and
+  nothing is called, sent or added to Contacts. A location with valid
+  coordinates gets *Open in Maps*: a `https://maps.apple.com/?ll=…` link
+  built from the two numbers.
+- **Keys** on a card run what its buttons run: ↩ (Enter) copies, ⌘O opens,
+  ⌘J connects. They act on the card that has focus, else the first, and
+  Enter on a focused button presses that button only. ⌘O opens only a link
+  with no warnings, or a location in Maps: on a warned link it moves focus to
+  *Open anyway*, which opens it only when pressed itself.
 - **Screen Recording permission** is checked before every scan: without
   it, screencapture silently returns only the wallpaper.
 - **QR content is untrusted.** The card shows the real domain on its own,
-  warns on `http`, look-alike (punycode) hosts, bare IPs and link shorteners,
-  and offers Open only for `http`, `https` and `mailto` — checked again in
-  Rust before anything is opened.
+  warns on `http`, look-alike (punycode) hosts, decoy domains
+  (`paypal.com.secure-login.example.net` belongs to example.net), bare IPs
+  and link shorteners, and offers Open only for `http`, `https` and `mailto`
+  — checked again in Rust before anything is opened, Open in Maps included.
+  Rust checks the scheme only; the domain warnings are the card's.
 - **Wi-Fi codes** are joined with macOS's own
   `networksetup -setairportnetwork`, after Rust checks the name and password
   against 802.11's limits. The password is passed as an argument, so for the
