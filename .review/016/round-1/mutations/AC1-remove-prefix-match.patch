@@ -1,0 +1,13 @@
+diff --git a/src/lib/text.ts b/src/lib/text.ts
+index a3a3983..e025623 100644
+--- a/src/lib/text.ts
++++ b/src/lib/text.ts
+@@ -9,7 +9,7 @@ function foldAscii(text: string): string {
+ /** The text after `prefix` when `text` starts with it, `A`–`Z` in either case;
+  * null when it does not. The prefix is text, not a pattern. */
+ export function afterPrefix(text: string, prefix: string): string | null {
+-  return foldAscii(text.slice(0, prefix.length)) === foldAscii(prefix) ? text.slice(prefix.length) : null;
++  return null;
+ }
+ 
+ /** Splits on each `separator` that has no backslash before it, keeping the

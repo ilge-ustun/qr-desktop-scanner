@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":10,"numFailedTests":3,"failed":["AC2 the seven prefixes are written only as the prefix argument of afterPrefix no string literal outside afterPrefix holds one","AC2 the seven prefixes are written only as the prefix argument of afterPrefix no regex literal holds one","AC2 the seven prefixes are written only as the prefix argument of afterPrefix each of the seven is passed to afterPrefix somewhere"]}

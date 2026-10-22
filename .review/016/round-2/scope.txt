@@ -1,0 +1,20 @@
+deny:    src/components/* src/App.tsx src/main.tsx src/styles.css src/fonts.css core/* src-tauri/* site/* .github/* scripts/* README.md CLAUDE.md AGENTS.md package.json package-lock.json vite.config.ts tsconfig.json eslint.config.js index.html Cargo.toml Cargo.lock src/__tests__/App.test.tsx src/__tests__/AppKeys.test.tsx src/__tests__/HotkeyButton.test.tsx src/__tests__/ResultCard.test.tsx src/__tests__/WifiCard.test.tsx src/__tests__/cardBehaviour.test.tsx src/__tests__/cardDom.test.tsx src/__tests__/cardKeys.test.ts src/__tests__/cardLogicSources.test.ts src/__tests__/cardModel.test.ts src/__tests__/cardModelDom.test.tsx src/__tests__/cardSources.test.ts src/__tests__/ciConfig.test.ts src/__tests__/contact.test.ts src/__tests__/contactCodes.ts src/__tests__/coreDependencies.test.ts src/__tests__/docsDescribeApp.test.ts src/__tests__/fonts.test.ts src/__tests__/geo.test.ts src/__tests__/headline.test.ts src/__tests__/hotkey.test.ts src/__tests__/ipc.test.ts src/__tests__/payload.test.ts src/__tests__/scanState.test.ts src/__tests__/siteReadyPopover.test.ts src/__tests__/sms.test.ts src/__tests__/sourceText.ts src/__tests__/tauriSecurity.test.ts src/__tests__/tone.test.ts src/__tests__/urlSafety.test.ts src/__tests__/wifi.test.ts
+scope:   CLEAN 
+changed:
+src/__tests__/parserSources.test.ts
+src/__tests__/prefixOnce.test.ts
+src/__tests__/query.test.ts
+src/__tests__/text.test.ts
+src/__tests__/wifiTable.test.ts
+src/lib/cardModel.ts
+src/lib/contact.ts
+src/lib/geo.ts
+src/lib/headline.ts
+src/lib/hotkey.ts
+src/lib/payload.ts
+src/lib/query.ts
+src/lib/scanState.ts
+src/lib/sms.ts
+src/lib/text.ts
+src/lib/urlSafety.ts
+src/lib/wifi.ts

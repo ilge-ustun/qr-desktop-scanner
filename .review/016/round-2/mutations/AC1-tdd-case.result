@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":13,"numFailedTests":3,"failed":["AC1 afterPrefix the case of the text is ignored","AC1 afterPrefix the case of the prefix is ignored","AC1 afterPrefix the rest keeps its case"]}

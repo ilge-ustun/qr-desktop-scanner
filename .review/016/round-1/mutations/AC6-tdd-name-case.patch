@@ -1,0 +1,13 @@
+diff --git a/src/lib/query.ts b/src/lib/query.ts
+index 493a218..febea24 100644
+--- a/src/lib/query.ts
++++ b/src/lib/query.ts
+@@ -4,7 +4,7 @@
+ /** The first `name=` parameter's value, percent-decoded; null when there is
+  * none. `query` is the text after the `?`. Names match in any case. */
+ export function queryParam(query: string, name: string): string | null {
+-  const wanted = name.toLowerCase();
++  const wanted = name;
+   for (const pair of query.split("&")) {
+     const eq = pair.indexOf("=");
+     if (eq >= 0 && pair.slice(0, eq).toLowerCase() === wanted) return percentDecoded(pair.slice(eq + 1));

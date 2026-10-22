@@ -1,0 +1,13 @@
+diff --git a/src/lib/geo.ts b/src/lib/geo.ts
+index 4f5b9be..ecaabc3 100644
+--- a/src/lib/geo.ts
++++ b/src/lib/geo.ts
+@@ -23,7 +23,7 @@ const NUMBER = /^-?\d+(\.\d+)?$/;
+ 
+ /** Returns null without coordinate text. */
+ export function parseGeo(text: string): Geo | null {
+-  const rest = afterPrefix(text, "geo:");
++  const rest = afterPrefix(text, `geo:`);
+   if (rest === null) return null;
+   const [path, query] = splitOnce(rest, "?");
+   const coordinates = path.split(";", 1)[0];

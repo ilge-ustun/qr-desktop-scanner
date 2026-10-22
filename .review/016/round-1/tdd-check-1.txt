@@ -1,0 +1,7 @@
+RED AC1-tdd-case-insensitive
+RED AC2-tdd-prefix-literal
+RED AC3-tdd-prefix-twice
+RED AC4-tdd-no-colon-field
+RED AC5-tdd-own-unescape
+RED AC6-tdd-name-case
+RED AC7-tdd-unused-export

@@ -1,0 +1,12 @@
+diff --git a/src/lib/headline.ts b/src/lib/headline.ts
+index 27432dc..77fd077 100644
+--- a/src/lib/headline.ts
++++ b/src/lib/headline.ts
+@@ -1,6 +1,6 @@
+ // The big name on a card (domain, network, address) must stay readable in one
+ // piece: long ones get a smaller size instead of breaking mid-word.
+-type HeadlineSize = "l" | "m" | "s";
++export type HeadlineSize = "l" | "m" | "s";
+ 
+ export function headlineSize(text: string): HeadlineSize {
+   if (text.length <= 14) return "l";
