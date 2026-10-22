@@ -12,7 +12,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     include: ["src/**/*.test.{ts,tsx}"],
-    // Tests read src/fonts.css as text (?raw); vitest blanks CSS unless asked.
-    css: { include: [/fonts\.css/] },
+    // Tests read src/*.css as text (?raw); vitest blanks CSS unless asked.
+    css: { include: [/\.css/] },
   },
 });
