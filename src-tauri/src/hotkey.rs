@@ -9,6 +9,8 @@ use tauri::menu::MenuItem;
 use tauri::{AppHandle, Manager, Wry};
 use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut};
 
+use crate::error::Error;
+
 /// ⌘⇧2: beside the system's screenshot keys (⌘⇧3/4/5), and unused by macOS.
 /// ⌥⇧Q, the first choice, closed windows on the human's Mac.
 fn default_shortcut() -> Shortcut {
@@ -49,13 +51,14 @@ fn load(app: &AppHandle) -> Settings {
         .unwrap_or_default()
 }
 
-fn save(app: &AppHandle, settings: &Settings) -> Result<(), String> {
+fn save(app: &AppHandle, settings: &Settings) -> Result<(), Error> {
     let path = settings_path(app).ok_or("no config directory")?;
     if let Some(dir) = path.parent() {
-        std::fs::create_dir_all(dir).map_err(|e| e.to_string())?;
+        std::fs::create_dir_all(dir)?;
     }
-    let text = serde_json::to_string_pretty(settings).map_err(|e| e.to_string())?;
-    std::fs::write(path, text).map_err(|e| e.to_string())
+    let text = serde_json::to_string_pretty(settings)?;
+    std::fs::write(path, text)?;
+    Ok(())
 }
 
 fn set_current(app: &AppHandle, shortcut: Option<Shortcut>) {
@@ -102,12 +105,12 @@ pub fn resume(app: &AppHandle) {
     }
 }
 
-/// Switches to `accelerator` and saves it. On failure the previous shortcut
-/// stays in force.
-pub fn change(app: &AppHandle, accelerator: &str) -> Result<String, String> {
+/// Switches to `accelerator` and saves it. On failure, a failed save too,
+/// the previous shortcut stays in force.
+pub fn change(app: &AppHandle, accelerator: &str) -> Result<String, Error> {
     let shortcut: Shortcut = accelerator
         .parse()
-        .map_err(|_| "That key can't be part of a shortcut.".to_string())?;
+        .map_err(|_| "That key can't be part of a shortcut.")?;
     // Shift alone is just typing a capital letter.
     if !shortcut
         .mods
@@ -121,13 +124,20 @@ pub fn change(app: &AppHandle, accelerator: &str) -> Result<String, String> {
         resume(app);
         return Err("Another app already uses that shortcut.".into());
     }
-    set_current(app, Some(shortcut));
     let text = shortcut.into_string();
-    let _ = save(
+    // A shortcut that is not saved is gone at the next launch, which takes
+    // back the saved one without a word. So it does not replace the one in
+    // force: that one is registered again, and the user is told.
+    if let Err(error) = save(
         app,
         &Settings {
             hotkey: Some(text.clone()),
         },
-    );
+    ) {
+        let _ = shortcuts.unregister(shortcut);
+        resume(app);
+        return Err(Error::NotSaved(Box::new(error)));
+    }
+    set_current(app, Some(shortcut));
     Ok(text)
 }

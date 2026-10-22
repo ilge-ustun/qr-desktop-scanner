@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use qr_core::{Capture, Capturer, DisplaysCapturer, ScreenPermission};
+use qr_core::{capture, wifi, Capture, Capturer, DisplaysCapturer, ScreenPermission};
 
 #[link(name = "CoreGraphics", kind = "framework")]
 extern "C" {
@@ -35,11 +35,16 @@ pub fn request_permission() {
 }
 
 pub fn open_screen_settings() -> Result<(), String> {
-    Command::new("/usr/bin/open")
+    // output(), not status(): what `open` writes to stderr says why it failed.
+    let out = Command::new("/usr/bin/open")
         .arg("x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")
-        .status()
-        .map_err(|e| format!("could not open System Settings: {e}"))
-        .map(|_| ())
+        .output()
+        .map_err(|e| format!("could not open System Settings: {e}"))?;
+    capture::open_settings_result(
+        out.status.success(),
+        &out.status.to_string(),
+        &String::from_utf8_lossy(&out.stderr),
+    )
 }
 
 /// The system's own Cmd-Shift-4 crosshair.
@@ -54,14 +59,7 @@ impl Capturer for Screencapture {
             .arg(dest)
             .status()
             .map_err(|e| format!("could not run screencapture: {e}"))?;
-        if dest.is_file() {
-            Ok(Capture::Taken)
-        } else if status.success() || status.code() == Some(1) {
-            // Esc: nothing written, exit 0 or 1 depending on the macOS version.
-            Ok(Capture::Cancelled)
-        } else {
-            Err(format!("screencapture failed: {status}"))
-        }
+        capture::selection_verdict(dest.is_file(), status.code(), &status.to_string())
     }
 }
 
@@ -70,11 +68,8 @@ pub struct ScreencaptureDisplays;
 
 impl DisplaysCapturer for ScreencaptureDisplays {
     fn capture_displays(&self, dir: &Path) -> Result<Vec<PathBuf>, String> {
-        let shots: Vec<PathBuf> = (1..=active_displays()?)
-            .map(|n| dir.join(format!("display-{n}.png")))
-            .collect();
-        // No -i: no selection. Given one file per display, screencapture
-        // writes them in order, the main display first. -x: no shutter sound.
+        let shots = capture::display_files(dir, active_displays()?);
+        // No -i: no selection. -x: no shutter sound.
         let status = Command::new("/usr/sbin/screencapture")
             .arg("-x")
             .args(&shots)
@@ -93,13 +88,7 @@ fn active_displays() -> Result<u32, String> {
     // SAFETY: with no list (null, room for none), CoreGraphics only writes
     // the number of active displays to `count`.
     let err = unsafe { CGGetActiveDisplayList(0, std::ptr::null_mut(), &mut count) };
-    match (err, count) {
-        (0, 0) => Err("no display is active".into()),
-        (0, count) => Ok(count),
-        (err, _) => Err(format!(
-            "could not list the displays: CoreGraphics error {err}"
-        )),
-    }
+    capture::display_count(err, count)
 }
 
 const NETWORKSETUP: &str = "/usr/sbin/networksetup";
@@ -111,33 +100,17 @@ pub fn join_wifi(ssid: &str, password: Option<&str>) -> Result<(), String> {
         .arg("-listallhardwareports")
         .output()
         .map_err(|e| format!("could not run networksetup: {e}"))?;
-    let device = qr_core::wifi::wifi_device(&String::from_utf8_lossy(&ports.stdout))
+    let device = wifi::wifi_device(&String::from_utf8_lossy(&ports.stdout))
         .ok_or("this Mac has no Wi-Fi interface")?;
 
-    // Arguments, not a shell line: nothing in the code is interpreted. The
-    // password is briefly visible to other processes of this user in `ps`.
-    let mut join = Command::new(NETWORKSETUP);
-    join.args(["-setairportnetwork", &device, ssid]);
-    if let Some(password) = password.filter(|p| !p.is_empty()) {
-        join.arg(password);
-    }
-    let out = join
+    let out = Command::new(NETWORKSETUP)
+        .args(wifi::join_args(&device, ssid, password))
         .output()
         .map_err(|e| format!("could not run networksetup: {e}"))?;
-
-    // networksetup reports a failed join on stdout and still exits 0; on
-    // success it prints nothing.
-    let said = format!(
-        "{}{}",
-        String::from_utf8_lossy(&out.stdout),
-        String::from_utf8_lossy(&out.stderr)
-    );
-    let said = said.trim();
-    if out.status.success() && said.is_empty() {
-        Ok(())
-    } else if said.is_empty() {
-        Err(format!("networksetup failed: {}", out.status))
-    } else {
-        Err(said.lines().next().unwrap_or(said).to_owned())
-    }
+    wifi::join_result(
+        out.status.success(),
+        &out.status.to_string(),
+        &String::from_utf8_lossy(&out.stdout),
+        &String::from_utf8_lossy(&out.stderr),
+    )
 }
