@@ -3,10 +3,9 @@ import { useRef } from "react";
 import { SHORTCUTS } from "../lib/cardKeys";
 import type { DecodedCode } from "../lib/ipc";
 import { classify, LABELS, type Payload } from "../lib/payload";
-import { headlineSize } from "../lib/headline";
 import { assess } from "../lib/urlSafety";
+import { Card } from "./Card";
 import { ContactCard } from "./ContactCard";
-import { DismissButton } from "./DismissButton";
 import { GeoCard } from "./GeoCard";
 import { Keyed, PrimaryButton, WarningIcon, type Tone } from "./Ink";
 import { PhoneCard } from "./PhoneCard";
@@ -52,8 +51,10 @@ function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload 
     : warnings.length
       ? "warn"
       : "ok";
+  // None when the code gives none: a text, a javascript: link, an empty mailto:.
   const headline =
-    payload.kind === "email" ? payload.address : payload.kind === "phone" ? payload.number : safety?.domain;
+    (payload.kind === "email" ? payload.address : payload.kind === "phone" ? payload.number : safety?.domain) ||
+    undefined;
   const meta = tone === "ok" ? LABELS[payload.kind] : `${LABELS[payload.kind]} · check before opening`;
 
   const { copy, run, copied, failure } = useCopyFeedback(onCopy);
@@ -68,14 +69,7 @@ function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload 
   });
 
   return (
-    <article className={`card tone-${tone}`} {...keyed}>
-      <header className="card-head">
-        <div className="titles">
-          <span className="meta">{meta}</span>
-          {headline && <span className={`headline size-${headlineSize(headline)}`}>{headline}</span>}
-        </div>
-        <DismissButton onClick={onDismiss} />
-      </header>
+    <Card tone={tone} meta={meta} headline={headline} keys={keyed} onDismiss={onDismiss}>
       <p className="content">{payload.text}</p>
       {warnings.length > 0 && (
         <ul className="warnings">
@@ -110,6 +104,6 @@ function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload 
             </button>
           ))}
       </div>
-    </article>
+    </Card>
   );
 }

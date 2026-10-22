@@ -172,6 +172,39 @@ describe("AC2 the copy timer is written once, in a file H the cards import", () 
   });
 });
 
+/** The one file that writes card-head: C. */
+function frameFile(all: Source[]): string {
+  const files = Object.keys(matches(all, /card-head/));
+  expect(files).toHaveLength(1);
+  return files[0];
+}
+
+describe("AC3 the card frame is written once, in a file C the cards and App import", () => {
+  it("(a) card-head and titles: once each, both in C; <DismissButton at most once, only in C", () => {
+    const c = frameFile(SOURCES);
+    expect(matches(SOURCES, /card-head/)).toEqual({ [c]: 1 });
+    expect(matches(SOURCES, /\btitles\b/)).toEqual({ [c]: 1 });
+    const dismiss = matches(SOURCES, /<DismissButton\b/);
+    expect(total(dismiss)).toBeLessThanOrEqual(1);
+    expect(Object.keys(dismiss).filter((f) => f !== c)).toEqual([]);
+  });
+
+  it("(b) FieldCard, ResultCard, WifiCard and App import C", () => {
+    const c = frameFile(SOURCES);
+    for (const file of [...CARDS, APP]) expect(imports(SOURCES, file, c), `${file} imports ${c}`).toBe(true);
+  });
+
+  it("(c) the three card files write no <article or <header; App one <header, its top bar", () => {
+    const articles = matches(SOURCES, /<article\b/);
+    const headers = matches(SOURCES, /<header\b/);
+    for (const card of CARDS) {
+      expect(articles[card], card).toBeUndefined();
+      expect(headers[card], card).toBeUndefined();
+    }
+    expect(headers[APP]).toBe(1);
+  });
+});
+
 describe("comments", () => {
   it("added to every file, holding each counted name, change no count", () => {
     const names = "setTimeout(() => {}, 1500) 1_500 card-head titles <DismissButton <header <article aria-keyshortcuts SHORTCUTS useEffect useLayoutEffect";

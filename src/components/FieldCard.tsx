@@ -1,8 +1,7 @@
 import { useId } from "react";
 
 import { SHORTCUTS } from "../lib/cardKeys";
-import { headlineSize } from "../lib/headline";
-import { DismissButton } from "./DismissButton";
+import { Card } from "./Card";
 import { Keyed, PrimaryButton } from "./Ink";
 import { useCardKeys } from "./useCardKeys";
 import { useCopyFeedback } from "./useCopyFeedback";
@@ -33,16 +32,7 @@ export function FieldCard({ meta, headline, copyHeadline, fields, action, onCopy
   const keyed = useCardKeys({ copy: copy("headline", headline), open: action && run(action.run) });
 
   return (
-    <article className="card tone-ok" {...keyed}>
-      <header className="card-head">
-        <div className="titles">
-          <span className="meta">{meta}</span>
-          <span className={`headline size-${headlineSize(headline)}`} id={`${id}-headline`}>
-            {headline}
-          </span>
-        </div>
-        <DismissButton onClick={onDismiss} />
-      </header>
+    <Card tone="ok" meta={meta} headline={headline} headlineId={`${id}-headline`} keys={keyed} onDismiss={onDismiss}>
       {fields.length > 0 && (
         <ul className="fields">
           {fields.map(({ label, value }, i) => (
@@ -86,6 +76,6 @@ export function FieldCard({ meta, headline, copyHeadline, fields, action, onCopy
           </Keyed>
         )}
       </div>
-    </article>
+    </Card>
   );
 }

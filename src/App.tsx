@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
-import { DismissButton } from "./components/DismissButton";
+import { Card } from "./components/Card";
 import { HotkeyButton } from "./components/HotkeyButton";
 import { Corners, PrimaryButton } from "./components/Ink";
 import { PermissionGate } from "./components/PermissionGate";
@@ -106,26 +106,18 @@ export function App() {
           </>
         )}
         {view.name === "notFound" && (
-          <div className="card tone-warn">
-            <header className="card-head">
-              <span className="meta">Nothing found</span>
-              <DismissButton onClick={reset} />
-            </header>
+          <Card tone="warn" meta="Nothing found" onDismiss={reset}>
             <p className="notice">
               {view.scope === "screen"
                 ? "Searched the whole screen and found no QR code. If one is small, Scan again and drag around just that code."
                 : "No QR code in that area. Try a box around the whole code, including its white border."}
             </p>
-          </div>
+          </Card>
         )}
         {view.name === "error" && (
-          <div className="card tone-danger">
-            <header className="card-head">
-              <span className="meta">Scan failed</span>
-              <DismissButton onClick={reset} />
-            </header>
+          <Card tone="danger" meta="Scan failed" onDismiss={reset}>
             <p className="failure">{view.message}</p>
-          </div>
+          </Card>
         )}
         {view.name === "permission" && (
           <PermissionGate onOpenSettings={() => void ipc.openScreenSettings()} onRetry={scan} />

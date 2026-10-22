@@ -1,9 +1,8 @@
 import { useState } from "react";
 
 import { SHORTCUTS } from "../lib/cardKeys";
-import { headlineSize } from "../lib/headline";
 import type { WifiNetwork } from "../lib/payload";
-import { DismissButton } from "./DismissButton";
+import { Card } from "./Card";
 import { Keyed, PrimaryButton } from "./Ink";
 import { useCardKeys } from "./useCardKeys";
 import { useCopyFeedback } from "./useCopyFeedback";
@@ -47,14 +46,7 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
   const keyed = useCardKeys({ copy: network.password ? copyPassword : undefined, join: busy ? undefined : connect });
 
   return (
-    <article className="card tone-ok" {...keyed}>
-      <header className="card-head">
-        <div className="titles">
-          <span className="meta">{meta}</span>
-          <span className={`headline size-${headlineSize(network.ssid)}`}>{network.ssid}</span>
-        </div>
-        <DismissButton onClick={onDismiss} />
-      </header>
+    <Card tone="ok" meta={meta} headline={network.ssid} keys={keyed} onDismiss={onDismiss}>
       {network.password && (
         <div className="secret">
           <span className="mono">{shown ? network.password : "•".repeat(Math.min(network.password.length, 12))}</span>
@@ -80,6 +72,6 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
           </PrimaryButton>
         </Keyed>
       </div>
-    </article>
+    </Card>
   );
 }
