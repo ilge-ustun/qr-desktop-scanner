@@ -1,0 +1,15 @@
+diff --git a/.github/workflows/release.yml b/.github/workflows/release.yml
+index 38b6f60..30889da 100644
+--- a/.github/workflows/release.yml
++++ b/.github/workflows/release.yml
+@@ -9,10 +9,6 @@ on:
+   push:
+     tags: ["v*"]
+ 
+-permissions:
+-  contents: write
+-  id-token: write
+-  attestations: write
+ 
+ jobs:
+   release:

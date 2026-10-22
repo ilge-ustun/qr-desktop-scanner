@@ -1,0 +1,14 @@
+diff --git a/.github/workflows/release.yml b/.github/workflows/release.yml
+index 38b6f60..e2e76b0 100644
+--- a/.github/workflows/release.yml
++++ b/.github/workflows/release.yml
+@@ -19,9 +19,6 @@ jobs:
+     runs-on: macos-14
+     steps:
+       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+-        with:
+-          # No step pushes; keep the write token out of .git/config.
+-          persist-credentials: false
+ 
+       - name: Tag matches the app version
+         run: |

@@ -1,0 +1,13 @@
+diff --git a/.github/workflows/release.yml b/.github/workflows/release.yml
+index 38b6f60..403b79b 100644
+--- a/.github/workflows/release.yml
++++ b/.github/workflows/release.yml
+@@ -66,3 +66,8 @@ jobs:
+           gh release create "$GITHUB_REF_NAME" dist-release/*.dmg dist-release/SHA256SUMS.txt \
+             --title "QR Scanner $GITHUB_REF_NAME" \
+             --notes-file .github/release-notes.md
++
++  publish:
++    runs-on: macos-14
++    steps:
++      - run: echo publish

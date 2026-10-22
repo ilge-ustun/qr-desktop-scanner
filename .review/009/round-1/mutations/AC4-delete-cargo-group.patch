@@ -1,0 +1,15 @@
+diff --git a/.github/dependabot.yml b/.github/dependabot.yml
+index 9d3920d..9158265 100644
+--- a/.github/dependabot.yml
++++ b/.github/dependabot.yml
+@@ -25,10 +25,3 @@ updates:
+     schedule:
+       interval: weekly
+     target-branch: develop
+-    groups:
+-      minor-and-patch:
+-        patterns:
+-          - "*"
+-        update-types:
+-          - minor
+-          - patch

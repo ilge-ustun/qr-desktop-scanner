@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":13,"numFailedTests":2,"failed":["AC1 macos.yml grants its token contents: read only has one top-level permissions block that is exactly contents: read","AC1 macos.yml grants its token contents: read only names no write permission anywhere"]}
