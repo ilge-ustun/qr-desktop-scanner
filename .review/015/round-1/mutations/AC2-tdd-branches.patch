@@ -1,0 +1,13 @@
+diff --git a/.github/workflows/macos.yml b/.github/workflows/macos.yml
+index e418658..910f1f5 100644
+--- a/.github/workflows/macos.yml
++++ b/.github/workflows/macos.yml
+@@ -10,7 +10,7 @@ name: macOS build
+ # Dependabot proposes updates.
+ on:
+   push:
+-    branches: [main, develop]
++    branches: [main]
+     paths-ignore:
+       - .stories/**
+       - .review/**

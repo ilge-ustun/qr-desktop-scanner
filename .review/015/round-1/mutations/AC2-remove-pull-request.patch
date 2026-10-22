@@ -1,0 +1,10 @@
+--- a/.github/workflows/macos.yml
++++ b/.github/workflows/macos.yml
+@@ -15,7 +15,6 @@
+       - .stories/**
+       - .review/**
+       - .blocked/**
+-  pull_request:
+   workflow_dispatch:
+ 
+ # Read-only token: nothing here pushes, comments or publishes.

@@ -1,0 +1,13 @@
+--- a/.github/workflows/macos.yml
++++ b/.github/workflows/macos.yml
+@@ -11,10 +11,6 @@
+ on:
+   push:
+     branches: [main, develop]
+-    paths-ignore:
+-      - .stories/**
+-      - .review/**
+-      - .blocked/**
+   pull_request:
+   workflow_dispatch:
+ 

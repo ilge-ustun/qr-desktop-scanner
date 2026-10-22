@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":17,"numFailedTests":2,"failed":["015 AC1 macos.yml push ignores pushes that change only fleet state push has exactly branches and paths-ignore","015 AC1 macos.yml push ignores pushes that change only fleet state paths-ignore is a block list of exactly the three fleet-state patterns"]}
