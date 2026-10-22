@@ -7,14 +7,14 @@ const caution: Warning = { code: "a", severity: "caution", message: "A caution."
 const danger: Warning = { code: "b", severity: "danger", message: "A danger." };
 
 describe("AC2 toneOf: the link card's tone from its warnings", () => {
-  it.each<[string, string, Warning[], Tone]>([
-    ["T1", "[]", [], "ok"],
-    ["T2", "[caution]", [caution], "warn"],
-    ["T3", "[caution, caution]", [caution, caution], "warn"],
-    ["T4", "[danger]", [danger], "danger"],
-    ["T5", "[caution, danger]", [caution, danger], "danger"],
-    ["T6", "[danger, caution]", [danger, caution], "danger"],
-  ])("%s: %s gives %j", (_, __, warnings, tone) => {
+  it.each<[string, string, Tone, Warning[]]>([
+    ["T1", "[]", "ok", []],
+    ["T2", "[caution]", "warn", [caution]],
+    ["T3", "[caution, caution]", "warn", [caution, caution]],
+    ["T4", "[danger]", "danger", [danger]],
+    ["T5", "[caution, danger]", "danger", [caution, danger]],
+    ["T6", "[danger, caution]", "danger", [danger, caution]],
+  ])("%s: %s gives %j", (_, __, tone, warnings) => {
     expect(toneOf(warnings)).toBe(tone);
   });
 });
