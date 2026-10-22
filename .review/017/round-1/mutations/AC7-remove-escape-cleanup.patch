@@ -1,0 +1,12 @@
+diff --git a/src/hooks/useEscapeHides.ts b/src/hooks/useEscapeHides.ts
+index 665d84c..69a2342 100644
+--- a/src/hooks/useEscapeHides.ts
++++ b/src/hooks/useEscapeHides.ts
+@@ -9,6 +9,6 @@ export function useEscapeHides() {
+       if (e.key === "Escape") ipc.hidePopover();
+     };
+     window.addEventListener("keydown", onKey);
+-    return () => window.removeEventListener("keydown", onKey);
++    return () => {};
+   }, []);
+ }

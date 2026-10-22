@@ -1,0 +1,13 @@
+diff --git a/src/hooks/useScanEvents.ts b/src/hooks/useScanEvents.ts
+index 5d74565..44b6e50 100644
+--- a/src/hooks/useScanEvents.ts
++++ b/src/hooks/useScanEvents.ts
+@@ -18,7 +18,7 @@ export function useScanEvents(dispatch: Dispatch<Action>) {
+       .then((u) => (gone ? u() : (unlisten = u)));
+     return () => {
+       gone = true;
+-      unlisten?.();
++
+     };
+   }, [dispatch]);
+ }

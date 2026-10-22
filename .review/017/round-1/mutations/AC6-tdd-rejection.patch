@@ -1,0 +1,19 @@
+diff --git a/src/hooks/usePermissionCheck.ts b/src/hooks/usePermissionCheck.ts
+index 336ac0b..a5366b2 100644
+--- a/src/hooks/usePermissionCheck.ts
++++ b/src/hooks/usePermissionCheck.ts
+@@ -9,11 +9,8 @@ type Action = Parameters<typeof reduce>[1];
+  * first scan shows the permission screen if access is really missing. */
+ export function usePermissionCheck(dispatch: Dispatch<Action>) {
+   useEffect(() => {
+-    ipc.screenPermission().then(
+-      (granted) => {
+-        if (!granted) dispatch({ type: "permissionMissing" });
+-      },
+-      () => undefined,
+-    );
++    ipc.screenPermission().then((granted) => {
++      if (!granted) dispatch({ type: "permissionMissing" });
++    });
+   }, [dispatch]);
+ }

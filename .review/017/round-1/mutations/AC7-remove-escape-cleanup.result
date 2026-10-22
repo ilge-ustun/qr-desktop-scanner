@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":21,"numFailedTests":1,"failed":["AC7 listeners live while mounted, under StrictMode AC7 scan, Esc and ResizeObserver start and stop with App"]}

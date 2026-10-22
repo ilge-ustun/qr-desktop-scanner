@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":13,"numFailedTests":2,"failed":["AC3 .secret and .field share a rule AC3 dotted occurs once, in a rule for exactly .secret and .field","AC3 .secret and .field share a rule AC3 each keeps only its own padding"]}
