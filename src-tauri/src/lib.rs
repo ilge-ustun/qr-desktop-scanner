@@ -56,6 +56,11 @@ pub fn run() {
             app.manage(hotkey::Hotkey::new(scan_item));
             hotkey::register_saved(app.handle());
             popover::hide_on_blur(app.handle());
+            // Before the first show: the popover shows over an app in full
+            // screen too. setup runs on the main thread, as AppKit wants.
+            if let Some(window) = app.get_webview_window("main") {
+                platform::join_full_screen_spaces(&window);
+            }
             // Open once at launch, so it is clear where the app lives.
             popover::show(app.handle());
             Ok(())

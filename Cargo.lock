@@ -2968,6 +2968,7 @@ dependencies = [
 name = "qr-desktop-scanner"
 version = "0.2.0"
 dependencies = [
+ "objc2-app-kit",
  "qr-core",
  "serde",
  "serde_json",
