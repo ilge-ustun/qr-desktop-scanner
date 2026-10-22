@@ -1,9 +1,10 @@
 //! Running a scan off the main thread and reporting it to the page.
 
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
-use qr_core::{run_find_all, run_scan, RxingDecoder, ScanOutcome, Scope, ScreenPermission};
+use qr_core::{
+    run_find_all, run_scan, RxingDecoder, ScanOutcome, Scope, ScreenPermission, SingleFlight,
+};
 use tauri::{AppHandle, Emitter, Manager};
 
 use crate::{platform, popover};
@@ -13,10 +14,11 @@ use crate::{platform, popover};
 const HIDE_SETTLE: Duration = Duration::from_millis(150);
 
 /// One scan at a time, of either kind: a second hotkey press during a
-/// selection, or Find All during one, is dropped.
+/// selection, or Find All during one, is dropped. The sweep before each scan
+/// counts on this.
 #[derive(Default)]
 pub struct ScanState {
-    running: AtomicBool,
+    flight: SingleFlight,
 }
 
 /// The drag scan: the user selects a region.
@@ -30,17 +32,15 @@ pub fn spawn_find_all(app: AppHandle) {
 }
 
 async fn scan(app: AppHandle, scope: Scope) {
-    if app
-        .state::<ScanState>()
-        .running
-        .swap(true, Ordering::SeqCst)
-    {
-        return;
-    }
-    let outcome = capture_and_decode(&app, scope).await;
-    app.state::<ScanState>()
-        .running
-        .store(false, Ordering::SeqCst);
+    let outcome = {
+        let state = app.state::<ScanState>();
+        let Some(_flight) = state.flight.try_start() else {
+            return;
+        };
+        // The flight ends when the guard drops at the end of this block, on
+        // every way out of it, a panic included.
+        capture_and_decode(&app, scope).await
+    };
 
     if outcome == ScanOutcome::PermissionDenied {
         platform::request_permission();
