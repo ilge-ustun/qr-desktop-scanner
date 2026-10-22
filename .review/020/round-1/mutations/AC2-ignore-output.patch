@@ -1,0 +1,13 @@
+diff --git a/core/src/wifi.rs b/core/src/wifi.rs
+index 1b6823a..206db5b 100644
+--- a/core/src/wifi.rs
++++ b/core/src/wifi.rs
+@@ -78,7 +78,7 @@ pub fn join_args(device: &str, ssid: &str, password: Option<&str>) -> Vec<String
+ pub fn join_result(success: bool, status: &str, stdout: &str, stderr: &str) -> Result<(), String> {
+     let said = format!("{stdout}{stderr}");
+     let said = said.trim();
+-    if success && said.is_empty() {
++    if success {
+         Ok(())
+     } else if said.is_empty() {
+         Err(format!("networksetup failed: {status}"))

@@ -1,0 +1,13 @@
+diff --git a/src/components/WifiCard.tsx b/src/components/WifiCard.tsx
+index bc53a2d..6cdedf5 100644
+--- a/src/components/WifiCard.tsx
++++ b/src/components/WifiCard.tsx
+@@ -48,7 +48,7 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
+   };
+   // Connect is disabled while it connects and once it has: ⌘J too.
+   const busy = join.state === "joining" || join.state === "joined";
+-  const keyed = useCardKeys({ copy: network.password ? copyPassword : undefined, join: busy ? undefined : connect });
++  const keyed = useCardKeys({ copy: network.password ? copyPassword : undefined, join: connect });
+ 
+   return (
+     <article className="card tone-ok" {...keyed}>

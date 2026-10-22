@@ -1,0 +1,14 @@
+diff --git a/README.md b/README.md
+index e2df8ae..f8897f3 100644
+--- a/README.md
++++ b/README.md
+@@ -83,9 +83,6 @@ allowed again, because the permission is tied to the signature.
+ 10. ⌘⇧2 works while another app is in front. Click the ⇧⌘2 chip in the
+     popover, press another combination (with ⌘, ⌃ or ⌥) and that one works
+     instead, also after a restart; Esc while recording keeps the old one.
+-11. **Find all on screen** (under Scan, or *Find All Codes on Screen* in the
+-    menu-bar icon's right-click menu) finds the codes on every display with
+-    no box to drag, each code once.
+ 12. A vCard or MECARD contact shows the name, then each phone, email,
+     organisation and website with its own Copy. A `tel:` code shows the
+     number, an `SMSTO:` or `sms:` code the number and the message, and a

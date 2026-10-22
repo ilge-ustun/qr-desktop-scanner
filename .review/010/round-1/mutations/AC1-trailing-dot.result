@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":108,"numFailedTests":1,"failed":["010 AC1: one trailing dot is dropped from the owner, the message and the shown domain"]}

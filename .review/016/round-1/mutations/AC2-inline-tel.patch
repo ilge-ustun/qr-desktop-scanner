@@ -1,0 +1,13 @@
+diff --git a/src/lib/payload.ts b/src/lib/payload.ts
+index 89d135e..6b6d95e 100644
+--- a/src/lib/payload.ts
++++ b/src/lib/payload.ts
+@@ -41,7 +41,7 @@ export function classify(raw: string): Payload {
+   const text = raw.trim();
+   const mailto = afterPrefix(text, "mailto:");
+   if (mailto !== null) return { kind: "email", text, address: mailto.split("?")[0] };
+-  const tel = afterPrefix(text, "tel:");
++  const tel = /^tel:/i.test(text) ? text.slice("tel:".length) : null;
+   if (tel !== null) return { kind: "phone", text, number: tel };
+   // Before the link test below: these may hold spaces. One without a number
+   // or without coordinates reads on, and gets the card it got before.

@@ -1,0 +1,13 @@
+diff --git a/src/lib/cardKeys.ts b/src/lib/cardKeys.ts
+index 07f69cd..30ef42b 100644
+--- a/src/lib/cardKeys.ts
++++ b/src/lib/cardKeys.ts
+@@ -25,7 +25,7 @@ function letter({ key, code }: { key: string; code: string }): string | null {
+ /** Which card key a keydown is: Enter alone, or ⌘ alone with O or J. Ctrl is
+  * not ⌘, and a key held down does not fire again. */
+ export function cardKey(press: KeyPress & { key: string; repeat: boolean }): CardKey | null {
+-  if (press.repeat || press.ctrlKey || press.altKey || press.shiftKey) return null;
++  if (press.ctrlKey || press.altKey || press.shiftKey) return null;
+   if (!press.metaKey) return press.key === "Enter" ? "copy" : null;
+   switch (letter(press)) {
+     case "o":

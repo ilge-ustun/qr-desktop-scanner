@@ -1,8 +1,34 @@
-# Keeps the SHA-pinned actions current: each update is a pull request whose
-# macOS build must pass before it is merged.
+# Keeps the SHA-pinned actions, the npm packages and the Rust crates current.
+# Each update is a pull request whose macOS build must pass before it is
+# merged. npm and cargo updates target develop; minor and patch updates come
+# as one PR per ecosystem, majors one PR each.
 version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    target-branch: develop
+    groups:
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: weekly
+    target-branch: develop
+    groups:
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch

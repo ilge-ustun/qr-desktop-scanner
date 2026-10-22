@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":11,"numFailedTests":3,"failed":["AC2 linkMeta: the link card's label from its tone M2: (\"Link\", \"warn\") gives \"Link · check before opening\"","AC2 linkMeta: the link card's label from its tone M3: (\"Link\", \"danger\") gives \"Link · check before opening\"","AC2 linkMeta: the link card's label from its tone M4: (\"Email\", \"warn\") gives \"Email · check before opening\""]}

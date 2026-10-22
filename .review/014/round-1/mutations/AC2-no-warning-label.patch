@@ -1,0 +1,11 @@
+diff --git a/src/lib/urlSafety.ts b/src/lib/urlSafety.ts
+index 259fd25..46ebd45 100644
+--- a/src/lib/urlSafety.ts
++++ b/src/lib/urlSafety.ts
+@@ -242,5 +242,5 @@ export function toneOf(warnings: Warning[]): Tone {
+ /** A link card's label: the kind's word, and a word of care unless the tone
+  * is ok. */
+ export function linkMeta(label: string, tone: Tone): string {
+-  return tone === "ok" ? label : `${label} · check before opening`;
++  return label;
+ }

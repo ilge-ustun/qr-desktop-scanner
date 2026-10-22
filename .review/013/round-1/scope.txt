@@ -1,0 +1,13 @@
+deny:    src/lib/* src/styles.css src/main.tsx src/components/useCardKeys.ts src/components/HotkeyButton.tsx src/components/PermissionGate.tsx src/__tests__/App.test.tsx src/__tests__/AppKeys.test.tsx src/__tests__/HotkeyButton.test.tsx src/__tests__/ResultCard.test.tsx src/__tests__/WifiCard.test.tsx src/__tests__/contactCodes.ts src/__tests__/cardKeys.test.ts src/__tests__/ciConfig.test.ts src/__tests__/contact.test.ts src/__tests__/docsDescribeApp.test.ts src/__tests__/geo.test.ts src/__tests__/headline.test.ts src/__tests__/hotkey.test.ts src/__tests__/ipc.test.ts src/__tests__/payload.test.ts src/__tests__/scanState.test.ts src/__tests__/siteReadyPopover.test.ts src/__tests__/sms.test.ts src/__tests__/tauriSecurity.test.ts src/__tests__/urlSafety.test.ts core/* src-tauri/* site/* .github/* scripts/* README.md CLAUDE.md AGENTS.md package.json package-lock.json Cargo.toml Cargo.lock index.html vite.config.ts tsconfig.json eslint.config.js
+scope:   CLEAN 
+changed:
+src/App.tsx
+src/__tests__/cardBehaviour.test.tsx
+src/__tests__/cardDom.test.tsx
+src/__tests__/cardSources.test.ts
+src/components/Card.tsx
+src/components/FieldCard.tsx
+src/components/Ink.tsx
+src/components/ResultCard.tsx
+src/components/WifiCard.tsx
+src/components/useCopyFeedback.ts

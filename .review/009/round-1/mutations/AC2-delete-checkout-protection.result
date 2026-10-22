@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":13,"numFailedTests":1,"failed":["AC2 release.yml checkout keeps no credential and restores no cache every actions/checkout step sets persist-credentials: false in its with block"]}

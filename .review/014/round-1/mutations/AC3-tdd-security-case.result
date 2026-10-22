@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":19,"numFailedTests":3,"failed":["AC3 (b) wifiMeta: the Wi-Fi card's label W2: security \"wpa\", hidden false, gives \"Wi-Fi · WPA/WPA2\"","AC3 (b) wifiMeta: the Wi-Fi card's label W7: security \"nopass\", hidden false, gives \"Wi-Fi · open network\"","AC3 (b) wifiMeta: the Wi-Fi card's label W10: security \"constructor\", hidden false, gives \"Wi-Fi · constructor\""]}

@@ -1,0 +1,12 @@
+deny:    src-tauri/src/platform/* src-tauri/src/platform.rs src-tauri/src/commands.rs src-tauri/src/hotkey.rs src-tauri/src/tray.rs src-tauri/src/popover.rs src-tauri/src/main.rs src-tauri/Cargo.toml src-tauri/tauri.conf.json src-tauri/capabilities/* src-tauri/Info.plist src-tauri/build.rs src-tauri/icons/* core/Cargo.toml core/src/decode.rs core/src/url_guard.rs core/src/wifi.rs core/tests/decode.rs Cargo.toml Cargo.lock src/* site/* .github/* scripts/* index.html package.json package-lock.json vite.config.ts README.md CLAUDE.md AGENTS.md
+scope:   CLEAN 
+changed:
+core/src/lib.rs
+core/src/scan.rs
+core/src/single_flight.rs
+core/tests/common/mod.rs
+core/tests/find_all.rs
+core/tests/scan.rs
+core/tests/single_flight.rs
+src-tauri/src/lib.rs
+src-tauri/src/scan.rs

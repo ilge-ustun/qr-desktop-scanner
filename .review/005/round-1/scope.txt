@@ -1,0 +1,12 @@
+deny:    src/lib/urlSafety.ts src/__tests__/urlSafety.test.ts src/lib/payload.ts src/__tests__/payload.test.ts src/lib/contact.ts src/__tests__/contact.test.ts src/__tests__/contactCodes.ts src/lib/sms.ts src/__tests__/sms.test.ts src/lib/geo.ts src/__tests__/geo.test.ts src/lib/query.ts src/lib/ipc.ts src/lib/hotkey.ts src/__tests__/hotkey.test.ts src/components/HotkeyButton.tsx src/__tests__/HotkeyButton.test.tsx core/* src-tauri/* Cargo.toml Cargo.lock package.json package-lock.json site/* .github/* CLAUDE.md AGENTS.md
+scope:   CLEAN 
+changed:
+src/__tests__/AppKeys.test.tsx
+src/__tests__/cardKeys.test.ts
+src/components/FieldCard.tsx
+src/components/Ink.tsx
+src/components/ResultCard.tsx
+src/components/WifiCard.tsx
+src/components/useCardKeys.ts
+src/lib/cardKeys.ts
+src/styles.css

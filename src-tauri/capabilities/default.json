@@ -3,5 +3,9 @@
   "identifier": "default",
   "description": "The popover may listen to scan events and write to the clipboard. Opening links goes through the app's own open_link command, which checks the scheme.",
   "windows": ["main"],
-  "permissions": ["core:default", "clipboard-manager:allow-write-text"]
+  "permissions": [
+    "core:event:allow-listen",
+    "core:event:allow-unlisten",
+    "clipboard-manager:allow-write-text"
+  ]
 }

@@ -1,0 +1,13 @@
+diff --git a/src/components/useCardKeys.ts b/src/components/useCardKeys.ts
+index ce62fec..a285500 100644
+--- a/src/components/useCardKeys.ts
++++ b/src/components/useCardKeys.ts
+@@ -31,7 +31,7 @@ export function useCardKeys(keys: CardKeys) {
+     const run = keys[key];
+     if (!run) return;
+     e.preventDefault();
+-    run();
++    return;
+   });
+   useEffect(() => {
+     // Bubble phase on window: while the shortcut chip records, its capture

@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":10,"numFailedTests":2,"failed":["App AC4: a found outcome with three codes shows three cards, in its order","App AC4: dismissing the middle one of three cards leaves the other two, in order"]}

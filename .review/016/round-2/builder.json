@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 45686,
+  "stop_reason": "end_turn",
+  "session_id": "f9ded298-8707-485c-aeee-4df943bf64e8",
+  "total_cost_usd": 0.2589105,
+  "usage": {
+    "input_tokens": 24,
+    "cache_creation_input_tokens": 40146,
+    "cache_read_input_tokens": 558885,
+    "output_tokens": 4239,
+    "output_tokens_details": {
+      "thinking_tokens": 479
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 40146,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 723,
+        "cache_read_input_tokens": 54160,
+        "cache_creation_input_tokens": 549,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 549
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 24,
+      "outputTokens": 4239,
+      "cacheReadInputTokens": 558885,
+      "cacheCreationInputTokens": 40146,
+      "webSearchRequests": 0,
+      "costUSD": 0.2589105,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 479,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 12,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I fixed the one finding. The `AC2` finder (in `src/__tests__/parserSources.test.ts`) now accepts only a string literal as the prefix argument of `afterPrefix`. I did not run the full baseline, only the tests I touched.\n\n- **Cause:** the finder counted template literals as string literals. So `afterPrefix(text, `geo:`)` passed all four AC2 tests.\n- **Fix:** a template argument now fails the \"no string literal outside `afterPrefix`\" test instead of being counted as passed.\n- **Finder check:** I added a case to the finder test for `afterPrefix(t, `WIFI:`)`. It expects one literal found and nothing passed.\n- **Red first:** I put the old check back and the finder test failed. With the fix in, 10 tests pass in `parserSources.test.ts`.\n- **Reviewer's mutation:** replacing `\"geo:\"` with a template in `src/lib/geo.ts` now fails 2 tests in that file. I undid the change afterwards.\n- **Commit:** one commit, with the fix and the finder test.\n\nI wrote the seven mutation pairs, `AC1` to `AC7`, in `.review-out/mutations/` after the commit. I applied each patch and ran its selector, and every one went red:\n\n| Pair | Mutation | Failing tests |\n|---|---|---|\n| `AC1-tdd-case` | `afterPrefix` compares with case | 3 |\n| `AC2-tdd-inline-tel` | the `tel:` regex returns to `payload.ts` | 3 |\n| `AC3-tdd-double-wifi` | a second `WIFI:` test in `classify` | 13 |\n| `AC4-tdd-skip-no-colon` | a field with no colon is skipped | 4 |\n| `AC5-tdd-own-unescape` | `wifi.ts` unescapes with its own regex | 1 |\n| `AC6-tdd-name-case` | `queryParam` stops lower-casing the name | 3 |\n| `AC7-tdd-export` | `export` put back on `HeadlineSize` | 1 |\n\nThe tree is clean apart from `.review-out/`.",
+  "ttft_ms": 2611,
+  "type": "result",
+  "duration_ms": 62295,
+  "uuid": "5c537b87-b96b-4ce2-83b0-ac3c98baeb55",
+  "ttft_stream_ms": 2063,
+  "time_to_request_ms": 190,
+  "first_content_frame_ms": 2063,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

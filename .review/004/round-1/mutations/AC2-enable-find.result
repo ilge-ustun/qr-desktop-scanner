@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":10,"numFailedTests":1,"failed":["App AC2: both buttons are disabled while a scan of either kind runs, and enabled again after"]}

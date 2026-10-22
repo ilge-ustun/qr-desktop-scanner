@@ -1,0 +1,11 @@
+--- a/src/lib/urlSafety.ts
++++ b/src/lib/urlSafety.ts
+@@ -115,7 +115,7 @@
+     .split("&")
+     .flatMap((field) => {
+       const eq = field.indexOf("=");
+-      if (eq < 0 || !RECIPIENT_FIELDS.has(percentDecode(field.slice(0, eq)).toLowerCase())) return [];
++      if (eq < 0) return [];
+       return percentDecode(field.slice(eq + 1))
+         .split(",")
+         .map((address) => address.trim())

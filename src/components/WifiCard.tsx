@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { headlineSize } from "../lib/headline";
-import type { WifiNetwork } from "../lib/payload";
-import { DismissButton } from "./DismissButton";
-import { PrimaryButton } from "./Ink";
+import { wifiMeta, type WifiNetwork } from "../lib/wifi";
+import { Card } from "./Card";
+import { KeyedButton } from "./Ink";
+import { useCardKeys } from "./useCardKeys";
+import { useCopyFeedback } from "./useCopyFeedback";
 
 type Props = {
   network: WifiNetwork;
@@ -14,28 +15,12 @@ type Props = {
 
 type Join = { state: "idle" } | { state: "joining" } | { state: "joined" } | { state: "failed"; message: string };
 
-const SECURITY: Record<string, string> = {
-  "": "open network",
-  NOPASS: "open network",
-  WEP: "WEP",
-  WPA: "WPA/WPA2",
-  WPA2: "WPA2",
-  WPA3: "WPA3",
-  SAE: "WPA3",
-};
-
 export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
   const [shown, setShown] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [join, setJoin] = useState<Join>({ state: "idle" });
-  useEffect(() => {
-    if (!copied) return;
-    const timer = setTimeout(() => setCopied(false), 1500);
-    return () => clearTimeout(timer);
-  }, [copied]);
+  const { copy, copied, failure } = useCopyFeedback(onCopy);
 
-  const security = SECURITY[network.security.toUpperCase()] ?? network.security;
-  const meta = ["Wi-Fi", security, network.hidden ? "hidden" : ""].filter(Boolean).join(" · ");
+  const copyPassword = copy("password", network.password);
   const connect = () => {
     setJoin({ state: "joining" });
     onJoin(network.ssid, network.password).then(
@@ -43,16 +28,12 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
       (e: unknown) => setJoin({ state: "failed", message: String(e) }),
     );
   };
+  // Connect is disabled while it connects and once it has: ⌘J too.
+  const busy = join.state === "joining" || join.state === "joined";
+  const keyed = useCardKeys({ copy: network.password ? copyPassword : undefined, join: busy ? undefined : connect });
 
   return (
-    <article className="card tone-ok">
-      <header className="card-head">
-        <div className="titles">
-          <span className="meta">{meta}</span>
-          <span className={`headline size-${headlineSize(network.ssid)}`}>{network.ssid}</span>
-        </div>
-        <DismissButton onClick={onDismiss} />
-      </header>
+    <Card tone="ok" meta={wifiMeta(network)} headline={network.ssid} keys={keyed} onDismiss={onDismiss}>
       {network.password && (
         <div className="secret">
           <span className="mono">{shown ? network.password : "•".repeat(Math.min(network.password.length, 12))}</span>
@@ -63,20 +44,17 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
       )}
       {join.state === "joined" && <p className="success">Connected to {network.ssid}.</p>}
       {join.state === "failed" && <p className="failure">Could not connect: {join.message}</p>}
+      {failure && <p className="failure">{failure}</p>}
       <div className="actions">
         {network.password && (
-          <button
-            type="button"
-            className="ghost"
-            onClick={() => onCopy(network.password).then(() => setCopied(true), () => undefined)}
-          >
-            {copied ? "Copied" : "Copy password"}
-          </button>
+          <KeyedButton shortcut="copy" onClick={copyPassword}>
+            {copied("password") ? "Copied" : "Copy password"}
+          </KeyedButton>
         )}
-        <PrimaryButton onClick={connect} disabled={join.state === "joining" || join.state === "joined"}>
+        <KeyedButton shortcut="join" primary onClick={connect} disabled={busy}>
           {join.state === "joining" ? "Connecting…" : join.state === "joined" ? "Connected" : "Connect"}
-        </PrimaryButton>
+        </KeyedButton>
       </div>
-    </article>
+    </Card>
   );
 }

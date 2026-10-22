@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 507914,
+  "stop_reason": "end_turn",
+  "session_id": "de9f8137-42b5-4f84-898b-cd6e5a4c8a72",
+  "total_cost_usd": 2.7741785999999995,
+  "usage": {
+    "input_tokens": 52,
+    "cache_creation_input_tokens": 134350,
+    "cache_read_input_tokens": 2803553,
+    "output_tokens": 56923,
+    "output_tokens_details": {
+      "thinking_tokens": 32347
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 134350,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1636,
+        "cache_read_input_tokens": 147968,
+        "cache_creation_input_tokens": 450,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 450
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 52,
+      "outputTokens": 56923,
+      "cacheReadInputTokens": 2803553,
+      "cacheCreationInputTokens": 134350,
+      "webSearchRequests": 0,
+      "costUSD": 2.7741785999999995,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 32347,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 30,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I've implemented story 007 in one commit, `8e40024` on `story/007`. The tree is clean apart from `.review-out/`. The new test file is `src/__tests__/docsDescribeApp.test.ts`, with 22 tests. Before the README and page changes, all 15 tests that check new content failed. The other 7 check that kept text is unchanged, so they passed then too. Now the full vitest suite passes (274 tests), including story 006's page tests unchanged. `tsc --noEmit` and eslint are clean on the new file. I didn't run `npm run build`, cargo or `check-macos-shell.sh`: no Rust or app code changed, and the harness runs them.\n\n**What changed on the page (`site/index.html`)**\n- **Step 1:** ⇧⌘2 is now in a `<kbd>` in the mono face; \"Press\" stays in Silkscreen. This is Evidence point 3, still yours to confirm.\n- **Step 2:** adds \"Or skip the box: **Find all on screen**, under Scan, looks for every code on all your displays.\"\n- **Step 3:** names the seven kinds (link, text, Wi-Fi network, contact, phone number, SMS, location). It says you act with a click or a key (↩ copies, ⌘O opens, ⌘J joins), and that a link with a warning opens only from **Open anyway**. \"Nothing happens until you click.\" is gone.\n- **Checks list:** a new \"Decoy domains\" item after \"Fake destinations\", in the same pattern: `paypal.com.secure-login.example.net` starts with paypal.com but belongs to example.net.\n- **One CSS rule:** `kbd { font: 600 0.95em var(--mono); }`.\n- The head, hero (including the fine line), facts, first launch and footer are unchanged.\n\n**What changed in the README**\n- **Opening paragraph:** names Find all on screen, contacts, phone numbers, SMS and locations, and Open in Maps. It now says nothing happens \"until you ask: a click, or a key on the card (↩ copies, ⌘O opens, ⌘J connects)\". It also says a warned link opens only from Open anyway.\n- **What to check:** the ten existing checks are word for word as before. Four checks are added: Find all on screen, the new cards, the keys, and the decoy host (where ⌘O only moves focus to Open anyway).\n- **How it works:** new **Cards** and **Keys** bullets. The untrusted-content bullet now names decoy domains and says Rust checks only the scheme.\n\n**Checking the tests**\n- **Every red-case is caught:** I applied each \"Goes red when\" change from all six criteria (31 in all), plus an `@import`, a remote `url(` and a `kbd` rule set to the pixel font. Each one turned its criterion red, and none was committed.\n- **Mutation patches:** six pairs are in `.review-out/mutations/`, one per criterion, made after the final commit. I applied each one to the head myself and its selector went red.\n- **One open question from the story is answered:** jsdom keeps a `font` shorthand that holds `var()` as written. So the test sees `.steps .t`'s pixel font, and on the base it failed exactly at step 1's title.\n\n**For you to decide or check**\n- Step 1's ⇧⌘2 in the mono face next to \"PRESS\" (Evidence point 3).\n- Whether the hero's popover copy should show Find all on screen. I left it as it was, as the story requires.\n- `CLAUDE.md:50` and `AGENTS.md:50` still say \"without a click\". They're your files, so I didn't touch them.\n- The rest of the human-verification list still needs a Mac and Safari.\n\n**Unrelated, not changed:** the README still names `QR Scanner_0.1.0_aarch64.dmg` (line 54 before this change) and `v0.1.1` in Releasing, while `package.json` is at 0.1.2.",
+  "ttft_ms": 1496,
+  "type": "result",
+  "duration_ms": 572670,
+  "uuid": "5374b98d-0f87-42da-bc5d-a6891b7abb7b",
+  "ttft_stream_ms": 1079,
+  "time_to_request_ms": 115,
+  "first_content_frame_ms": 1079,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

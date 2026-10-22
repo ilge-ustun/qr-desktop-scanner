@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":10,"numFailedTests":1,"failed":["AC7 every export of src/lib/*.ts is used by another file no export is named only in its own file"]}

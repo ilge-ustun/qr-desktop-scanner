@@ -1,0 +1,13 @@
+diff --git a/src/components/ContactCard.tsx b/src/components/ContactCard.tsx
+index cf1ff03..5e24237 100644
+--- a/src/components/ContactCard.tsx
++++ b/src/components/ContactCard.tsx
+@@ -44,7 +44,7 @@ export function ContactCard({ contact, onCopy, onDismiss }: Props) {
+       <header className="card-head">
+         <div className="titles">
+           <span className="meta">{LABELS.contact}</span>
+-          <span className={`headline size-${headlineSize(contact.name)}`}>{contact.name}</span>
++          <span className={`headline size-${headlineSize(contact.name)}`} dangerouslySetInnerHTML={{ __html: contact.name }} />
+         </div>
+         <DismissButton onClick={onDismiss} />
+       </header>

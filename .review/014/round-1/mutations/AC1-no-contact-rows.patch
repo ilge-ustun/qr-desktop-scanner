@@ -1,0 +1,13 @@
+diff --git a/src/lib/cardModel.ts b/src/lib/cardModel.ts
+index 5032121..6d79c2d 100644
+--- a/src/lib/cardModel.ts
++++ b/src/lib/cardModel.ts
+@@ -33,7 +33,7 @@ export function fieldCardModel(payload: FieldPayload): FieldCardModel {
+         headline: name,
+         copyHeadline: "Copy name",
+         fields: [
+-          ...phones.map((value) => ({ label: "Phone", value })),
++          ...[].map((value) => ({ label: "Phone", value })),
+           ...emails.map((value) => ({ label: "Email", value })),
+           ...organisations.map((value) => ({ label: "Organisation", value })),
+           ...websites.map((value) => ({ label: "Website", value })),

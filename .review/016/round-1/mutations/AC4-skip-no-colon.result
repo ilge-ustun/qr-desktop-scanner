@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":50,"numFailedTests":4,"failed":["AC4 the Wi-Fi codes parse as they did on efdac6e W9 parseWifi(\"WIFI:S:Home;S;;\")","AC4 the Wi-Fi codes parse as they did on efdac6e W10 parseWifi(\"WIFI:S:Home;P:pw;P;;\")","AC4 the Wi-Fi codes parse as they did on efdac6e W9 classify(\"WIFI:S:Home;S;;\") carries the same result","AC4 the Wi-Fi codes parse as they did on efdac6e W10 classify(\"WIFI:S:Home;P:pw;P;;\") carries the same result"]}

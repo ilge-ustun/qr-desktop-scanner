@@ -1,0 +1,13 @@
+diff --git a/src/components/ContactCard.tsx b/src/components/ContactCard.tsx
+index cf1ff03..196ee69 100644
+--- a/src/components/ContactCard.tsx
++++ b/src/components/ContactCard.tsx
+@@ -62,7 +62,7 @@ export function ContactCard({ contact, onCopy, onDismiss }: Props) {
+                 type="button"
+                 className="ghost small"
+                 aria-describedby={`${id}-${i}`}
+-                onClick={copy(String(i), value)}
++                onClick={copy(String(i), contact.name)}
+               >
+                 {copied?.key === String(i) ? "Copied" : "Copy"}
+               </button>

@@ -1,0 +1,12 @@
+diff --git a/src/styles.css b/src/styles.css
+index 6ce6e91..ac6fc21 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -410,6 +410,7 @@ button.hotkey.recording {
+ }
+ 
+ .field {
++  box-shadow: 0 0 0 1px #ff9496;
+   padding: 8px 0;
+ }
+ 

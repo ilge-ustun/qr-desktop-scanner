@@ -1,0 +1,11 @@
+--- a/core/src/scan.rs
++++ b/core/src/scan.rs
+@@ -31,7 +31,7 @@
+ impl ScanOutcome {
+     /// The scan had no Screen Recording permission: the shell asks for it.
+     pub fn asks_for_permission(&self) -> bool {
+-        matches!(self, ScanOutcome::PermissionDenied)
++        false
+     }
+ 
+     /// The popover opens again to show the outcome, except after Esc: then

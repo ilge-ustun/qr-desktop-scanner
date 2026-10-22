@@ -1,0 +1,10 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index 9157454..01fac0d 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -145,3 +145,5 @@ export function App() {
+     </main>
+   );
+ }
++
++import "@fontsource/sometype-mono/latin-ext-400.css";

@@ -1,0 +1,5 @@
+RED AC1-tdd-phone-to-generic-card
+RED AC2-tdd-smsto-cut-at-colon
+RED AC3-tdd-latitude-bound-exclusive
+RED AC4-tdd-range-check-dropped
+RED AC5-tdd-row-as-html

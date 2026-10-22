@@ -1,0 +1,13 @@
+diff --git a/src/lib/payload.ts b/src/lib/payload.ts
+index 8834e78..08baf94 100644
+--- a/src/lib/payload.ts
++++ b/src/lib/payload.ts
+@@ -47,7 +47,7 @@ export function classify(raw: string): Payload {
+   }
+   // A contact code that does not parse is text: "MECARD:…" without a space
+   // would otherwise pass for a link below.
+-  if (/^BEGIN:VCARD/i.test(text)) {
++  if (false) {
+     const contact = parseVCard(text);
+     return contact ? { kind: "contact", text, contact } : { kind: "text", text };
+   }

@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 31817,
+  "stop_reason": "end_turn",
+  "session_id": "227742a3-199d-404a-8532-34632bb38a9a",
+  "total_cost_usd": 0.1701722,
+  "usage": {
+    "input_tokens": 10,
+    "cache_creation_input_tokens": 29221,
+    "cache_read_input_tokens": 173782,
+    "output_tokens": 3589,
+    "output_tokens_details": {
+      "thinking_tokens": 136
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 29221,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 728,
+        "cache_read_input_tokens": 42897,
+        "cache_creation_input_tokens": 887,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 887
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 10,
+      "outputTokens": 3589,
+      "cacheReadInputTokens": 173782,
+      "cacheCreationInputTokens": 29221,
+      "webSearchRequests": 0,
+      "costUSD": 0.1701722,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 136,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 5,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Story 012 is implemented and committed. rxing no longer has the `image` feature, and the decoder reads the grey buffer directly.\n\nThe new vitest file has two tests, AC1 and AC2. Both failed on the base and pass now. The cargo checks also pass: clippy with `-D warnings`, and all of `cargo test -p qr-core`, including the decode, scan and find_all fixtures. I did not run the full baseline set (`npm run build`, `scripts/check-macos-shell.sh`, lint), as the instructions said the harness runs it. I also did not run the Mac checks from the story, or the `git diff --exit-code Cargo.lock` check.\n\n- **Manifest:** `core/Cargo.toml` drops `\"image\"` from rxing's features.\n- **Decoder:** `core/src/decode.rs` now calls `detect_multiple_in_luma_with_hints` with the raw grey bytes. Only the first pass copies the grey image. The darkened and enlarged images are moved in. The hints, the pass order, the 600-pixel rule, the de-duplication and the `Decoder` trait are unchanged.\n- **Lock:** Cargo regenerated `Cargo.lock` offline with `cargo metadata --offline`. Cargo removed 631 lines.\n- **Test:** `src/__tests__/coreDependencies.test.ts` reads `core/Cargo.toml` and `Cargo.lock` with `?raw` and the line rules from the story.\n\nMutation checks:\n- **AC1:** `AC1-tdd-rxing-image.patch` puts `\"image\"` back in rxing's features, and the selector is `-t \"AC1\"`. I did not run this patch myself. The second item, removing `default-features = false` from the rxing line, I ran by hand and the AC1 test went red.\n- **AC2:** `AC2-tdd-lock.patch` restores the old `Cargo.lock`, and the selector is `-t \"AC2\"`. I ran it by hand and AC2 went red.\n- **Tree:** The patches are in `.review-out/mutations/`, each with its `.test` file. The tree is clean apart from `.review-out/`, and I did not run the classifier.",
+  "ttft_ms": 2293,
+  "type": "result",
+  "duration_ms": 63023,
+  "uuid": "71d768a9-c885-4969-836b-494a898cce27",
+  "ttft_stream_ms": 1294,
+  "time_to_request_ms": 133,
+  "first_content_frame_ms": 1295,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

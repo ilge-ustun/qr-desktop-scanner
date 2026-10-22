@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":2,"numFailedTests":1,"failed":["core dependencies AC1: rxing has no image feature and image has only png"]}

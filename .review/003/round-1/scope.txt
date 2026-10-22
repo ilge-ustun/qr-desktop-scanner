@@ -1,0 +1,6 @@
+deny:    core/* src-tauri/* site/* src/components/* src/App.tsx src/main.tsx src/styles.css src/lib/payload.ts src/lib/headline.ts src/lib/ipc.ts src/lib/scanState.ts src/lib/hotkey.ts package.json package-lock.json
+scope:   CLEAN 
+changed:
+src/__tests__/ResultCard.test.tsx
+src/__tests__/urlSafety.test.ts
+src/lib/urlSafety.ts

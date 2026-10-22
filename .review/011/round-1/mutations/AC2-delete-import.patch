@@ -1,0 +1,12 @@
+diff --git a/src/main.tsx b/src/main.tsx
+index 873e9b9..1e1e0ea 100644
+--- a/src/main.tsx
++++ b/src/main.tsx
+@@ -2,7 +2,6 @@ import { StrictMode } from "react";
+ import { createRoot } from "react-dom/client";
+ 
+ // Bundled fonts (see fonts.css): the app never fetches fonts at runtime.
+-import "./fonts.css";
+ 
+ import { App } from "./App";
+ import "./styles.css";

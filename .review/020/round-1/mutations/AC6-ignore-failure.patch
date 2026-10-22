@@ -1,0 +1,13 @@
+diff --git a/core/src/capture.rs b/core/src/capture.rs
+index 1431e8b..fbd286b 100644
+--- a/core/src/capture.rs
++++ b/core/src/capture.rs
+@@ -49,7 +49,7 @@ pub fn display_files(dir: &Path, count: u32) -> Vec<PathBuf> {
+ /// failure, what it wrote to stderr says why; `status` names the failure
+ /// when it wrote nothing. On success, whatever it wrote is not an error.
+ pub fn open_settings_result(success: bool, status: &str, stderr: &str) -> Result<(), String> {
+-    if success {
++    if success || !success {
+         return Ok(());
+     }
+     let said = stderr.trim();

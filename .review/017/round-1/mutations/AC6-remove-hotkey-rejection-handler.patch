@@ -1,0 +1,13 @@
+diff --git a/src/hooks/useHotkey.ts b/src/hooks/useHotkey.ts
+index d788b96..d11bcb1 100644
+--- a/src/hooks/useHotkey.ts
++++ b/src/hooks/useHotkey.ts
+@@ -7,7 +7,7 @@ export function useHotkey() {
+   const [hotkey, setHotkey] = useState<string | null>(null);
+ 
+   useEffect(() => {
+-    ipc.getHotkey().then(setHotkey, () => undefined);
++    ipc.getHotkey().then(setHotkey);
+   }, []);
+ 
+   const pickHotkey = useCallback(async (accelerator: string) => {

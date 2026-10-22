@@ -1,0 +1,13 @@
+diff --git a/src/hooks/useFitPopover.ts b/src/hooks/useFitPopover.ts
+index b90975d..9029c33 100644
+--- a/src/hooks/useFitPopover.ts
++++ b/src/hooks/useFitPopover.ts
+@@ -9,7 +9,7 @@ export function useFitPopover(popover: RefObject<HTMLElement | null>) {
+     const element = popover.current;
+     if (!element) return;
+     // + the offset shadow printed below and right of the popover (styles.css).
+-    const observer = new ResizeObserver(() => void ipc.fitPopover(Math.ceil(element.offsetHeight) + 6));
++    const observer = new ResizeObserver(() => void ipc.fitPopover(element.offsetHeight + 6));
+     observer.observe(element);
+     return () => observer.disconnect();
+   }, [popover]);

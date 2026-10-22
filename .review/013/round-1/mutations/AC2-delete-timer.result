@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":12,"numFailedTests":3,"failed":["AC2 the copy timer is written once, in a file H the cards import (a) setTimeout or setInterval: twice, once in H and once in HotkeyButton.tsx","AC2 the copy timer is written once, in a file H the cards import (b) a numeric literal of 1500: once, in H","AC2 the copy timer is written once, in a file H the cards import (c) FieldCard, ResultCard and WifiCard import H and keep no effect of their own"]}

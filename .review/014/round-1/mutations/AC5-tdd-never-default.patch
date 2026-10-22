@@ -1,0 +1,18 @@
+diff --git a/src/components/ResultCard.tsx b/src/components/ResultCard.tsx
+index 674bceb..4758b72 100644
+--- a/src/components/ResultCard.tsx
++++ b/src/components/ResultCard.tsx
+@@ -47,11 +47,8 @@ export function ResultCard({ code, onCopy, onOpen, onJoin, onDismiss }: Props) {
+     case "email":
+     case "text":
+       return generic;
+-    default: {
+-      // Each kind has its case above: a new kind of Payload fails tsc here.
+-      const unhandled: never = payload;
+-      return unhandled;
+-    }
++    default:
++      return generic;
+   }
+ }
+ 

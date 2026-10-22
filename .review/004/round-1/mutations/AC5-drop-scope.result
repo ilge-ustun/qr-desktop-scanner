@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":10,"numFailedTests":2,"failed":["App AC5: after a whole-screen scan finds nothing, the notice says the screen was searched, not a box","App AC5: each scan's notice follows its own scope, whichever ran before"]}

@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":26,"numFailedTests":6,"failed":["AC3 classify tests a prefix once \"WIFI:S:Home;;\": no prefix twice","AC3 classify tests a prefix once \"wifi:S:Home;;\": no prefix twice","AC3 classify tests a prefix once \"WIFI:\": no prefix twice","AC3 classify tests a prefix once \"WIFI:S:Home;;\": its own prefix is tested","AC3 classify tests a prefix once \"wifi:S:Home;;\": its own prefix is tested","AC3 classify tests a prefix once \"WIFI:\": its own prefix is tested"]}

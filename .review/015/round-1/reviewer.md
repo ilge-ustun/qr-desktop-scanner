@@ -1,0 +1,8 @@
+I’ll read the workflow and its tests, run the focused tests, and leave a mutation for each acceptance criterion in `.review-out/`.
+All 17 tests in `ciConfig.test.ts` pass. The new assertions cover the filter’s placement and exact patterns, plus the unchanged branch and event triggers. I’ll now remove the filter and the pull-request trigger separately to check that each criterion’s selector fails.
+- **AC1 holds.** The three patterns sit under `on.push`, alongside only `branches` (`.github/workflows/macos.yml:11–17`). Vitest checks placement, exact keys, block formatting and exact values (`src/__tests__/ciConfig.test.ts:259–295`). Removing the filter produces two assertion failures. Harness files: `.review-out/mutations/AC1-remove-filter.{patch,test}`.
+- **AC2 holds.** The branch list remains exact, and both other triggers are empty (`.github/workflows/macos.yml:13–19`). Vitest asserts those requirements (`src/__tests__/ciConfig.test.ts:299–315`). Removing `pull_request` produces an assertion failure. Harness files: `.review-out/mutations/AC2-remove-pull-request.{patch,test}`.
+- **Scope holds.** Independent content comparison confirmed the existing tests remain unchanged before the additions (`src/__tests__/ciConfig.test.ts:1–239`), and the workflow’s preserved comments, permissions, job, steps and pins match the base (`.github/workflows/macos.yml:9–10`, `.github/workflows/macos.yml:21–51`). The new comment states the exception, rationale and unconditional PR/manual behavior (`.github/workflows/macos.yml:3–8`).
+- Focused verification passed all 17 tests. No additional regression found; GitHub runtime behavior remains outside this text instrument’s claim (`src/__tests__/ciConfig.test.ts:1–4`). Only `.review-out/` remains untracked.
+
+VERDICT: PASS

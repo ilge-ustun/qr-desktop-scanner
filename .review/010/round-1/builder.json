@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 436767,
+  "stop_reason": "end_turn",
+  "session_id": "9686f7c8-3da9-49e5-b1f2-2bb4ae40543d",
+  "total_cost_usd": 2.1144012000000005,
+  "usage": {
+    "input_tokens": 62,
+    "cache_creation_input_tokens": 92233,
+    "cache_read_input_tokens": 2287946,
+    "output_tokens": 45935,
+    "output_tokens_details": {
+      "thinking_tokens": 26670
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 92233,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1634,
+        "cache_read_input_tokens": 105299,
+        "cache_creation_input_tokens": 1002,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1002
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 62,
+      "outputTokens": 45935,
+      "cacheReadInputTokens": 2287946,
+      "cacheCreationInputTokens": 92233,
+      "webSearchRequests": 0,
+      "costUSD": 2.1144012000000005,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 26670,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 32,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Story 010 is implemented in three commits on `story/010`, one per task. The tests for each AC were seen failing before the code went in. All 108 tests in `src/__tests__/urlSafety.test.ts` pass, and the four card, keys, app and docs specs that reach `assess` pass too (145 tests).\n\n| Commit | What changes | ACs |\n|---|---|---|\n| `7d6d2b7` | The decoy warning names the right owner: one trailing dot is dropped from every host, and a two-letter last label after one of the ten labels joins the suffix. The existing list stays. | AC1, AC2 |\n| `c7befa3` | A mailto whose query has `to`, `cc` or `bcc` gets one `extra-recipients` caution naming each address, percent-decoded. Open is still offered. | AC3, AC4 |\n| `7e490fd` | `localhost`, `*.localhost`, `*.local`, 127/8, 10/8, 172.16/12, 192.168/16, 169.254/16, `[::1]`, fc00::/7 and fe80::/10 get one `local-address` caution. IP addresses keep `ip-address` as well. | AC5, AC6 |\n\nOnly `src/lib/urlSafety.ts` and its test file changed.\n\n**Red before green.** AC1, AC3 and AC5 failed the way the story predicts: `co.kr`, `com.`, \"belongs to com..\", no mailto warning, no local warning. The parser checks passed first: the trailing dot reaches `assess`, and `2130706433` and `[0:0:0:0:0:0:0:1]` become `127.0.0.1` and `[::1]`. AC2, AC4 and AC6 check that cases outside the new rules stay as they are, so they already passed on the base. Their patches show they can fail.\n\n**Patches.** There is one pair per AC in `.review-out/mutations/`, made with `git diff` after the last commit. Each applies to HEAD, fails under its `-t \"010 ACn:\"` selector, and passes without the patch. I also tried 21 other changes from the story's \"Goes red when\" lists, at least one per AC and none the same as a patch. Every one failed, and none was committed.\n\n**Choices the story left open:**\n- **Open still offered on `https://./`.** `openable` is now based on the parsed hostname. Otherwise that host, a bare dot, would lose Open even though `url_guard` would still open it.\n- **Recipient list.** Addresses are split on commas and listed with \", \". An empty `to`, `cc` or `bcc` adds no one and gets no warning. A `+` in an address is kept. An encoded field name such as `%62cc` is decoded too, so it is caught.\n- **Extra tests.** These also cover `mailto:?to=…`, the empty fields, `+`, `%62cc`, `127.1`, `0x7f.0.0.1`, `10.0.0.1.`, upper case, and a user name before a local IP. Each new mailto edge test was made to fail once.\n\n**What I ran:** `tsc --noEmit` and eslint on the two changed files. I left the full baseline set to the harness, and nothing in Rust changed.\n\n**A slip, now fixed:** one of my mutation checks reset the file before the mailto code was committed, which wiped that code. I re-applied it, committed it, and ran those two checks again on the commit.\n\n**Open question, not fixed:** the warning reads only the query, which ends at a `#`. The whole URL, including anything after the `#`, is still passed to the system to open. I don't know whether Mail reads header fields after a `#`, as in `mailto:a@b.com?subject=x#&bcc=y@z.com`. If it does, an address there gets no warning. That needs checking on a Mac.\n\nThe story's human-verification checklist still needs someone on a Mac.",
+  "ttft_ms": 1437,
+  "type": "result",
+  "duration_ms": 509050,
+  "uuid": "2478ee08-bb82-48dc-8fb1-65ba66eb9819",
+  "ttft_stream_ms": 1239,
+  "time_to_request_ms": 167,
+  "first_content_frame_ms": 1240,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

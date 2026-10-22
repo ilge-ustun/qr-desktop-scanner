@@ -1,26 +1,33 @@
 // What kind of thing a decoded QR code holds. The text is untrusted: it is
 // whatever someone printed or put on a screen.
 
+import { parseMecardBody, parseVCard, type Contact } from "./contact";
+import { parseGeo, type Geo } from "./geo";
+import { parseSms, type Sms } from "./sms";
+import { afterPrefix } from "./text";
+import { parseWifiBody, type WifiNetwork } from "./wifi";
+
+// Its home was here, and a test still reads it from here.
+export type { WifiNetwork };
+
 export type Payload =
   | { kind: "url"; text: string }
   | { kind: "email"; text: string; address: string }
   | { kind: "phone"; text: string; number: string }
   | { kind: "wifi"; text: string; network: WifiNetwork | null }
+  | { kind: "contact"; text: string; contact: Contact }
+  | { kind: "sms"; text: string; sms: Sms }
+  | { kind: "geo"; text: string; geo: Geo }
   | { kind: "text"; text: string };
-
-export type WifiNetwork = {
-  ssid: string;
-  password: string;
-  /** As written in the code: WPA, WEP, nopass, SAE, … ("" when absent). */
-  security: string;
-  hidden: boolean;
-};
 
 export const LABELS: Record<Payload["kind"], string> = {
   url: "Link",
   email: "Email",
   phone: "Phone",
   wifi: "Wi-Fi",
+  contact: "Contact",
+  sms: "SMS",
+  geo: "Location",
   text: "Text",
 };
 
@@ -32,14 +39,28 @@ const DANGEROUS_SCHEME = /^\s*(javascript|data|vbscript|file):/i;
 
 export function classify(raw: string): Payload {
   const text = raw.trim();
-  if (/^mailto:/i.test(text)) {
-    return { kind: "email", text, address: text.slice("mailto:".length).split("?")[0] };
+  const mailto = afterPrefix(text, "mailto:");
+  if (mailto !== null) return { kind: "email", text, address: mailto.split("?")[0] };
+  const tel = afterPrefix(text, "tel:");
+  if (tel !== null) return { kind: "phone", text, number: tel };
+  // Before the link test below: these may hold spaces. One without a number
+  // or without coordinates reads on, and gets the card it got before.
+  const sms = parseSms(text);
+  if (sms) return { kind: "sms", text, sms };
+  const geo = parseGeo(text);
+  if (geo) return { kind: "geo", text, geo };
+  const wifi = afterPrefix(text, "WIFI:");
+  if (wifi !== null) return { kind: "wifi", text, network: parseWifiBody(wifi) };
+  // A contact code that does not parse is text: "MECARD:…" without a space
+  // would otherwise pass for a link below.
+  if (/^BEGIN:VCARD/i.test(text)) {
+    const contact = parseVCard(text);
+    return contact ? { kind: "contact", text, contact } : { kind: "text", text };
   }
-  if (/^tel:/i.test(text)) {
-    return { kind: "phone", text, number: text.slice("tel:".length) };
-  }
-  if (/^WIFI:/i.test(text)) {
-    return { kind: "wifi", text, network: parseWifi(text) };
+  const mecard = afterPrefix(text, "MECARD:");
+  if (mecard !== null) {
+    const contact = parseMecardBody(mecard);
+    return contact ? { kind: "contact", text, contact } : { kind: "text", text };
   }
   if (DANGEROUS_SCHEME.test(text)) {
     return { kind: "url", text };
@@ -51,51 +72,4 @@ export function classify(raw: string): Payload {
     return { kind: "url", text };
   }
   return { kind: "text", text };
-}
-
-/**
- * The de-facto Wi-Fi QR format (from ZXing):
- * `WIFI:T:WPA;S:<name>;P:<password>;H:true;;`. Fields come in any order;
- * `\`, `;`, `,`, `:` and `"` inside a value are escaped with a backslash, and
- * some generators wrap a value in double quotes.
- */
-export function parseWifi(text: string): WifiNetwork | null {
-  if (!/^WIFI:/i.test(text)) return null;
-  const fields = new Map<string, string>();
-  let key = "";
-  let value = "";
-  let inValue = false;
-  const body = text.slice("WIFI:".length);
-  for (let i = 0; i < body.length; i++) {
-    const c = body[i];
-    if (c === "\\" && i + 1 < body.length) {
-      if (inValue) value += body[++i];
-      else key += body[++i];
-    } else if (c === ":" && !inValue) {
-      inValue = true;
-    } else if (c === ";") {
-      if (key) fields.set(key.toUpperCase(), unquote(value));
-      key = "";
-      value = "";
-      inValue = false;
-    } else if (inValue) {
-      value += c;
-    } else {
-      key += c;
-    }
-  }
-  if (key && inValue) fields.set(key.toUpperCase(), unquote(value));
-
-  const ssid = fields.get("S");
-  if (!ssid) return null;
-  return {
-    ssid,
-    password: fields.get("P") ?? "",
-    security: fields.get("T") ?? "",
-    hidden: (fields.get("H") ?? "").toLowerCase() === "true",
-  };
-}
-
-function unquote(value: string): string {
-  return value.length >= 2 && value.startsWith('"') && value.endsWith('"') ? value.slice(1, -1) : value;
 }

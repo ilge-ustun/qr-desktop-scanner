@@ -1,0 +1,13 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index 9157454..fecc21b 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -99,7 +99,7 @@ export function App() {
+             <PrimaryButton big onClick={scan} disabled={view.name === "scanning"}>
+               Scan
+             </PrimaryButton>
+-            <button type="button" className="ghost" onClick={findAll} disabled={view.name === "scanning"}>
++            <button type="button" className="primary" onClick={findAll} disabled={view.name === "scanning"}>
+               Find all on screen
+             </button>
+             <p className="hint">Photo, PDF, paused video, web page. Esc cancels.</p>

@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":2,"numFailedTests":1,"failed":["core dependencies AC2: the lock has no imageproc, rav1e or ravif, and rxing needs no image"]}

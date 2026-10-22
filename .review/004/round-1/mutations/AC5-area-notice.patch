@@ -1,0 +1,13 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index 9157454..90b6c59 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -114,7 +114,7 @@ export function App() {
+             <p className="notice">
+               {view.scope === "screen"
+                 ? "Searched the whole screen and found no QR code. If one is small, Scan again and drag around just that code."
+-                : "No QR code in that area. Try a box around the whole code, including its white border."}
++                : "No QR code on screen."}
+             </p>
+           </div>
+         )}

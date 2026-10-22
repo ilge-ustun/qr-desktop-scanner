@@ -1,0 +1,13 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index 9157454..8872cfb 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -96,7 +96,7 @@ export function App() {
+                 {view.name === "scanning" ? "Select the code…" : "Drag a box around\nany code on screen"}
+               </span>
+             </div>
+-            <PrimaryButton big onClick={scan} disabled={view.name === "scanning"}>
++            <PrimaryButton big onClick={findAll} disabled={view.name === "scanning"}>
+               Scan
+             </PrimaryButton>
+             <button type="button" className="ghost" onClick={findAll} disabled={view.name === "scanning"}>

@@ -1,0 +1,13 @@
+diff --git a/src/lib/urlSafety.ts b/src/lib/urlSafety.ts
+index 0aa2f21..7761b98 100644
+--- a/src/lib/urlSafety.ts
++++ b/src/lib/urlSafety.ts
+@@ -140,7 +140,7 @@ export function assess(text: string): Assessment {
+       severity: "danger",
+       message: `This address starts with "${front.slice(0, decoyAt + 1).join(".")}" but belongs to ${registrable}.`,
+     });
+-    return { domain: registrable, openable: true, warnings };
++    return { domain: host, openable: true, warnings };
+   }
+   return { domain: host || null, openable: host !== "", warnings };
+ }

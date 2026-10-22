@@ -1,0 +1,12 @@
+diff --git a/src/styles.css b/src/styles.css
+index 6ce6e91..4164eb9 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -387,7 +387,6 @@ button.hotkey.recording {
+   align-items: center;
+   justify-content: space-between;
+   gap: 10px;
+-  border-top: 2px dotted var(--ink);
+ }
+ 
+ .secret {

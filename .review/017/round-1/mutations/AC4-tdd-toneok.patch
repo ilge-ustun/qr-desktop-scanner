@@ -1,0 +1,13 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index 8d4420f..cf9491b 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -52,7 +52,7 @@ export function App() {
+       <section className="body">
+         {ready && (
+           <>
+-            <div className="viewfinder">
++            <div className="viewfinder tone-ok">
+               <Corners />
+               <span className="scanline" aria-hidden="true" />
+               <span className="prompt">

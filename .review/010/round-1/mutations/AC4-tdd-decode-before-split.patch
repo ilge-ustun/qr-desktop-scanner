@@ -1,0 +1,14 @@
+diff --git a/src/lib/urlSafety.ts b/src/lib/urlSafety.ts
+index 6ce20b6..379f5ce 100644
+--- a/src/lib/urlSafety.ts
++++ b/src/lib/urlSafety.ts
+@@ -110,8 +110,7 @@ function percentDecode(text: string): string {
+ 
+ /** The addresses a mailto query's to, cc and bcc fields add, in order. */
+ function extraRecipients(query: string): string[] {
+-  return query
+-    .replace(/^\?/, "")
++  return percentDecode(query.replace(/^\?/, ""))
+     .split("&")
+     .flatMap((field) => {
+       const eq = field.indexOf("=");

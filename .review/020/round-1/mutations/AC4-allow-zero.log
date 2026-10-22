@@ -1,0 +1,24 @@
+   Compiling qr-core v0.1.2 (/home/fleet/work/projects/wt-020-review/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.36s
+     Running unittests src/lib.rs (/home/fleet/.cache/fleet-cargo/qr-desktop-scanner/wt-020-review/debug/deps/qr_core-4a4deb1611c3b4bd)
+
+running 1 test
+test capture::tests::display_count_needs_a_display_and_no_error ... FAILED
+
+failures:
+
+---- capture::tests::display_count_needs_a_display_and_no_error stdout ----
+
+thread 'capture::tests::display_count_needs_a_display_and_no_error' (2510347) panicked at core/src/capture.rs:104:9:
+assertion `left == right` failed
+  left: Ok(0)
+ right: Err("no display is active")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    capture::tests::display_count_needs_a_display_and_no_error
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 13 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p qr-core --lib`

@@ -1,0 +1,13 @@
+diff --git a/site/index.html b/site/index.html
+index 471e7f3..4c0798c 100644
+--- a/site/index.html
++++ b/site/index.html
+@@ -217,7 +217,7 @@ footer .wrap { padding-block: 26px 34px; display: flex; flex-wrap: wrap; gap: 14
+       <p>A QR code is a link from a stranger. QR Scanner shows where it really goes and marks what looks wrong:</p>
+       <ul>
+         <li><span class="mark">Fake destinations</span>: <code>paypal.com@evil.example</code> really goes to evil.example.</li>
+-        <li><span class="mark">Decoy domains</span>: <code>paypal.com.secure-login.example.net</code> starts with paypal.com but belongs to example.net.</li>
++        <li><span class="mark">Decoy domains</span>: <code>paypal.com.secure-login.example.net</code> starts with paypal.com but belongs to secure-login.example.net.</li>
+         <li><span class="mark">Look-alike letters</span> in the address, like a Cyrillic а in apple.</li>
+         <li><span class="mark">Unencrypted links</span>, bare IP addresses and link shorteners.</li>
+         <li><span class="mark">Script and file links</span> that can't be opened at all.</li>

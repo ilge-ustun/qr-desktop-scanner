@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":21,"numFailedTests":1,"failed":["ResultCard, contacts AC2: gives a MECARD without a name (F3) the text card, whose one Copy copies the whole code"]}

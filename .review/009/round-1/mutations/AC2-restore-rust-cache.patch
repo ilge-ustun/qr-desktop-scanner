@@ -1,0 +1,12 @@
+diff --git a/.github/workflows/release.yml b/.github/workflows/release.yml
+index 38b6f60..d81977f 100644
+--- a/.github/workflows/release.yml
++++ b/.github/workflows/release.yml
+@@ -41,6 +41,7 @@ jobs:
+           # One DMG for Apple Silicon and Intel Macs.
+           targets: aarch64-apple-darwin, x86_64-apple-darwin
+ 
++      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0
+       - run: npm ci
+       - run: npm test
+       - run: cargo test --workspace

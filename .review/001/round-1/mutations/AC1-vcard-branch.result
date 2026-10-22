@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":19,"numFailedTests":2,"failed":["classify, contacts AC1: reads the vCard V1: FN, phones, emails, unescaped ORG, unfolded URL without group or type","classify, contacts AC1: reads the vCard V2: the name from N when there is no FN, \\n in ORG as a newline"]}

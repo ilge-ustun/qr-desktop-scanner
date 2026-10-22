@@ -55,6 +55,38 @@ pub fn wifi_device(listing: &str) -> Option<String> {
     None
 }
 
+/// The arguments of `networksetup` that join `ssid` on `device`. Arguments,
+/// not a shell line: nothing in the code is interpreted, and the SSID stays
+/// one argument as it is. The password goes last, and only when there is
+/// one; it is briefly visible to other processes of this user in `ps`.
+pub fn join_args(device: &str, ssid: &str, password: Option<&str>) -> Vec<String> {
+    let mut args = vec![
+        "-setairportnetwork".to_owned(),
+        device.to_owned(),
+        ssid.to_owned(),
+    ];
+    if let Some(password) = password.filter(|p| !p.is_empty()) {
+        args.push(password.to_owned());
+    }
+    args
+}
+
+/// What a join with [`join_args`] ended with. networksetup reports a failed
+/// join on stdout and still exits 0; on success it prints nothing. So any
+/// output is a failure, and its first line is the reason. `status` is the
+/// exit status as text, for when it failed and said nothing.
+pub fn join_result(success: bool, status: &str, stdout: &str, stderr: &str) -> Result<(), String> {
+    let said = format!("{stdout}{stderr}");
+    let said = said.trim();
+    if success && said.is_empty() {
+        Ok(())
+    } else if said.is_empty() {
+        Err(format!("networksetup failed: {status}"))
+    } else {
+        Err(said.lines().next().unwrap_or(said).to_owned())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -109,5 +141,84 @@ VLAN Configurations
     fn a_mac_without_wifi_has_no_device() {
         assert_eq!(wifi_device("Hardware Port: Ethernet\nDevice: en0\n"), None);
         assert_eq!(wifi_device(""), None);
+    }
+
+    #[test]
+    fn join_args_keeps_the_ssid_whole_and_the_password_last() {
+        assert_eq!(
+            join_args("en0", "Home", Some("correct horse")),
+            ["-setairportnetwork", "en0", "Home", "correct horse"]
+        );
+        assert_eq!(
+            join_args("en0", "Home", None),
+            ["-setairportnetwork", "en0", "Home"]
+        );
+        assert_eq!(
+            join_args("en0", "Home", Some("")),
+            ["-setairportnetwork", "en0", "Home"]
+        );
+        assert_eq!(
+            join_args("en0", "My Home Wi-Fi", None),
+            ["-setairportnetwork", "en0", "My Home Wi-Fi"]
+        );
+        assert_eq!(
+            join_args("en0", "Home; rm -rf ~", Some("p")),
+            ["-setairportnetwork", "en0", "Home; rm -rf ~", "p"]
+        );
+        assert_eq!(
+            join_args("en1", "-listallhardwareports", Some("-x")),
+            ["-setairportnetwork", "en1", "-listallhardwareports", "-x"]
+        );
+    }
+
+    #[test]
+    fn join_args_passes_spaces_through_unchanged() {
+        assert_eq!(
+            join_args("en0", " Home ", Some(" ")),
+            ["-setairportnetwork", "en0", " Home ", " "]
+        );
+    }
+
+    #[test]
+    fn join_result_reads_the_output_before_the_status() {
+        let ok: Result<(), String> = Ok(());
+        let err = |message: &str| -> Result<(), String> { Err(message.to_owned()) };
+        assert_eq!(join_result(true, "exit status: 0", "", ""), ok);
+        assert_eq!(join_result(true, "exit status: 0", "\n", "  "), ok);
+        assert_eq!(
+            join_result(
+                true,
+                "exit status: 0",
+                "Failed to join network Home.\nError: -3900.\n",
+                ""
+            ),
+            err("Failed to join network Home.")
+        );
+        assert_eq!(
+            join_result(true, "exit status: 0", "", "Could not find network Home.\n"),
+            err("Could not find network Home.")
+        );
+        assert_eq!(
+            join_result(false, "exit status: 4", "", ""),
+            err("networksetup failed: exit status: 4")
+        );
+        assert_eq!(
+            join_result(
+                false,
+                "exit status: 1",
+                "",
+                "Error: The parameters were not valid.\n"
+            ),
+            err("Error: The parameters were not valid.")
+        );
+        assert_eq!(
+            join_result(
+                false,
+                "exit status: 1",
+                "\n  First line.\nSecond line.\n",
+                "Third line.\n"
+            ),
+            err("First line.")
+        );
     }
 }

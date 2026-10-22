@@ -1,0 +1,13 @@
+diff --git a/src/lib/wifi.ts b/src/lib/wifi.ts
+index 22f0f19..66e463a 100644
+--- a/src/lib/wifi.ts
++++ b/src/lib/wifi.ts
+@@ -53,7 +53,7 @@ export function parseWifi(text: string): WifiNetwork | null {
+ }
+ 
+ function unquote(value: string): string {
+-  return value.length >= 2 && value.startsWith('"') && value.endsWith('"') ? value.slice(1, -1) : value;
++  return value;
+ }
+ 
+ /** The app's word for each security type. The type is looked up upper-cased,

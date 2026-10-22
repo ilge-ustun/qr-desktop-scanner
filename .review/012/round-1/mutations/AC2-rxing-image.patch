@@ -1,0 +1,12 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index fc5fe5e..3fe1f7f 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -3181,6 +3181,7 @@ version = "0.9.3"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "842b2a567172af73f7d18ee076f7bbb4ed8545c933b11f43868f0b1bba203157"
+ dependencies = [
++ "image",
+  "chrono",
+  "codepage-437",
+  "encoding_rs",

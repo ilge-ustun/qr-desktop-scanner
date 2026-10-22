@@ -1,0 +1,13 @@
+diff --git a/README.md b/README.md
+index e2df8ae..35162c9 100644
+--- a/README.md
++++ b/README.md
+@@ -5,7 +5,7 @@ photo, a PDF, a paused video, a web page. Click the menu-bar icon (or press
+ **⌘⇧2**) and drag a box around the code, or click **Find all on screen**,
+ and it shows what the code says: a link with **Copy** and **Open**, a Wi-Fi
+ network with **Connect** and **Copy password**, or a contact, phone number,
+-SMS or location with a **Copy** for each part (and **Open in Maps** for
++SMS with a **Copy** for each part (and **Open in Maps** for
+ coordinates). Nothing is copied, opened or joined until you ask: a click, or
+ a key on the card (↩ copies, ⌘O opens, ⌘J connects). A link with a warning
+ opens only from **Open anyway**.

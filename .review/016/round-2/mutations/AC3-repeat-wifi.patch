@@ -1,0 +1,12 @@
+diff --git a/src/lib/payload.ts b/src/lib/payload.ts
+index 89d135e..02a640f 100644
+--- a/src/lib/payload.ts
++++ b/src/lib/payload.ts
+@@ -50,6 +50,7 @@ export function classify(raw: string): Payload {
+   const geo = parseGeo(text);
+   if (geo) return { kind: "geo", text, geo };
+   const wifi = afterPrefix(text, "WIFI:");
++  afterPrefix(text, "WIFI:");
+   if (wifi !== null) return { kind: "wifi", text, network: parseWifiBody(wifi) };
+   // A contact code that does not parse is text: "MECARD:…" without a space
+   // would otherwise pass for a link below.

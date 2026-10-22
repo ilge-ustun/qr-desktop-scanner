@@ -1,0 +1,13 @@
+diff --git a/site/index.html b/site/index.html
+index 471e7f3..873ac31 100644
+--- a/site/index.html
++++ b/site/index.html
+@@ -178,7 +178,7 @@ footer .wrap { padding-block: 26px 34px; display: flex; flex-wrap: wrap; gap: 14
+         <a class="button primary" href="https://github.com/ilge-ustun/qr-desktop-scanner/releases/latest">Download for Mac</a>
+         <a class="button" href="https://github.com/ilge-ustun/qr-desktop-scanner">Source on GitHub</a>
+       </div>
+-      <span class="fine">One DMG for Apple Silicon and Intel · macOS 12 or later · free and open source</span>
++      <span class="fine">v0.1.3 · One DMG for Apple Silicon and Intel · macOS 12 or later · free and open source</span>
+     </div>
+     <div class="shots">
+       <img src="img/warning.png" width="360" height="363" alt="A scanned link with two warnings: not encrypted, and a link shortener">

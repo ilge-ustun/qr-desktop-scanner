@@ -1,7 +1,7 @@
 // The small pieces every screen is built from: Risograph print, two inks.
 import type { ReactNode } from "react";
 
-export type Tone = "ok" | "warn" | "danger";
+import { SHORTCUTS, type CardKey } from "../lib/cardKeys";
 
 /** The viewfinder brackets in the corners of a framed box. */
 export function Corners() {
@@ -31,6 +31,47 @@ export function PrimaryButton({
     <button type="button" className={big ? "primary big" : "primary"} onClick={onClick} disabled={disabled}>
       {children}
     </button>
+  );
+}
+
+/** A result card's button that a key presses: a ghost one, or the solid ink of
+ * PrimaryButton. The key is printed on its corner, like a keycap, in the mono
+ * face of the shortcut chip (Silkscreen has no ⌘). The mark is beside the
+ * button, not in it, so the button keeps its name; the button names the key
+ * to screen readers itself, with aria-keyshortcuts. */
+export function KeyedButton({
+  shortcut,
+  primary,
+  children,
+  onClick,
+  disabled,
+  describedBy,
+}: {
+  shortcut: CardKey;
+  primary?: boolean;
+  children: ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  /** The id of the text the button acts on (aria-describedby). */
+  describedBy?: string;
+}) {
+  const { hint, aria } = SHORTCUTS[shortcut];
+  return (
+    <span className="keyed">
+      <button
+        type="button"
+        className={primary ? "primary" : "ghost"}
+        onClick={onClick}
+        disabled={disabled}
+        aria-describedby={describedBy}
+        aria-keyshortcuts={aria}
+      >
+        {children}
+      </button>
+      <kbd className="keycap" aria-hidden="true">
+        {hint}
+      </kbd>
+    </span>
   );
 }
 

@@ -1,0 +1,5 @@
+deny:    site/img/* site/fonts/* site/og-source.html index.html src/App.tsx src/main.tsx src/styles.css src/components/* src/lib/* core/* src-tauri/* .github/* package.json package-lock.json vite.config.ts tsconfig.json eslint.config.js Cargo.toml Cargo.lock scripts/* README.md CLAUDE.md AGENTS.md
+scope:   CLEAN 
+changed:
+site/index.html
+src/__tests__/siteReadyPopover.test.ts

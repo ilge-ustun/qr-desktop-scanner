@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":4,"numFailedTests":1,"failed":["ipc AC3: findAllOnScreen invokes find_all_on_screen once, with no arguments"]}

@@ -1,0 +1,12 @@
+diff --git a/src/lib/wifi.ts b/src/lib/wifi.ts
+index 22f0f19..a196412 100644
+--- a/src/lib/wifi.ts
++++ b/src/lib/wifi.ts
+@@ -72,6 +72,6 @@ const SECURITY: Record<string, string> = {
+ /** The Wi-Fi card's label: the kind, the security (an unknown type as
+  * written), and "hidden" for a network that does not broadcast its name. */
+ export function wifiMeta(network: WifiNetwork): string {
+-  const security = SECURITY[network.security.toUpperCase()] ?? network.security;
++  const security = SECURITY[network.security] ?? network.security;
+   return ["Wi-Fi", security, network.hidden ? "hidden" : ""].filter(Boolean).join(" · ");
+ }

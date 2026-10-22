@@ -1,0 +1,13 @@
+diff --git a/src/components/ResultCard.tsx b/src/components/ResultCard.tsx
+index 674bceb..53341cc 100644
+--- a/src/components/ResultCard.tsx
++++ b/src/components/ResultCard.tsx
+@@ -49,7 +49,7 @@ export function ResultCard({ code, onCopy, onOpen, onJoin, onDismiss }: Props) {
+       return generic;
+     default: {
+       // Each kind has its case above: a new kind of Payload fails tsc here.
+-      const unhandled: never = payload;
++      const unhandled = payload;
+       return unhandled;
+     }
+   }

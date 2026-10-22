@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":108,"numFailedTests":6,"failed":["010 AC5: http://localhost/ gets one local-address caution","010 AC5: http://localhost:5173/ gets one local-address caution","010 AC5: http://localhost./ gets one local-address caution","010 AC5: http://app.localhost/ gets one local-address caution","010 AC5: http://printer.local/ gets one local-address caution","010 AC5: https://nas.local./ gets one local-address caution"]}

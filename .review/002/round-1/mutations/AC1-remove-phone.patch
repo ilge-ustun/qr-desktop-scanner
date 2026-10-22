@@ -1,0 +1,13 @@
+diff --git a/src/components/ResultCard.tsx b/src/components/ResultCard.tsx
+index 3d066fe..86dabe3 100644
+--- a/src/components/ResultCard.tsx
++++ b/src/components/ResultCard.tsx
+@@ -28,7 +28,7 @@ export function ResultCard({ code, onCopy, onOpen, onJoin, onDismiss }: Props) {
+   if (payload.kind === "contact") {
+     return <ContactCard contact={payload.contact} onCopy={onCopy} onDismiss={onDismiss} />;
+   }
+-  if (payload.kind === "phone" && payload.number.trim()) {
++  if (false && payload.kind === "phone" && payload.number.trim()) {
+     return <PhoneCard number={payload.number} onCopy={onCopy} onDismiss={onDismiss} />;
+   }
+   if (payload.kind === "sms") {

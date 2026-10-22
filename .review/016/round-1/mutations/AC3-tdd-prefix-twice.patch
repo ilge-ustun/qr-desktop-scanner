@@ -1,0 +1,22 @@
+diff --git a/src/lib/payload.ts b/src/lib/payload.ts
+index 89d135e..13872af 100644
+--- a/src/lib/payload.ts
++++ b/src/lib/payload.ts
+@@ -5,7 +5,7 @@ import { parseMecardBody, parseVCard, type Contact } from "./contact";
+ import { parseGeo, type Geo } from "./geo";
+ import { parseSms, type Sms } from "./sms";
+ import { afterPrefix } from "./text";
+-import { parseWifiBody, type WifiNetwork } from "./wifi";
++import { parseWifi, parseWifiBody, type WifiNetwork } from "./wifi";
+ 
+ // Its home was here, and a test still reads it from here.
+ export type { WifiNetwork };
+@@ -50,7 +50,7 @@ export function classify(raw: string): Payload {
+   const geo = parseGeo(text);
+   if (geo) return { kind: "geo", text, geo };
+   const wifi = afterPrefix(text, "WIFI:");
+-  if (wifi !== null) return { kind: "wifi", text, network: parseWifiBody(wifi) };
++  if (wifi !== null) return { kind: "wifi", text, network: parseWifi(text) };
+   // A contact code that does not parse is text: "MECARD:…" without a space
+   // would otherwise pass for a link below.
+   if (/^BEGIN:VCARD/i.test(text)) {

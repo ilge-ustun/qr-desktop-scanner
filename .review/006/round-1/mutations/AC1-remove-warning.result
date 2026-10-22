@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":16,"numFailedTests":1,"failed":["AC1: in .shots the warning image comes first and the live popover last AC1 (a) .shots holds the warning image, then a popover that is not a picture element"]}

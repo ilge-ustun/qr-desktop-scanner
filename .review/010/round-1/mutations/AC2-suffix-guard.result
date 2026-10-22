@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":108,"numFailedTests":3,"failed":["010 AC2: https://paypal.com.evil.de/ belongs to evil.de, the last two labels","010 AC2: https://paypal.com.evil.io/ belongs to evil.io, the last two labels","010 AC2: https://paypal.com.evil.co/ belongs to evil.co, the last two labels"]}

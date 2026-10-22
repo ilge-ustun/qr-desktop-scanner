@@ -1,0 +1,12 @@
+diff --git a/src/components/WifiCard.tsx b/src/components/WifiCard.tsx
+index f81c7d4..0dc134c 100644
+--- a/src/components/WifiCard.tsx
++++ b/src/components/WifiCard.tsx
+@@ -56,7 +56,6 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
+       )}
+       {join.state === "joined" && <p className="success">Connected to {network.ssid}.</p>}
+       {join.state === "failed" && <p className="failure">Could not connect: {join.message}</p>}
+-      {failure && <p className="failure">{failure}</p>}
+       <div className="actions">
+         {network.password && (
+           <KeyedButton shortcut="copy" onClick={copyPassword}>

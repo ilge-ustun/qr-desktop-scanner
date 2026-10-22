@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 41184,
+  "stop_reason": "end_turn",
+  "session_id": "8b11c7d7-4de3-4efe-875b-17fc8fcb52d5",
+  "total_cost_usd": 0.18340340000000002,
+  "usage": {
+    "input_tokens": 12,
+    "cache_creation_input_tokens": 28962,
+    "cache_read_input_tokens": 203214,
+    "output_tokens": 4721,
+    "output_tokens_details": {
+      "thinking_tokens": 438
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28962,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 733,
+        "cache_read_input_tokens": 40812,
+        "cache_creation_input_tokens": 940,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 940
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 12,
+      "outputTokens": 4721,
+      "cacheReadInputTokens": 203214,
+      "cacheCreationInputTokens": 28962,
+      "webSearchRequests": 0,
+      "costUSD": 0.18340340000000002,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 438,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "The decoy-domain check is in `assess()` in `src/lib/urlSafety.ts`, and `https://paypal.com.secure-login.example.net/` now gets one danger warning and the headline `example.net`.\n\nI ran only the two test files I changed (23 tests, all green) plus `tsc` and eslint on the changed files. I did not run the full baseline; the harness does that on handover.\n\n- **Tests:** I added the AC1–AC3 tests to `src/__tests__/urlSafety.test.ts`, and the headline check (AC2b) to `src/__tests__/ResultCard.test.tsx`. I saw them fail first, then pass after the change.\n- **Implementation:**\n  - The two-part suffix list is a constant next to `SHORTENERS`. It holds the four required suffixes plus a few more, such as `com.mx`, `co.nz` and `org.uk`.\n  - The decoy labels are `com`, `net`, `org`, `io`, `co`, `gov` and `edu`. A match has to come after another label.\n  - The warning fires once. It names the hostname's labels up to the first match, and the registrable domain: `This address starts with \"paypal.com\" but belongs to example.net.`\n  - `domain` becomes the registrable domain only when the warning fires, and `openable` stays true.\n- **Mutation check:** Dropping the \"must come after another label\" rule left the AC3 test green at first. A second `> 0` guard did the same job, so I removed it. The mutation now goes red. I also checked two more items from the \"Goes red when\" lists: removing `edu` fails the AC1 test, and leaving `domain` as the full host fails the AC2 headline test.\n- **Commits:** two, the feature and the guard cleanup. The `.review-out/mutations/` patches are written last, from the final commit, and the tree is clean apart from `.review-out/`. The patches are:\n  - `AC1-tdd-severity` (danger changed to caution)\n  - `AC2-tdd-two-labels` (always the last two labels)\n  - `AC3-tdd-country-code` (`us` added to the label list)\n\nI touched nothing outside the scope. The Mac checks in the story's human-verification section remain for a person to do.",
+  "ttft_ms": 2785,
+  "type": "result",
+  "duration_ms": 54349,
+  "uuid": "d01b5fe9-52b2-4950-b748-4b994753456b",
+  "ttft_stream_ms": 2123,
+  "time_to_request_ms": 85,
+  "first_content_frame_ms": 2123,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

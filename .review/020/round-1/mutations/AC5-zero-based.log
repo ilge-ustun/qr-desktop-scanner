@@ -1,0 +1,24 @@
+   Compiling qr-core v0.1.2 (/home/fleet/work/projects/wt-020-review/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.40s
+     Running unittests src/lib.rs (/home/fleet/.cache/fleet-cargo/qr-desktop-scanner/wt-020-review/debug/deps/qr_core-4a4deb1611c3b4bd)
+
+running 1 test
+test capture::tests::display_files_are_numbered_from_one_in_the_directory ... FAILED
+
+failures:
+
+---- capture::tests::display_files_are_numbered_from_one_in_the_directory stdout ----
+
+thread 'capture::tests::display_files_are_numbered_from_one_in_the_directory' (2510446) panicked at core/src/capture.rs:118:9:
+assertion `left == right` failed
+  left: ["/tmp/scan-test/display-0.png"]
+ right: ["/tmp/scan-test/display-1.png"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    capture::tests::display_files_are_numbered_from_one_in_the_directory
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 13 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p qr-core --lib`

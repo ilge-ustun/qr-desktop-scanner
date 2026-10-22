@@ -1,0 +1,24 @@
+
+running 1 test
+test scan_errors_keep_todays_messages ... FAILED
+
+failures:
+
+---- scan_errors_keep_todays_messages stdout ----
+
+thread 'scan_errors_keep_todays_messages' (2540817) panicked at core/tests/pipeline.rs:255:5:
+assertion `left == right` failed
+  left: Error { message: "" }
+ right: Error { message: "could not create /tmp/qr cache: disk full" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    scan_errors_keep_todays_messages
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s
+
+   Compiling qr-core v0.1.2 (/home/fleet/work/projects/wt-019-review/core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.68s
+     Running tests/pipeline.rs (/home/fleet/.cache/fleet-cargo/qr-desktop-scanner/wt-019-review/debug/deps/pipeline-d4352de4164b3d58)
+error: test failed, to rerun pass `-p qr-core --test pipeline`

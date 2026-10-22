@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 162394,
+  "stop_reason": "end_turn",
+  "session_id": "7c79d2e6-8f48-40b5-9de7-81df626237fe",
+  "total_cost_usd": 0.6129386000000001,
+  "usage": {
+    "input_tokens": 36,
+    "cache_creation_input_tokens": 68135,
+    "cache_read_input_tokens": 1124566,
+    "output_tokens": 22787,
+    "output_tokens_details": {
+      "thinking_tokens": 6607
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 68135,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 845,
+        "cache_read_input_tokens": 78775,
+        "cache_creation_input_tokens": 3923,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 3923
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 36,
+      "outputTokens": 22787,
+      "cacheReadInputTokens": 1124566,
+      "cacheCreationInputTokens": 68135,
+      "webSearchRequests": 0,
+      "costUSD": 0.6129386000000001,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 6607,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 18,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Story 016 is implemented and committed as `11aae01`. The vitest suite passes (603 tests), `tsc --noEmit` is clean and eslint is clean. I did not run the cargo, `npm run build` or `check-macos-shell.sh` baseline steps, as instructed.\n\n- **New module `src/lib/text.ts`:** it holds `afterPrefix` (ASCII-only case folding, so `ı` and `ſ` don't match), `splitUnescaped` (moved from contact.ts unchanged) and `unescapeBackslashes`.\n- **Prefixes:** all seven now go through `afterPrefix` with a literal at the call. No regex or constant is left for any of them.\n- **Prefix tested once:**\n  - `classify` calls `parseWifiBody(rest)` and `parseMecardBody(rest)` after one `afterPrefix` each.\n  - `parseWifi` and `parseMecard` keep the whole text as input and their own prefix test.\n- **Wi-Fi parser:** it now splits on `;`, then on the first `:`, then unescapes, then unquotes. A comment keeps the two no-colon behaviours, as the story requires. The table in `wifiTable.test.ts` passed on the base before I changed `wifi.ts`, and every row matched the story's value, so no row needed a changed value.\n- **`queryParam`:** it now lower-cases the name the caller passes.\n- **Exports:** `export` is removed from the eight names (`percentDecoded`, `HeadlineSize`, `Recorded`, `Severity`, `Assessment`, `Field`, `View`, `Action`). `Warning` stays exported.\n\nOn the base, the new tests found the counts the story predicts: 7 string literals, 9 regexes, 4 backslash literals (3 in contact.ts, 1 in wifi.ts) and the 8 unused exports.\n\nI wrote one mutation patch and selector per AC in `.review-out/mutations/AC1…AC7-tdd-*`, produced after the commit. I applied each one and the selector went red every time. I also ran a second item from each criterion's \"goes red\" list, and each went red too. Both checks were undone and the tree is clean.\n\nOne note: the repo has no Prettier config. I ran Prettier at width 120 on `src/lib` and reverted its formatting changes to lines I did not touch.",
+  "ttft_ms": 3222,
+  "type": "result",
+  "duration_ms": 232939,
+  "uuid": "09a5aae1-34e6-4c7a-b89f-d0886a364f70",
+  "ttft_stream_ms": 1969,
+  "time_to_request_ms": 142,
+  "first_content_frame_ms": 1969,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

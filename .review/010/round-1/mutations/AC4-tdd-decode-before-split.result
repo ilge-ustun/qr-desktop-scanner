@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":108,"numFailedTests":1,"failed":["010 AC4: mailto:boss@corp.com?body=Hi%26cc%3Dx%40evil.com gets no warning"]}

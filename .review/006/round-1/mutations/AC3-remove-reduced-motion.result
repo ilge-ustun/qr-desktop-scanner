@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":16,"numFailedTests":1,"failed":["AC3: only the scan bar moves, with the app's sweep, and reduced motion stops it AC3 (d) inside @media (prefers-reduced-motion: reduce) an !important rule stops the sweep"]}

@@ -1,0 +1,11 @@
+--- a/src/lib/urlSafety.ts
++++ b/src/lib/urlSafety.ts
+@@ -134,7 +134,7 @@
+   const warnings: Warning[] = [];
+ 
+   if (scheme === "mailto") {
+-    const recipients = extraRecipients(url.search);
++    const recipients: string[] = [];
+     if (recipients.length > 0) {
+       warnings.push({
+         code: "extra-recipients",

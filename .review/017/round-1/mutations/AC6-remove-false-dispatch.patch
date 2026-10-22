@@ -1,0 +1,13 @@
+diff --git a/src/hooks/usePermissionCheck.ts b/src/hooks/usePermissionCheck.ts
+index 336ac0b..ace5b60 100644
+--- a/src/hooks/usePermissionCheck.ts
++++ b/src/hooks/usePermissionCheck.ts
+@@ -11,7 +11,7 @@ export function usePermissionCheck(dispatch: Dispatch<Action>) {
+   useEffect(() => {
+     ipc.screenPermission().then(
+       (granted) => {
+-        if (!granted) dispatch({ type: "permissionMissing" });
++        void granted;
+       },
+       () => undefined,
+     );

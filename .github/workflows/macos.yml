@@ -1,14 +1,26 @@
 name: macOS build
 
-# Every change gets a real macOS build: the only place the macOS-only code
-# compiles and the app is bundled. (Free: the repository is public.)
+# Every change to code gets a real macOS build: the only place the macOS-only
+# code compiles and the app is bundled. (Free: the repository is public.)
+# One exception: a push that changes only the fleet's state (.stories/,
+# .review/, .blocked/) does not build. No code changed, so the build was
+# wasted, and these builds filled the macOS queue at a time when GitHub
+# dropped jobs for lack of runners. Pull requests and manual runs always build.
 # Actions are pinned to commit SHAs (a moved tag can't change what runs);
 # Dependabot proposes updates.
 on:
   push:
     branches: [main, develop]
+    paths-ignore:
+      - .stories/**
+      - .review/**
+      - .blocked/**
   pull_request:
   workflow_dispatch:
+
+# Read-only token: nothing here pushes, comments or publishes.
+permissions:
+  contents: read
 
 jobs:
   build:

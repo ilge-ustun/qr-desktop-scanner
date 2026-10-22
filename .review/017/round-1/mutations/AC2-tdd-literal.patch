@@ -1,0 +1,13 @@
+diff --git a/src/styles.css b/src/styles.css
+index 6ce6e91..0f77b0d 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -199,7 +199,7 @@ button.hotkey {
+ }
+ 
+ button.hotkey:hover {
+-  background: var(--orange-hover);
++  background: rgba(255, 116, 119, 0.2);
+ }
+ 
+ button.hotkey.recording {

@@ -1,0 +1,33 @@
+diff --git a/core/src/scan.rs b/core/src/scan.rs
+index 8c49dc8..71dff8d 100644
+--- a/core/src/scan.rs
++++ b/core/src/scan.rs
+@@ -151,27 +151,7 @@ pub fn run_find_all(
+ /// because of the sweep. It would remove a running scan's directory too, so
+ /// call it only when no scan runs under `scratch`.
+ pub fn sweep_stale(scratch: &Path) {
+-    let Ok(entries) = fs::read_dir(scratch) else {
+-        return;
+-    };
+-    // All names first, then the removals: on some file systems, removing
+-    // entries while the directory is read makes it skip others.
+-    let stale: Vec<PathBuf> = entries
+-        .flatten()
+-        .filter(|entry| {
+-            entry
+-                .file_name()
+-                .to_string_lossy()
+-                .starts_with(SCAN_DIR_PREFIX)
+-        })
+-        // file_type does not follow links: a link is not a directory here.
+-        .filter(|entry| entry.file_type().is_ok_and(|kind| kind.is_dir()))
+-        .map(|entry| entry.path())
+-        .collect();
+-    for dir in stale {
+-        // remove_dir_all removes a link inside, not what it points to.
+-        let _ = fs::remove_dir_all(dir);
+-    }
++    let _ = scratch;
+ }
+ 
+ fn temp_dir(scratch: &Path) -> Result<TempDir, ScanOutcome> {

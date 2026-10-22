@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":22,"numFailedTests":1,"failed":["AC2: the checks list keeps its four items and adds a decoy-domain one the app flags AC2 (b) one more item labels a decoy host the app flags, in <code>, and names the domain it belongs to"]}

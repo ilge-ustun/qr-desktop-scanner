@@ -1,0 +1,11 @@
+--- a/core/src/scan.rs
++++ b/core/src/scan.rs
+@@ -62,7 +62,7 @@
+ impl From<ScanError> for ScanOutcome {
+     fn from(err: ScanError) -> Self {
+         ScanOutcome::Error {
+-            message: err.to_string(),
++            message: { let _ = err; String::new() },
+         }
+     }
+ }

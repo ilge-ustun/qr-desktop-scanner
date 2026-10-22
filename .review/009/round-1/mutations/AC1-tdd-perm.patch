@@ -1,0 +1,13 @@
+diff --git a/.github/workflows/macos.yml b/.github/workflows/macos.yml
+index 1abea6f..1403ca4 100644
+--- a/.github/workflows/macos.yml
++++ b/.github/workflows/macos.yml
+@@ -12,7 +12,7 @@ on:
+ 
+ # Read-only token: nothing here pushes, comments or publishes.
+ permissions:
+-  contents: read
++  contents: write
+ 
+ jobs:
+   build:

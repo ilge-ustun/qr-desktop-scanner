@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":5,"numFailedTests":3,"failed":["AC6 queryParam queryParam(\"Body=x\", \"BODY\") is \"x\"","AC6 queryParam queryParam(\"body=x\", \"BoDy\") is \"x\"","AC6 queryParam queryParam(\"q=1&Q=2\", \"Q\") is \"1\""]}

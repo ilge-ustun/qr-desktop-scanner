@@ -1,0 +1,11 @@
+--- a/core/src/scan.rs
++++ b/core/src/scan.rs
+@@ -112,7 +112,7 @@
+     scratch: &Path,
+ ) -> ScanOutcome {
+     match scope {
+-        Scope::Area => run_scan(permission, area, decoder, scratch),
++        Scope::Area => run_find_all(permission, screen, decoder, scratch),
+         Scope::Screen => run_find_all(permission, screen, decoder, scratch),
+     }
+ }

@@ -1,0 +1,12 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index fc5fe5e..fce8f09 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -5492,3 +5492,7 @@ dependencies = [
+  "syn 3.0.9",
+  "winnow 1.0.4",
+ ]
++
++[[package]]
++name = "ravif"
++version = "0.11.20"

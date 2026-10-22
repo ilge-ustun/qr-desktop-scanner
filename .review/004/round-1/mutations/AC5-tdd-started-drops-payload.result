@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":4,"numFailedTests":1,"failed":["ipc AC5: onScan passes the scope of scan://started to its started handler"]}

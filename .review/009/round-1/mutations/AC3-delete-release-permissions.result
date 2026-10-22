@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":13,"numFailedTests":1,"failed":["AC3 release.yml keeps its permissions and one job; actions stay SHA-pinned release.yml permissions are exactly contents, id-token and attestations: write"]}

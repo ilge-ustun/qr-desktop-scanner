@@ -1,0 +1,12 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index 8d4420f..634c772 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -20,7 +20,6 @@ export function App() {
+   const { hotkey, pickHotkey, suspendHotkey, resumeHotkey } = useHotkey();
+   useFitPopover(popover);
+   useScanEvents(dispatch);
+-  usePermissionCheck(dispatch);
+   useEscapeHides();
+ 
+   const scan = () => void ipc.startScan();

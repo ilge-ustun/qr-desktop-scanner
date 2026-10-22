@@ -3,3 +3,7 @@ dist/
 target/
 src-tauri/gen/
 .DS_Store
+
+# The fleet's machine-local state (see ~/work/fleet/README.md)
+.runs/
+.review-out/

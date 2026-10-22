@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 105581,
+  "stop_reason": "end_turn",
+  "session_id": "a90e61d0-18ac-4a4f-9bce-a1cade933124",
+  "total_cost_usd": 0.3773824,
+  "usage": {
+    "input_tokens": 24,
+    "cache_creation_input_tokens": 46638,
+    "cache_read_input_tokens": 589724,
+    "output_tokens": 13181,
+    "output_tokens_details": {
+      "thinking_tokens": 918
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 46638,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 832,
+        "cache_read_input_tokens": 59406,
+        "cache_creation_input_tokens": 1795,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1795
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 24,
+      "outputTokens": 13181,
+      "cacheReadInputTokens": 589724,
+      "cacheCreationInputTokens": 46638,
+      "webSearchRequests": 0,
+      "costUSD": 0.3773824,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 918,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 12,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Story 017 is committed (one commit) and the tree is clean apart from `.review-out/`. The 637 existing tests passed with the new hooks and CSS tokens in place, but I did not re-run the full suite after the last test-typing fixes. After those fixes, `npm run build` and `npm run lint` both ran clean and the 21 tests in `appHooks.test.tsx` passed. I did not run the cargo commands or `scripts/check-macos-shell.sh`; I changed no Rust and left them to the harness baseline.\n\n- **CSS:**\n  - New `:root` tokens are `--orange-faint`, `--orange-hover`, `--orange-light` and `--disabled-opacity`.\n  - `.secret` and `.field` now share one rule for their five common declarations, and each keeps its own padding.\n  - Nothing outside `:root` writes a colour literal or `0.55`.\n- **Hooks:** the five hooks are in the new `src/hooks/` folder, and `App.tsx` calls each once, with no effect, state, listener or observer of its own. The viewfinder no longer has the `tone-ok` class.\n- **Rejection:** the `screenPermission` rejection is now dropped, as `getHotkey`'s is.\n- **Types:** `src/lib/scanState.ts` doesn't export its action type and is out of scope. The two hooks that take `dispatch` therefore derive it as `Parameters<typeof reduce>[1]`.\n- **Tests:** they are in the new `src/__tests__/stylesTokens.test.ts` (AC1–AC3) and `src/__tests__/appHooks.test.tsx` (AC4–AC7).\n\n**Red observations**\n- Before the change, all 13 style tests failed.\n- Before the change, 17 `appHooks` tests failed, including AC6 row 1 (the unhandled rejection).\n- AC6 rows 2 and 3 and AC7 passed before the change, as the story says they should.\n\n**Mutation checks**\n- Each of the seven criteria has a patch and selector pair in `.review-out/mutations/`, made from the committed head.\n- I did not run the classifier over the pairs.\n- For AC7 I also dropped `+ 6` and the Esc `removeEventListener`; each turned the test red.\n- I did not do the extra \"one more listed item\" check for AC1–AC6.\n\nI found no unrelated problems to report.",
+  "ttft_ms": 5679,
+  "type": "result",
+  "duration_ms": 139653,
+  "uuid": "61ebc8a9-8fad-481b-9b7c-71daa7a961fb",
+  "ttft_stream_ms": 4659,
+  "time_to_request_ms": 251,
+  "first_content_frame_ms": 4660,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

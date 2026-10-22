@@ -1,0 +1,13 @@
+diff --git a/src/lib/wifi.ts b/src/lib/wifi.ts
+index ff45596..db023f0 100644
+--- a/src/lib/wifi.ts
++++ b/src/lib/wifi.ts
+@@ -33,7 +33,7 @@ export function parseWifiBody(body: string): WifiNetwork | null {
+   parts.forEach((part, i) => {
+     const [rawKey, ...rest] = splitUnescaped(part, ":");
+     const key = unescapeBackslashes(rawKey);
+-    if (!key || (i === parts.length - 1 && !rest.length)) return;
++    if (!key || !rest.length) return;
+     fields.set(key.toUpperCase(), unquote(unescapeBackslashes(rest.join(":"))));
+   });
+ 

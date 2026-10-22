@@ -1,0 +1,13 @@
+deny:    core/src/scan.rs src-tauri/src/scan.rs core/tests/scan.rs core/tests/find_all.rs core/Cargo.toml src-tauri/src/tray.rs src-tauri/src/popover.rs src-tauri/src/platform/unsupported.rs src-tauri/tauri.conf.json src-tauri/capabilities/* scripts/check-macos-shell.sh src/* site/* .github/* README.md CLAUDE.md AGENTS.md package.json package-lock.json
+scope:   CLEAN 
+changed:
+Cargo.lock
+core/src/capture.rs
+core/src/lib.rs
+core/src/wifi.rs
+src-tauri/Cargo.toml
+src-tauri/src/commands.rs
+src-tauri/src/error.rs
+src-tauri/src/hotkey.rs
+src-tauri/src/lib.rs
+src-tauri/src/platform/macos.rs

@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 68013,
+  "stop_reason": "end_turn",
+  "session_id": "157a8355-7134-4b08-9e48-5ce806c20d6b",
+  "total_cost_usd": 0.2583218,
+  "usage": {
+    "input_tokens": 12,
+    "cache_creation_input_tokens": 35902,
+    "cache_read_input_tokens": 235198,
+    "output_tokens": 9117,
+    "output_tokens_details": {
+      "thinking_tokens": 1943
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35902,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 850,
+        "cache_read_input_tokens": 48744,
+        "cache_creation_input_tokens": 1721,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1721
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 12,
+      "outputTokens": 9117,
+      "cacheReadInputTokens": 235198,
+      "cacheCreationInputTokens": 35902,
+      "webSearchRequests": 0,
+      "costUSD": 0.2583218,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 1943,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 6,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Stories 009's three CI changes and the new test are committed, and `src/__tests__/ciConfig.test.ts` passes all 13 tests. I haven't run the full baseline, which the harness runs when you hand over.\n\n- **`macos.yml`:** it now has a top-level `permissions: contents: read`.\n- **`release.yml`:** the checkout sets `persist-credentials: false`. I removed the `Swatinem/rust-cache` step. The three permissions and the one job are unchanged.\n- **`dependabot.yml`:** I added weekly npm and cargo entries for `/`. Both target `develop` and group minor and patch updates under `patterns: [\"*\"]`. The github-actions entry is untouched. I reworded the top comment to cover all three ecosystems.\n- **Test:** `ciConfig.test.ts` has one `describe` per criterion, AC1 to AC4. It reads the three YAML files with `?raw`. Before the edits, 6 tests failed and the 7 AC3 guard tests passed, as the story says. `tsc --noEmit` and eslint are clean on it.\n- **Reds checked:** I tried one item from each criterion's list, plus extra ones for AC1 and AC4, and each turned the suite red. The changes were:\n  - `persist-credentials` set to `true`\n  - `contents: read` changed to `write`\n  - npm's `target-branch` changed to `main`\n  - `actions/checkout@v4` instead of the SHA in `macos.yml`\n  - npm's `patterns` changed to `\"@tauri-apps/*\"`\n  - `major` added to the `update-types`\n\n  I undid each change afterwards.\n- **Mutation pairs:** the four patch and `.test` pairs are in `.review-out/mutations/`, made after the commit. The `.test` selectors are `ciConfig.test.ts -t \"ACn\"`. I did not run the classifier. The pairs are:\n  - AC1: `contents: write` in `macos.yml`\n  - AC2: `persist-credentials: true`\n  - AC3: `id-token: read`\n  - AC4: npm `target-branch` changed to `main`\n\nThe flow-style check applies only to `dependabot.yml` and to the blocks the test inspects, because `macos.yml` already uses `branches: [main, develop]` elsewhere.\n\nI found nothing unrelated to the story.",
+  "ttft_ms": 2299,
+  "type": "result",
+  "duration_ms": 80899,
+  "uuid": "6d2041c8-40fd-4eda-82ed-19c51898250d",
+  "ttft_stream_ms": 1330,
+  "time_to_request_ms": 106,
+  "first_content_frame_ms": 1331,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

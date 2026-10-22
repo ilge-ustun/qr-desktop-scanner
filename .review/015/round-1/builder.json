@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 37977,
+  "stop_reason": "end_turn",
+  "session_id": "ab4aca1d-9bc1-440e-a66c-dae4f5067a55",
+  "total_cost_usd": 0.16539969999999998,
+  "usage": {
+    "input_tokens": 10,
+    "cache_creation_input_tokens": 27549,
+    "cache_read_input_tokens": 170837,
+    "output_tokens": 3810,
+    "output_tokens_details": {
+      "thinking_tokens": 798
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 27549,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 637,
+        "cache_read_input_tokens": 41346,
+        "cache_creation_input_tokens": 766,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 766
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 10,
+      "outputTokens": 3810,
+      "cacheReadInputTokens": 170837,
+      "cacheCreationInputTokens": 27549,
+      "webSearchRequests": 0,
+      "costUSD": 0.16539969999999998,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 798,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 5,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Story 015 is done in one commit. `.github/workflows/macos.yml` now has `paths-ignore` on `push`, so a push that changes only `.stories/`, `.review/` or `.blocked/` no longer starts a macOS build. I did not run the full baseline or the mutation classifier; the harness does both.\n\n- **Workflow:** under `on.push`, `branches: [main, develop]` stays on its one line, followed by a block `paths-ignore` list of `.stories/**`, `.review/**` and `.blocked/**`. `pull_request` and `workflow_dispatch` are unchanged, so both still always build. The new top comment states the exception, why, and that pull requests and manual runs build. I kept the lines about SHA pins and Dependabot, and the permissions comment. The diff touches only the top comment and the `on` block.\n- **Tests:** I added `015 AC1` and `015 AC2` describes to `src/__tests__/ciConfig.test.ts`, reusing its line reader.\n- **Red before green:** before the workflow change, the two `015 AC1` tests failed and the `015 AC2` tests passed, as the story says they would. After it, all 17 tests in that file pass.\n- **Spot checks:** I tried two items from the \"Goes red when\" lists, then undid each:\n  - `.review/**` → `.review/*` failed one test.\n  - `branches: [main]` failed one test.\n- **Mutation pairs:** `.review-out/mutations/` holds `AC1-tdd-blocked-removed` (removes the `.blocked/**` item) and `AC2-tdd-branches` (narrows branches to `[main]`), each with its `.patch` and `.test`. I wrote them after my final commit, and the tree is otherwise clean.\n\nI did not check GitHub's real behaviour, which the story lists as unobserved. Its human verification steps cover that after `epic/quality` lands on `develop`.",
+  "ttft_ms": 5279,
+  "type": "result",
+  "duration_ms": 43040,
+  "uuid": "2c14fc55-3d75-4113-a20f-a1cae616c0b2",
+  "ttft_stream_ms": 4437,
+  "time_to_request_ms": 94,
+  "first_content_frame_ms": 4438,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

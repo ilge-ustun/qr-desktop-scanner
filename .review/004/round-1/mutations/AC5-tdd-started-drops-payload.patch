@@ -1,0 +1,13 @@
+diff --git a/src/lib/ipc.ts b/src/lib/ipc.ts
+index fc70b4f..c5087cc 100644
+--- a/src/lib/ipc.ts
++++ b/src/lib/ipc.ts
+@@ -38,7 +38,7 @@ export async function onScan(handlers: {
+   result: (outcome: ScanOutcome) => void;
+ }): Promise<UnlistenFn> {
+   const unlisten = await Promise.all([
+-    listen<ScanScope>("scan://started", (event) => handlers.started(event.payload)),
++    listen<ScanScope>("scan://started", () => handlers.started("area")),
+     listen<ScanOutcome>("scan://result", (event) => handlers.result(event.payload)),
+   ]);
+   return () => unlisten.forEach((u) => u());

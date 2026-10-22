@@ -1,0 +1,12 @@
+diff --git a/.github/workflows/macos.yml b/.github/workflows/macos.yml
+index e418658..0c24266 100644
+--- a/.github/workflows/macos.yml
++++ b/.github/workflows/macos.yml
+@@ -14,7 +14,6 @@ on:
+     paths-ignore:
+       - .stories/**
+       - .review/**
+-      - .blocked/**
+   pull_request:
+   workflow_dispatch:
+ 

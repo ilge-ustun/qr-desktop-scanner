@@ -1,0 +1,13 @@
+diff --git a/src/components/GeoCard.tsx b/src/components/GeoCard.tsx
+index a115f4f..c867d24 100644
+--- a/src/components/GeoCard.tsx
++++ b/src/components/GeoCard.tsx
+@@ -22,7 +22,7 @@ export function GeoCard({ geo, onCopy, onOpen, onDismiss }: Props) {
+       headline={place || coordinates}
+       copyHeadline={place ? "Copy place" : "Copy coordinates"}
+       fields={fields}
+-      action={mapsLink ? { label: "Open in Maps", run: () => onOpen(mapsLink) } : undefined}
++      action={undefined}
+       onCopy={onCopy}
+       onDismiss={onDismiss}
+     />

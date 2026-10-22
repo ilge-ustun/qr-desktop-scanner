@@ -1,0 +1,6 @@
+RED AC1-tdd-empty-password-passed
+RED AC2-tdd-success-without-reading-output
+RED AC3-tdd-status-before-file
+RED AC4-tdd-count-despite-error
+RED AC5-tdd-numbered-from-zero
+RED AC6-tdd-failed-open-is-ok

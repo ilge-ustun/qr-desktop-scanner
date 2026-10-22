@@ -1,0 +1,13 @@
+diff --git a/core/src/capture.rs b/core/src/capture.rs
+index 1431e8b..8f4c2af 100644
+--- a/core/src/capture.rs
++++ b/core/src/capture.rs
+@@ -16,7 +16,7 @@ pub fn selection_verdict(
+     code: Option<i32>,
+     status: &str,
+ ) -> Result<Capture, String> {
+-    if file_written {
++    if file_written && code == Some(0) {
+         Ok(Capture::Taken)
+     } else if matches!(code, Some(0 | 1)) {
+         Ok(Capture::Cancelled)

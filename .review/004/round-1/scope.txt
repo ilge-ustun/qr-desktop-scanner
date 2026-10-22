@@ -1,0 +1,20 @@
+deny:    site/* .github/* scripts/check-macos-shell.sh core/src/decode.rs src-tauri/src/hotkey.rs src/components/ResultCard.tsx src/components/WifiCard.tsx
+scope:   CLEAN 
+changed:
+README.md
+core/src/lib.rs
+core/src/scan.rs
+core/tests/find_all.rs
+src-tauri/src/commands.rs
+src-tauri/src/lib.rs
+src-tauri/src/platform.rs
+src-tauri/src/platform/macos.rs
+src-tauri/src/platform/unsupported.rs
+src-tauri/src/scan.rs
+src-tauri/src/tray.rs
+src/App.tsx
+src/__tests__/App.test.tsx
+src/__tests__/ipc.test.ts
+src/__tests__/scanState.test.ts
+src/lib/ipc.ts
+src/lib/scanState.ts

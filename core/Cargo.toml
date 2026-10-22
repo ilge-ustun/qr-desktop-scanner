@@ -1,13 +1,13 @@
 [package]
 name = "qr-core"
-version = "0.1.2"
+version = "0.2.0"
 description = "The app's logic: decoding, the scan flow and the URL guard. No Tauri, no macOS APIs, so it builds and tests on any OS."
 edition.workspace = true
 license.workspace = true
 
 [dependencies]
 image = { version = "0.25", default-features = false, features = ["png"] }
-rxing = { version = "0.9", default-features = false, features = ["image", "qrcode", "decoders", "multi_barcode_readers", "encoding_rs"] }
+rxing = { version = "0.9", default-features = false, features = ["qrcode", "decoders", "multi_barcode_readers", "encoding_rs"] }
 serde = { version = "1", features = ["derive"] }
 tempfile = "3"
 thiserror = "2"

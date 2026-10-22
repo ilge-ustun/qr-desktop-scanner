@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 328855,
+  "stop_reason": "end_turn",
+  "session_id": "02afb195-4a5a-4f83-9ad1-72e8a61ced02",
+  "total_cost_usd": 1.9998924,
+  "usage": {
+    "input_tokens": 68,
+    "cache_creation_input_tokens": 93222,
+    "cache_read_input_tokens": 2743322,
+    "output_tokens": 35259,
+    "output_tokens_details": {
+      "thinking_tokens": 14947
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 93222,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1063,
+        "cache_read_input_tokens": 106814,
+        "cache_creation_input_tokens": 476,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 476
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 68,
+      "outputTokens": 35259,
+      "cacheReadInputTokens": 2743322,
+      "cacheCreationInputTokens": 93222,
+      "webSearchRequests": 0,
+      "costUSD": 1.9998924,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 14947,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 42,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Story 020 is done: five commits on `story/020`, and the six mutation pairs are in `.review-out/mutations/`. No changed file is on the deny list. I did not run the full baseline; the harness runs it. Apart from `.review-out/`, the tree is clean.\n\n**Commits**\n1. `6e0e3fe`: `qr_core::wifi::join_args` and `join_result` (AC1, AC2).\n2. `a2bd506`: a new module `core/src/capture.rs` with `selection_verdict`, `display_count`, `display_files` and `open_settings_result` (AC3–AC6). `lib.rs` declares it.\n3. `f160cdb`: `macos.rs` now calls these six functions, and the old inline rules are removed. `open_screen_settings` now uses `.output()`, so a failed `open` gives an error that includes its stderr. The six public items keep their names and signatures, so the stub still matches.\n4. `0aa778e`: one shell error type in `src-tauri/src/error.rs`. It uses `thiserror`, and Cargo.lock is committed with it. It is serialized as its display text, so the page gets the same strings as before. No `map_err(|e| e.to_string())` remains in `commands.rs` or `hotkey.rs`. The four commands now return this type.\n5. `a6cd892`: when `change` cannot save the new shortcut, it saves before it makes the shortcut current. If the save fails, it unregisters the new shortcut, registers the previous one again, and returns `Not saved: <save error>`. The tray item does not change.\n\n**Tests**\n- I saw each test fail to compile before I wrote the code. All 14 qr-core unit tests pass with `--locked`, and `scripts/check-macos-shell.sh` is clean after each shell commit.\n- For each AC, I made one other change from its \"Goes red when\" list, and its test went red each time:\n  - AC1: the SSID split on spaces.\n  - AC2: stderr ignored.\n  - AC3: exit 1 not taken as a cancel.\n  - AC4: `Ok(0)` for zero displays.\n  - AC5: `1..count`.\n  - AC6: only the first line of stderr kept.\n- I wrote the tdd- patches after the last commit. Each one applies to HEAD and turns its selector red, and each selector passes with no patch. The selectors are `cargo:qr-core/lib::{wifi,capture}::tests::…`.\n- One extra test: `join_args` passes an SSID with spaces around it, and a password of one space, through unchanged.\n\n**What no test here checks**, as the story says:\n- that `macos.rs` calls the core functions (read the diff);\n- the error strings and the shortcut rollback in the shell (a person on a Mac checks them);\n- the stub, which no build compiles.\n\n**Not fixed (outside this story):**\n- A failed save in `change` can still leave the old shortcut unregistered, because `resume` drops the result of `register` (Evidence 7).\n- The page still ignores a failed Open Settings (Evidence 3).",
+  "ttft_ms": 1603,
+  "type": "result",
+  "duration_ms": 448932,
+  "uuid": "a1260667-b4cd-4471-b3b4-786ffc11df10",
+  "ttft_stream_ms": 1319,
+  "time_to_request_ms": 121,
+  "first_content_frame_ms": 1319,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

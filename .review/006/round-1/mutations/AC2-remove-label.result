@@ -1,0 +1,2 @@
+RED
+{"numTotalTests":16,"numFailedTests":1,"failed":["AC2: the popover is one picture, named by the old alt text, with nothing in it to focus AC2 (a) is an image named by the old alt text, not hidden from assistive technology"]}
