@@ -19,6 +19,9 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          # No step pushes; keep the write token out of .git/config.
+          persist-credentials: false
 
       - name: Tag matches the app version
         run: |
@@ -37,7 +40,6 @@ jobs:
           toolchain: stable
           # One DMG for Apple Silicon and Intel Macs.
           targets: aarch64-apple-darwin, x86_64-apple-darwin
-      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
 
       - run: npm ci
       - run: npm test

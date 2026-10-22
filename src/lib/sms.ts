@@ -2,6 +2,7 @@
 // `SMSTO:<number>:<message>`. Every value is untrusted text.
 
 import { queryParam, splitOnce } from "./query";
+import { afterPrefix } from "./text";
 
 export type Sms = {
   number: string;
@@ -18,12 +19,14 @@ export type Sms = {
 export function parseSms(text: string): Sms | null {
   let number: string;
   let message: string;
-  if (/^sms:/i.test(text)) {
-    const [recipient, query] = splitOnce(text.slice("sms:".length), "?");
+  const sms = afterPrefix(text, "sms:");
+  const smsto = sms === null ? afterPrefix(text, "SMSTO:") : null;
+  if (sms !== null) {
+    const [recipient, query] = splitOnce(sms, "?");
     number = recipient;
     message = query === null ? "" : (queryParam(query, "body") ?? "");
-  } else if (/^SMSTO:/i.test(text)) {
-    const [recipient, rest] = splitOnce(text.slice("SMSTO:".length), ":");
+  } else if (smsto !== null) {
+    const [recipient, rest] = splitOnce(smsto, ":");
     number = recipient;
     message = rest ?? "";
   } else {

@@ -4,16 +4,17 @@
 /** The first `name=` parameter's value, percent-decoded; null when there is
  * none. `query` is the text after the `?`. Names match in any case. */
 export function queryParam(query: string, name: string): string | null {
+  const wanted = name.toLowerCase();
   for (const pair of query.split("&")) {
     const eq = pair.indexOf("=");
-    if (eq >= 0 && pair.slice(0, eq).toLowerCase() === name) return percentDecoded(pair.slice(eq + 1));
+    if (eq >= 0 && pair.slice(0, eq).toLowerCase() === wanted) return percentDecoded(pair.slice(eq + 1));
   }
   return null;
 }
 
 /** `value` percent-decoded as UTF-8, or exactly as written when it is not
  * valid percent-encoding (`100%`, `%E0%A4%A`). Never throws. */
-export function percentDecoded(value: string): string {
+function percentDecoded(value: string): string {
   try {
     return decodeURIComponent(value);
   } catch {

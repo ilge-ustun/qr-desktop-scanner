@@ -10,6 +10,10 @@
   --ink-deep: #2a3c63;
   --orange: #ff7477;
   --orange-soft: rgba(255, 116, 119, 0.55);
+  --orange-faint: rgba(255, 116, 119, 0.25);
+  --orange-hover: rgba(255, 116, 119, 0.2);
+  --orange-light: #ff9496;
+  --disabled-opacity: 0.55;
   --paper: #fbf7ee;
   --pixel: "Silkscreen", ui-monospace, monospace;
   --mono: "Sometype Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -83,7 +87,7 @@ button {
 
 button:disabled {
   cursor: default;
-  opacity: 0.55;
+  opacity: var(--disabled-opacity);
 }
 
 button.primary {
@@ -112,7 +116,7 @@ button.ghost.small {
 
 button.risky {
   border-style: dashed;
-  background: rgba(255, 116, 119, 0.25);
+  background: var(--orange-faint);
 }
 
 button.dismiss {
@@ -169,7 +173,7 @@ button.show {
 }
 
 .keyed > button:disabled + .keycap {
-  opacity: 0.55;
+  opacity: var(--disabled-opacity);
 }
 
 /* The keys act on the card holding focus, else on the first card: the other
@@ -195,7 +199,7 @@ button.hotkey {
 }
 
 button.hotkey:hover {
-  background: rgba(255, 116, 119, 0.2);
+  background: var(--orange-hover);
 }
 
 button.hotkey.recording {
@@ -327,7 +331,7 @@ button.hotkey.recording {
 }
 
 .tone-warn .meta {
-  background: repeating-linear-gradient(135deg, var(--orange) 0 8px, #ff9496 8px 16px);
+  background: repeating-linear-gradient(135deg, var(--orange) 0 8px, var(--orange-light) 8px 16px);
 }
 
 .tone-warn .meta::before,
@@ -377,12 +381,16 @@ button.hotkey.recording {
   white-space: pre-wrap;
 }
 
-.secret {
+.secret,
+.field {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   border-top: 2px dotted var(--ink);
+}
+
+.secret {
   padding-top: 10px;
 }
 
@@ -402,11 +410,6 @@ button.hotkey.recording {
 }
 
 .field {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  border-top: 2px dotted var(--ink);
   padding: 8px 0;
 }
 

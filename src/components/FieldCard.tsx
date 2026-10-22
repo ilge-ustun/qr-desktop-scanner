@@ -1,66 +1,29 @@
-import { useEffect, useId, useState } from "react";
+import { useId } from "react";
 
-import { SHORTCUTS } from "../lib/cardKeys";
-import { headlineSize } from "../lib/headline";
-import { DismissButton } from "./DismissButton";
-import { Keyed, PrimaryButton } from "./Ink";
+import type { FieldCardModel } from "../lib/cardModel";
+import { Card } from "./Card";
+import { KeyedButton } from "./Ink";
 import { useCardKeys } from "./useCardKeys";
+import { useCopyFeedback } from "./useCopyFeedback";
 
-/** A value read from the code, under the app's name for it. */
-export type Field = { label: string; value: string };
-
-type Props = {
-  /** The kind of code: the app's word, on the label. */
-  meta: string;
-  /** Read from the code: the name, number or place the card is about. */
-  headline: string;
-  /** The label of the button that copies the headline ("Copy name"). */
-  copyHeadline: string;
-  fields: Field[];
-  /** The card's one other action, an Open (Open in Maps), when it has one: ⌘O
-   * runs it. */
-  action?: { label: string; run: () => Promise<void> };
+type Props = FieldCardModel & {
   onCopy: (text: string) => Promise<void>;
+  /** Opens the model's `open` link, on a click or ⌘O. */
+  onOpen: (url: string) => Promise<void>;
   onDismiss: () => void;
 };
 
-/** The headline, then one row per value, each with its own Copy: every value
- * is shown as text, and each Copy names the value it copies. */
-export function FieldCard({ meta, headline, copyHeadline, fields, action, onCopy, onDismiss }: Props) {
+/** The card fieldCardModel describes: the headline, then one row per value,
+ * each with its own Copy. Every value is shown as text, and each Copy names
+ * the value it copies. */
+export function FieldCard({ meta, headline, copyHeadline, fields, open, onCopy, onOpen, onDismiss }: Props) {
   const id = useId();
-  // A new object per copy, so a second copy restarts the timer.
-  const [copied, setCopied] = useState<{ key: string } | null>(null);
-  const [failure, setFailure] = useState<string | null>(null);
-  useEffect(() => {
-    if (!copied) return;
-    const timer = setTimeout(() => setCopied(null), 1500);
-    return () => clearTimeout(timer);
-  }, [copied]);
-
-  const copy = (key: string, value: string) => () => {
-    setFailure(null);
-    onCopy(value).then(
-      () => setCopied({ key }),
-      (e: unknown) => setFailure(String(e)),
-    );
-  };
-  const run = (task: () => Promise<void>) => () => {
-    setFailure(null);
-    task().catch((e: unknown) => setFailure(String(e)));
-  };
-  const keyed = useCardKeys({ copy: copy("headline", headline), open: action && run(action.run) });
+  const { copy, run, copied, failure } = useCopyFeedback(onCopy);
+  const action = open && { label: open.label, run: run(() => onOpen(open.url)) };
+  const keyed = useCardKeys({ copy: copy("headline", headline), open: action?.run });
 
   return (
-    <article className="card tone-ok" {...keyed}>
-      <header className="card-head">
-        <div className="titles">
-          <span className="meta">{meta}</span>
-          <span className={`headline size-${headlineSize(headline)}`} id={`${id}-headline`}>
-            {headline}
-          </span>
-        </div>
-        <DismissButton onClick={onDismiss} />
-      </header>
+    <Card tone="ok" meta={meta} headline={headline} headlineId={`${id}-headline`} keys={keyed} onDismiss={onDismiss}>
       {fields.length > 0 && (
         <ul className="fields">
           {fields.map(({ label, value }, i) => (
@@ -77,7 +40,7 @@ export function FieldCard({ meta, headline, copyHeadline, fields, action, onCopy
                 aria-describedby={`${id}-${i}`}
                 onClick={copy(String(i), value)}
               >
-                {copied?.key === String(i) ? "Copied" : "Copy"}
+                {copied(String(i)) ? "Copied" : "Copy"}
               </button>
             </li>
           ))}
@@ -85,25 +48,15 @@ export function FieldCard({ meta, headline, copyHeadline, fields, action, onCopy
       )}
       {failure && <p className="failure">{failure}</p>}
       <div className="actions">
-        <Keyed shortcut="copy">
-          <button
-            type="button"
-            className="ghost"
-            aria-describedby={`${id}-headline`}
-            aria-keyshortcuts={SHORTCUTS.copy.aria}
-            onClick={copy("headline", headline)}
-          >
-            {copied?.key === "headline" ? "Copied" : copyHeadline}
-          </button>
-        </Keyed>
+        <KeyedButton shortcut="copy" describedBy={`${id}-headline`} onClick={copy("headline", headline)}>
+          {copied("headline") ? "Copied" : copyHeadline}
+        </KeyedButton>
         {action && (
-          <Keyed shortcut="open">
-            <PrimaryButton onClick={run(action.run)} keyshortcuts={SHORTCUTS.open.aria}>
-              {action.label}
-            </PrimaryButton>
-          </Keyed>
+          <KeyedButton shortcut="open" primary onClick={action.run}>
+            {action.label}
+          </KeyedButton>
         )}
       </div>
-    </article>
+    </Card>
   );
 }

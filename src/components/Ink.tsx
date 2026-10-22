@@ -3,8 +3,6 @@ import type { ReactNode } from "react";
 
 import { SHORTCUTS, type CardKey } from "../lib/cardKeys";
 
-export type Tone = "ok" | "warn" | "danger";
-
 /** The viewfinder brackets in the corners of a framed box. */
 export function Corners() {
   return (
@@ -23,38 +21,55 @@ export function PrimaryButton({
   onClick,
   disabled,
   big,
-  keyshortcuts,
 }: {
   children: ReactNode;
   onClick: () => void;
   disabled?: boolean;
   big?: boolean;
-  /** The key that presses it, for screen readers (see Keyed). */
-  keyshortcuts?: string;
 }) {
   return (
-    <button
-      type="button"
-      className={big ? "primary big" : "primary"}
-      onClick={onClick}
-      disabled={disabled}
-      aria-keyshortcuts={keyshortcuts}
-    >
+    <button type="button" className={big ? "primary big" : "primary"} onClick={onClick} disabled={disabled}>
       {children}
     </button>
   );
 }
 
-/** A button with the key that presses it printed on its corner, like a keycap,
- * in the mono face of the shortcut chip (Silkscreen has no ⌘). The mark is
- * beside the button, not in it, so the button keeps its name; the button names
- * the key to screen readers itself, with aria-keyshortcuts. */
-export function Keyed({ shortcut, children }: { shortcut: CardKey; children: ReactNode }) {
+/** A result card's button that a key presses: a ghost one, or the solid ink of
+ * PrimaryButton. The key is printed on its corner, like a keycap, in the mono
+ * face of the shortcut chip (Silkscreen has no ⌘). The mark is beside the
+ * button, not in it, so the button keeps its name; the button names the key
+ * to screen readers itself, with aria-keyshortcuts. */
+export function KeyedButton({
+  shortcut,
+  primary,
+  children,
+  onClick,
+  disabled,
+  describedBy,
+}: {
+  shortcut: CardKey;
+  primary?: boolean;
+  children: ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  /** The id of the text the button acts on (aria-describedby). */
+  describedBy?: string;
+}) {
+  const { hint, aria } = SHORTCUTS[shortcut];
   return (
     <span className="keyed">
-      {children}
+      <button
+        type="button"
+        className={primary ? "primary" : "ghost"}
+        onClick={onClick}
+        disabled={disabled}
+        aria-describedby={describedBy}
+        aria-keyshortcuts={aria}
+      >
+        {children}
+      </button>
       <kbd className="keycap" aria-hidden="true">
-        {SHORTCUTS[shortcut].hint}
+        {hint}
       </kbd>
     </span>
   );
