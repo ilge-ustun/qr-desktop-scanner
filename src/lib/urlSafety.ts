@@ -54,6 +54,12 @@ const TWO_PART_SUFFIXES = new Set([
   "com.tr",
 ]);
 
+// Second labels that make a two-letter country code a two-part suffix too,
+// so example.co.kr counts as one name even where co.kr is not listed above.
+const COUNTRY_SECOND_LABELS = new Set(["co", "com", "net", "org", "ac", "gov", "edu", "or", "ne", "go"]);
+
+const COUNTRY_CODE = /^[a-z]{2}$/;
+
 // Labels that make a name look like it ends there: paypal.com.example.net.
 const DECOY_LABELS = new Set(["com", "net", "org", "io", "co", "gov", "edu"]);
 
@@ -90,8 +96,9 @@ export function assess(text: string): Assessment {
   }
 
   // The URL parser turns Unicode hostnames into punycode, so look-alike
-  // characters always show up as an xn-- label here.
-  const host = url.hostname.toLowerCase();
+  // characters always show up as an xn-- label here. It keeps a trailing dot
+  // (evil.com. is evil.com), which would otherwise leave an empty last label.
+  const host = url.hostname.toLowerCase().replace(/\.$/, "");
   // https://paypal.com@evil.xyz goes to evil.xyz: everything before the @ is
   // a user name, there only to look like the destination.
   if (url.username || url.password) {
@@ -130,7 +137,11 @@ export function assess(text: string): Assessment {
     });
   }
   const labels = host.split(".");
-  const suffixLength = TWO_PART_SUFFIXES.has(labels.slice(-2).join(".")) ? 3 : 2;
+  const [second = "", last = ""] = labels.slice(-2);
+  const twoPartSuffix =
+    TWO_PART_SUFFIXES.has(labels.slice(-2).join(".")) ||
+    (COUNTRY_CODE.test(last) && COUNTRY_SECOND_LABELS.has(second));
+  const suffixLength = twoPartSuffix ? 3 : 2;
   const registrable = labels.slice(-suffixLength).join(".");
   const front = labels.slice(0, -suffixLength);
   const decoyAt = front.findIndex((label, i) => i > 0 && DECOY_LABELS.has(label));
@@ -142,5 +153,5 @@ export function assess(text: string): Assessment {
     });
     return { domain: registrable, openable: true, warnings };
   }
-  return { domain: host || null, openable: host !== "", warnings };
+  return { domain: host || null, openable: url.hostname !== "", warnings };
 }

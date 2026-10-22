@@ -108,3 +108,42 @@ describe("assess", () => {
     });
   });
 });
+
+// Story 010. G and C as the story names them.
+const G = ["co", "com", "net", "org", "ac", "gov", "edu", "or", "ne", "go"];
+const C = ["kr", "ar", "pl", "at", "th"];
+const DECOY = (o: string) => `This address starts with "paypal.com" but belongs to ${o}.`;
+const decoyResult = (o: string) => ({
+  domain: o,
+  openable: true,
+  warnings: [{ code: "decoy-domain", severity: "danger", message: DECOY(o) }],
+});
+
+it("010 AC1: a two-letter country code after one of the ten labels joins the suffix", () => {
+  for (const g of G) {
+    for (const c of C) {
+      const url = `https://paypal.com.evil.${g}.${c}/`;
+      expect(assess(url), url).toEqual(decoyResult(`evil.${g}.${c}`));
+    }
+  }
+});
+
+it("010 AC1: one trailing dot is dropped from the owner, the message and the shown domain", () => {
+  expect(new URL("https://paypal.com.evil.com./").hostname).toBe("paypal.com.evil.com.");
+  expect(assess("https://paypal.com.evil.com./")).toEqual(decoyResult("evil.com"));
+  expect(assess("https://paypal.com.evil.co.kr./")).toEqual(decoyResult("evil.co.kr"));
+  expect(assess("https://www.example.com./")).toEqual({
+    domain: "www.example.com",
+    openable: true,
+    warnings: [],
+  });
+});
+
+it.each([
+  ["https://paypal.com.evil.de/", "evil.de"],
+  ["https://paypal.com.evil.io/", "evil.io"],
+  ["https://paypal.com.evil.co/", "evil.co"],
+  ["https://paypal.com.evil.co.xyz/", "co.xyz"],
+])("010 AC2: %s belongs to %s, the last two labels", (url, owner) => {
+  expect(assess(url)).toEqual(decoyResult(owner));
+});
