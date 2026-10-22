@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { WifiNetwork } from "../lib/payload";
+import { wifiMeta, type WifiNetwork } from "../lib/wifi";
 import { Card } from "./Card";
 import { KeyedButton } from "./Ink";
 import { useCardKeys } from "./useCardKeys";
@@ -15,23 +15,11 @@ type Props = {
 
 type Join = { state: "idle" } | { state: "joining" } | { state: "joined" } | { state: "failed"; message: string };
 
-const SECURITY: Record<string, string> = {
-  "": "open network",
-  NOPASS: "open network",
-  WEP: "WEP",
-  WPA: "WPA/WPA2",
-  WPA2: "WPA2",
-  WPA3: "WPA3",
-  SAE: "WPA3",
-};
-
 export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
   const [shown, setShown] = useState(false);
   const [join, setJoin] = useState<Join>({ state: "idle" });
   const { copy, copied, failure } = useCopyFeedback(onCopy);
 
-  const security = SECURITY[network.security.toUpperCase()] ?? network.security;
-  const meta = ["Wi-Fi", security, network.hidden ? "hidden" : ""].filter(Boolean).join(" · ");
   const copyPassword = copy("password", network.password);
   const connect = () => {
     setJoin({ state: "joining" });
@@ -45,7 +33,7 @@ export function WifiCard({ network, onCopy, onJoin, onDismiss }: Props) {
   const keyed = useCardKeys({ copy: network.password ? copyPassword : undefined, join: busy ? undefined : connect });
 
   return (
-    <Card tone="ok" meta={meta} headline={network.ssid} keys={keyed} onDismiss={onDismiss}>
+    <Card tone="ok" meta={wifiMeta(network)} headline={network.ssid} keys={keyed} onDismiss={onDismiss}>
       {network.password && (
         <div className="secret">
           <span className="mono">{shown ? network.password : "•".repeat(Math.min(network.password.length, 12))}</span>
