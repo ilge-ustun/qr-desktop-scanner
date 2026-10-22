@@ -1,14 +1,12 @@
 import { useRef } from "react";
 
+import { fieldCardModel } from "../lib/cardModel";
 import type { DecodedCode } from "../lib/ipc";
 import { classify, LABELS, type Payload } from "../lib/payload";
-import { assess } from "../lib/urlSafety";
+import { assess, linkMeta, toneOf } from "../lib/urlSafety";
 import { Card } from "./Card";
-import { ContactCard } from "./ContactCard";
-import { GeoCard } from "./GeoCard";
-import { KeyedButton, WarningIcon, type Tone } from "./Ink";
-import { PhoneCard } from "./PhoneCard";
-import { SmsCard } from "./SmsCard";
+import { FieldCard } from "./FieldCard";
+import { KeyedButton, WarningIcon } from "./Ink";
 import { useCardKeys } from "./useCardKeys";
 import { useCopyFeedback } from "./useCopyFeedback";
 import { WifiCard } from "./WifiCard";
@@ -23,38 +21,48 @@ type Props = {
 
 export function ResultCard({ code, onCopy, onOpen, onJoin, onDismiss }: Props) {
   const payload = classify(code.text);
-  if (payload.kind === "wifi" && payload.network) {
-    return <WifiCard network={payload.network} onCopy={onCopy} onJoin={onJoin} onDismiss={onDismiss} />;
+  // The card of the code's text, for a link, an email, a text, and the codes
+  // below that have nothing else to show.
+  const generic = <GenericCard payload={payload} onCopy={onCopy} onOpen={onOpen} onDismiss={onDismiss} />;
+  switch (payload.kind) {
+    case "wifi":
+      // Without a network name there is nothing to join.
+      return payload.network ? (
+        <WifiCard network={payload.network} onCopy={onCopy} onJoin={onJoin} onDismiss={onDismiss} />
+      ) : (
+        generic
+      );
+    case "phone":
+      // tel: without a number has nothing to copy but the code.
+      return payload.number ? (
+        <FieldCard {...fieldCardModel(payload)} onCopy={onCopy} onOpen={onOpen} onDismiss={onDismiss} />
+      ) : (
+        generic
+      );
+    case "contact":
+    case "sms":
+    case "geo":
+      return <FieldCard {...fieldCardModel(payload)} onCopy={onCopy} onOpen={onOpen} onDismiss={onDismiss} />;
+    case "url":
+    case "email":
+    case "text":
+      return generic;
+    default: {
+      // Each kind has its case above: a new kind of Payload fails tsc here.
+      const unhandled: never = payload;
+      return unhandled;
+    }
   }
-  if (payload.kind === "contact") {
-    return <ContactCard contact={payload.contact} onCopy={onCopy} onDismiss={onDismiss} />;
-  }
-  if (payload.kind === "phone" && payload.number.trim()) {
-    return <PhoneCard number={payload.number} onCopy={onCopy} onDismiss={onDismiss} />;
-  }
-  if (payload.kind === "sms") {
-    return <SmsCard sms={payload.sms} onCopy={onCopy} onDismiss={onDismiss} />;
-  }
-  if (payload.kind === "geo") {
-    return <GeoCard geo={payload.geo} onCopy={onCopy} onOpen={onOpen} onDismiss={onDismiss} />;
-  }
-  return <GenericCard payload={payload} onCopy={onCopy} onOpen={onOpen} onDismiss={onDismiss} />;
 }
 
 function GenericCard({ payload, onCopy, onOpen, onDismiss }: { payload: Payload } & Omit<Props, "code" | "onJoin">) {
   const linkish = payload.kind === "url" || payload.kind === "email";
   const safety = linkish ? assess(payload.text) : null;
   const warnings = safety?.warnings ?? [];
-  const tone: Tone = warnings.some((w) => w.severity === "danger")
-    ? "danger"
-    : warnings.length
-      ? "warn"
-      : "ok";
+  const tone = toneOf(warnings);
   // None when the code gives none: a text, a javascript: link, an empty mailto:.
-  const headline =
-    (payload.kind === "email" ? payload.address : payload.kind === "phone" ? payload.number : safety?.domain) ||
-    undefined;
-  const meta = tone === "ok" ? LABELS[payload.kind] : `${LABELS[payload.kind]} · check before opening`;
+  const headline = (payload.kind === "email" ? payload.address : safety?.domain) || undefined;
+  const meta = linkMeta(LABELS[payload.kind], tone);
 
   const { copy, run, copied, failure } = useCopyFeedback(onCopy);
   const copyText = copy("text", payload.text);

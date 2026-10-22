@@ -5,6 +5,9 @@ export type Severity = "danger" | "caution";
 
 export type Warning = { code: string; severity: Severity; message: string };
 
+/** How a card is inked: ok, or the look of a caution or a danger. */
+export type Tone = "ok" | "warn" | "danger";
+
 export type Assessment = {
   /** Shown big on the card: the part that says where the link really goes. */
   domain: string | null;
@@ -227,4 +230,17 @@ export function assess(text: string): Assessment {
     return { domain: registrable, openable: true, warnings };
   }
   return { domain: host || null, openable: url.hostname !== "", warnings };
+}
+
+/** A link card's tone: danger when any warning is a danger, warn when all of
+ * them are cautions, ok when there is none. */
+export function toneOf(warnings: Warning[]): Tone {
+  if (warnings.some((w) => w.severity === "danger")) return "danger";
+  return warnings.length ? "warn" : "ok";
+}
+
+/** A link card's label: the kind's word, and a word of care unless the tone
+ * is ok. */
+export function linkMeta(label: string, tone: Tone): string {
+  return tone === "ok" ? label : `${label} · check before opening`;
 }

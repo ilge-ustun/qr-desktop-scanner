@@ -3,8 +3,6 @@ import type { ReactNode } from "react";
 
 import { SHORTCUTS, type CardKey } from "../lib/cardKeys";
 
-export type Tone = "ok" | "warn" | "danger";
-
 /** The viewfinder brackets in the corners of a framed box. */
 export function Corners() {
   return (

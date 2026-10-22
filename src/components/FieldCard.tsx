@@ -1,34 +1,26 @@
 import { useId } from "react";
 
+import type { FieldCardModel } from "../lib/cardModel";
 import { Card } from "./Card";
 import { KeyedButton } from "./Ink";
 import { useCardKeys } from "./useCardKeys";
 import { useCopyFeedback } from "./useCopyFeedback";
 
-/** A value read from the code, under the app's name for it. */
-export type Field = { label: string; value: string };
-
-type Props = {
-  /** The kind of code: the app's word, on the label. */
-  meta: string;
-  /** Read from the code: the name, number or place the card is about. */
-  headline: string;
-  /** The label of the button that copies the headline ("Copy name"). */
-  copyHeadline: string;
-  fields: Field[];
-  /** The card's one other action, an Open (Open in Maps), when it has one: ⌘O
-   * runs it. */
-  action?: { label: string; run: () => Promise<void> };
+type Props = FieldCardModel & {
   onCopy: (text: string) => Promise<void>;
+  /** Opens the model's `open` link, on a click or ⌘O. */
+  onOpen: (url: string) => Promise<void>;
   onDismiss: () => void;
 };
 
-/** The headline, then one row per value, each with its own Copy: every value
- * is shown as text, and each Copy names the value it copies. */
-export function FieldCard({ meta, headline, copyHeadline, fields, action, onCopy, onDismiss }: Props) {
+/** The card fieldCardModel describes: the headline, then one row per value,
+ * each with its own Copy. Every value is shown as text, and each Copy names
+ * the value it copies. */
+export function FieldCard({ meta, headline, copyHeadline, fields, open, onCopy, onOpen, onDismiss }: Props) {
   const id = useId();
   const { copy, run, copied, failure } = useCopyFeedback(onCopy);
-  const keyed = useCardKeys({ copy: copy("headline", headline), open: action && run(action.run) });
+  const action = open && { label: open.label, run: run(() => onOpen(open.url)) };
+  const keyed = useCardKeys({ copy: copy("headline", headline), open: action?.run });
 
   return (
     <Card tone="ok" meta={meta} headline={headline} headlineId={`${id}-headline`} keys={keyed} onDismiss={onDismiss}>
@@ -60,7 +52,7 @@ export function FieldCard({ meta, headline, copyHeadline, fields, action, onCopy
           {copied("headline") ? "Copied" : copyHeadline}
         </KeyedButton>
         {action && (
-          <KeyedButton shortcut="open" primary onClick={run(action.run)}>
+          <KeyedButton shortcut="open" primary onClick={action.run}>
             {action.label}
           </KeyedButton>
         )}
