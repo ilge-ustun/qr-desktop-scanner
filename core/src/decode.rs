@@ -32,7 +32,7 @@ const UPSCALE_BELOW: u32 = 600;
 impl Decoder for RxingDecoder {
     fn decode(&self, image: &DynamicImage) -> Vec<DecodedCode> {
         let gray = image.to_luma8();
-        let found = detect(&gray);
+        let found = detect(gray.clone());
         if !found.is_empty() {
             return found;
         }
@@ -40,7 +40,7 @@ impl Decoder for RxingDecoder {
         // between dark neighbours that breaks the finder patterns. Darkening
         // each pixel to its 3x3 neighbourhood closes the seams; light modules
         // lose a pixel at each edge, which a readable code can spare.
-        let found = detect(&darken(&gray));
+        let found = detect(darken(&gray));
         if !found.is_empty() {
             return found;
         }
@@ -51,7 +51,7 @@ impl Decoder for RxingDecoder {
                 gray.height() * 3,
                 imageops::FilterType::Nearest,
             );
-            return detect(&up);
+            return detect(up);
         }
         Vec::new()
     }
@@ -71,16 +71,17 @@ fn darken(gray: &GrayImage) -> GrayImage {
     })
 }
 
-fn detect(gray: &GrayImage) -> Vec<DecodedCode> {
+fn detect(gray: GrayImage) -> Vec<DecodedCode> {
     let mut hints = DecodeHints {
         PossibleFormats: Some(HashSet::from([BarcodeFormat::QR_CODE])),
         TryHarder: Some(true),
         AlsoInverted: Some(true),
         ..Default::default()
     };
-    let image = DynamicImage::ImageLuma8(gray.clone());
+    let (width, height) = gray.dimensions();
     let results =
-        helpers::detect_multiple_in_image_with_hints(image, &mut hints).unwrap_or_default();
+        helpers::detect_multiple_in_luma_with_hints(gray.into_raw(), width, height, &mut hints)
+            .unwrap_or_default();
 
     let mut seen = HashSet::new();
     results
