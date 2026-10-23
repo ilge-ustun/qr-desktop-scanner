@@ -8,6 +8,7 @@ pub mod scan;
 pub mod single_flight;
 pub mod url_guard;
 pub mod wifi;
+pub mod window;
 
 pub use decode::{DecodedCode, Decoder, RxingDecoder};
 pub use scan::{

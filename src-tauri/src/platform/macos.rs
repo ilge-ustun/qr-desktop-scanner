@@ -1,7 +1,9 @@
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use qr_core::{capture, wifi, Capture, Capturer, DisplaysCapturer, ScreenPermission};
+use objc2_app_kit::{NSWindow, NSWindowCollectionBehavior};
+use qr_core::{capture, wifi, window, Capture, Capturer, DisplaysCapturer, ScreenPermission};
+use tauri::WebviewWindow;
 
 #[link(name = "CoreGraphics", kind = "framework")]
 extern "C" {
@@ -89,6 +91,26 @@ fn active_displays() -> Result<u32, String> {
     // the number of active displays to `count`.
     let err = unsafe { CGGetActiveDisplayList(0, std::ptr::null_mut(), &mut count) };
     capture::display_count(err, count)
+}
+
+/// Lets the popover show over an app in full screen, in that app's Space,
+/// and on every other Space. qr_core::window says which bits; this only
+/// reads them from the NSWindow and writes them back. Call it on the main
+/// thread. If the window has no NSWindow, nothing changes.
+pub fn join_full_screen_spaces(popover: &WebviewWindow) {
+    let Ok(ns_window) = popover.ns_window() else {
+        return;
+    };
+    // SAFETY: ns_window() gives the window's NSWindow, autoreleased, so it
+    // lives until the event loop's pool drains, after this call; as_ref()
+    // turns null into None. The caller is on the main thread, as AppKit
+    // wants for every NSWindow call.
+    let Some(ns_window) = (unsafe { ns_window.cast::<NSWindow>().as_ref() }) else {
+        return;
+    };
+    let current = ns_window.collectionBehavior().0 as u64;
+    let bits = window::popover_collection_behavior(current) as usize;
+    ns_window.setCollectionBehavior(NSWindowCollectionBehavior(bits));
 }
 
 const NETWORKSETUP: &str = "/usr/sbin/networksetup";
