@@ -1,0 +1,99 @@
+{
+  "duration_api_ms": 264907,
+  "stop_reason": "end_turn",
+  "session_id": "f3ccd743-c86a-44e6-a045-83cd6af03050",
+  "total_cost_usd": 1.2898636,
+  "usage": {
+    "input_tokens": 44,
+    "cache_creation_input_tokens": 70367,
+    "cache_read_input_tokens": 1392758,
+    "output_tokens": 22410,
+    "output_tokens_details": {
+      "thinking_tokens": 8551
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 70367,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1455,
+        "cache_read_input_tokens": 82239,
+        "cache_creation_input_tokens": 2589,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2589
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 44,
+      "outputTokens": 22410,
+      "cacheReadInputTokens": 1392758,
+      "cacheCreationInputTokens": 70367,
+      "webSearchRequests": 0,
+      "costUSD": 1.2898636,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 8551,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 32,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "Story 021 is implemented in two commits on story/021. The bit rule is proven by Rust tests. That the popover now really shows over a full-screen app was not observed: only a person on a Mac can check that, with the story's \"Human verification\" list.\n\n**Commits**\n1. `9be4977`: the new module `core/src/window.rs` (`pub mod window;` in `core/src/lib.rs`). It has `popover_collection_behavior(current: u64) -> u64` and the five constants, each with its AppKit name in the doc comment. There is no `cfg(target_os)` and no new dependency. The tests are in `core/tests/window.rs`:\n   - AC1: the 11 rows, as literal numbers.\n   - AC2: the 61 rows, as literal numbers.\n   - Four more tests for cases a reviewer can try: the story's three single-bit examples; the result always has Auxiliary without Primary or None, and CanJoinAllSpaces without MoveToActiveSpace; using the function twice gives the same result as once; the constants have AppKit's values.\n2. `5c641af`: the shell.\n   - `platform::join_full_screen_spaces` in `macos.rs` gets the NSWindow from `ns_window()`, sends its bits through the qr-core function and writes the result back. The shell names no flag of its own. An error or a null pointer makes it stop with no change: there is no `unwrap` and no panic. The `unsafe` block has a `// SAFETY:` comment.\n   - The stub in `unsupported.rs` does nothing.\n   - `setup` in `lib.rs` calls it once, with `\"main\"`, before `popover::show`. Nothing changes the window level.\n   - `src-tauri/Cargo.toml` adds `objc2-app-kit` 0.3.2 for macOS only, with no default features. In Cargo.lock, one line changed: `\"objc2-app-kit\"` in the `qr-desktop-scanner` dependencies. No package was added. The vitest test that reads Cargo.lock passes.\n\n**What I saw**\n- **Red first:** before the module existed, the test did not compile. With a function that returned its input unchanged (what the window does today), 4 of the 6 tests failed: `0x0` gave `0`, not `0x101`. Then the real rule made all 6 pass.\n- **\"Goes red when\" lists:** I tried all 13 changes from the two lists (8 for AC1, 5 for AC2). Each one made its criterion's test fail, and I committed none of them.\n- **Mutation pairs** in `.review-out/mutations/`, made from the final head:\n  - `AC1-tdd-full-screen-auxiliary`: bit 8 is not set. The test fails at `0x0`, which gives `0x1`.\n  - `AC2-tdd-high-bits`: only the low 32 bits are kept. The test fails at `1 << 32`.\n  \n  Each selector passes before its patch and fails after it.\n- **Shell lint:** `scripts/check-macos-shell.sh` passes. As a check, I put a type error in the new macOS code for one run, and the script found it. clippy for qr-core and `cargo fmt --check` are clean. I did not run the full baseline set.\n\nThe tree is clean apart from `.review-out/`.\n\n**Things outside this story**\n- Tauri's own `ns_window()` has an internal `expect(\"view to be installed in window\")`. If that ever fails, the app panics inside Tauri, before my code can stop.\n- The doc comment of `src-tauri/src/platform.rs` lists what the platform layer does, and that list now leaves out the new function. The file is on the denied list, so I did not change it.",
+  "ttft_ms": 2685,
+  "type": "result",
+  "duration_ms": 399846,
+  "uuid": "000bfc02-8075-48f6-90e4-79d0b7fc1165",
+  "ttft_stream_ms": 2446,
+  "time_to_request_ms": 122,
+  "first_content_frame_ms": 2446,
+  "queued_turn_count": 0,
+  "result_index": 0
+}

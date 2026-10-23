@@ -181,7 +181,7 @@ push and pull request, and attaches the DMG to the run.
 1. Set the new version in `src-tauri/tauri.conf.json` (and, to keep them in
    step, `package.json` and the two `Cargo.toml` files). Commit and push.
 2. Tag that version and push the tag:
-   `git tag v0.2.0 && git push origin v0.2.0`
+   `git tag v0.2.1 && git push origin v0.2.1`
 
 `.github/workflows/release.yml` checks that the tag matches the version,
 runs the tests, builds one DMG for Apple Silicon and Intel, and publishes it

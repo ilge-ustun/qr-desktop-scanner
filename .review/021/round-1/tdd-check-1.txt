@@ -1,0 +1,2 @@
+RED AC1-tdd-full-screen-auxiliary
+RED AC2-tdd-high-bits

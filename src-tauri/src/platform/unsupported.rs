@@ -1,6 +1,7 @@
 use std::path::{Path, PathBuf};
 
 use qr_core::{Capture, Capturer, DisplaysCapturer, ScreenPermission};
+use tauri::WebviewWindow;
 
 const UNSUPPORTED: &str = "screen capture is implemented for macOS only";
 
@@ -33,6 +34,8 @@ impl DisplaysCapturer for ScreencaptureDisplays {
         Err(UNSUPPORTED.into())
     }
 }
+
+pub fn join_full_screen_spaces(_: &WebviewWindow) {}
 
 pub fn join_wifi(_: &str, _: Option<&str>) -> Result<(), String> {
     Err("joining Wi-Fi is implemented for macOS only".into())

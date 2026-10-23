@@ -1,0 +1,12 @@
+diff --git a/core/src/window.rs b/core/src/window.rs
+index 4485ee4..bb9b400 100644
+--- a/core/src/window.rs
++++ b/core/src/window.rs
+@@ -19,6 +19,5 @@ pub const FULL_SCREEN_NONE: u64 = 1 << 9;
+ /// bits, so Primary and None go; a window on every Space has no use for
+ /// MoveToActiveSpace. Every other bit stays as it is.
+ pub fn popover_collection_behavior(current: u64) -> u64 {
+-    let cleared = current & !(MOVE_TO_ACTIVE_SPACE | FULL_SCREEN_PRIMARY | FULL_SCREEN_NONE);
+-    cleared | CAN_JOIN_ALL_SPACES | FULL_SCREEN_AUXILIARY
++    current
+ }
