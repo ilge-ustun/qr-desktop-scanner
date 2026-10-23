@@ -2952,7 +2952,7 @@ checksum = "d55d956fa96f5ec02be2e13af0e20391a5aa83d6a074e3ad368959d0fab299ea"
 
 [[package]]
 name = "qr-core"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "image",
  "qrcode",
@@ -2966,7 +2966,7 @@ dependencies = [
 
 [[package]]
 name = "qr-desktop-scanner"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "objc2-app-kit",
  "qr-core",
