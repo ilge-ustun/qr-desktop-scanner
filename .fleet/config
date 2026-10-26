@@ -10,7 +10,8 @@
 # decides freshness by file times, and a build in one worktree was taken as
 # current by another with different sources (seen by the builder of story 004,
 # 22 Oct 2026), so the Rust gate could pass on code it never compiled. The
-# directories outlive their worktrees: clear ~/.cache/fleet-cargo now and then.
+# directories outlive their worktrees: each fleet drain deletes those whose
+# worktree is gone (squadra-fleet PR #50, L-46).
 BASE_BRANCH=develop
 INSTALL_CMD='npm ci'
 VITEST_CMD='npx vitest run'
